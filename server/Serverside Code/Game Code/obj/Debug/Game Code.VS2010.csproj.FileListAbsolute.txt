@@ -1,0 +1,14 @@
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Game Code\bin\Debug\FridgeMagnets.dll
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Game Code\bin\Debug\FridgeMagnets.pdb
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.dll
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Game Code\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Game Code\obj\Debug\FridgeMagnets.dll
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Game Code\obj\Debug\FridgeMagnets.pdb
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Game Code\bin\Debug\FridgeMagnets.dll
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Game Code\bin\Debug\FridgeMagnets.pdb
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.dll
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Game Code\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Game Code\obj\Debug\FridgeMagnets.dll
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Game Code\obj\Debug\FridgeMagnets.pdb

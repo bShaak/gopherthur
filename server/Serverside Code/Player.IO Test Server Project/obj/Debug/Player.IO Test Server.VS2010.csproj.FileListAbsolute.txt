@@ -1,0 +1,20 @@
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Player.IO Test Server Project\bin\Debug\Test Server.exe
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Player.IO Test Server Project\bin\Debug\Test Server.pdb
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Player.IO Test Server Project\bin\Debug\FridgeMagnets.dll
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO Development Server.exe
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO GameLibrary.dll
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Player.IO Test Server Project\bin\Debug\FridgeMagnets.pdb
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Player.IO Test Server Project\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.exe
+C:\Users\J\Documents\Homework\CPSC 319\WorkingServer\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.pdb
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.exe
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.pdb
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\Test Server.exe
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\Test Server.pdb
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\FridgeMagnets.dll
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO Development Server.exe
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO GameLibrary.dll
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\FridgeMagnets.pdb
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\J\Documents\Homework\CPSC 319\git\gopherthur\server\Serverside Code\Player.IO Test Server Project\obj\Debug\ResolveAssemblyReference.cache
