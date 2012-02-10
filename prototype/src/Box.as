@@ -8,17 +8,11 @@ package
 	import org.flixel.*;
 	
 	public class Box extends FlxSprite
-	{
-		private static const max_velocity_x:int 	= 200;
-		private static const drag_x:int 			= 200//max_velocity_x * 4;
-		private static const max_velocity_y:int 	= 200;					//max fall speed
-		private static const player_gravity:int 	= 200; 					//constant acceleration in y direction
-		
-		private static const box_width:int = 8;
-		private static const box_height:int = 8;
-		
+	{		
+		private var inFlight:Boolean; //Thrown boxes are "in flight" until they slow down. They can not be picked up.
+									  //This is required for players to hit one another with boxes, rather than
+									  //just play catch with the box.
 		private var isHeld:Boolean;
-		private var inFlight:Boolean;
 		
 		private var spawn:FlxPoint;
 		
@@ -28,12 +22,12 @@ package
 			
 			spawn = new FlxPoint(x, y);
 			
-			this.maxVelocity.x = max_velocity_x;
-			this.maxVelocity.y = max_velocity_y;
-			this.acceleration.y = player_gravity;
-			this.drag.x = drag_x;
-			this.width = box_width;
-			this.height = box_height;
+			this.maxVelocity.x = 200;
+			this.maxVelocity.y = 200;
+			this.acceleration.y = 200;
+			this.drag.x = 200;
+			this.width = 8;
+			this.height = 8;
 			this.isHeld = false;
 			this.inFlight = false;
 			
@@ -54,7 +48,7 @@ package
 		}
 		
 		public function pickUp():Boolean {
-			if (isHeld)
+			if (!isAvailable())
 				return false;
 			
 			isHeld = true;

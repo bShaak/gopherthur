@@ -18,6 +18,12 @@ package
 			this.makeGraphic(plat_width, plat_height, 0xffaaaaaa);
 		}
 		
+		//TODO: This function should take all the path points
+		//just to make path assignment internal, rather than having
+		//to create path objects when you make a new platform.
+		public function addPath():void{
+		
+		}
 	}
 
 }
