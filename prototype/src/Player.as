@@ -17,6 +17,9 @@ package
 		private var spawn:FlxPoint;
 		private var colour:int;
 		private var throwStrength:FlxPoint;
+		//Embed sounds we will use
+		[Embed(source = "../mp3/jump_new.mp3")] private var Jump:Class;
+		[Embed(source = "../mp3/throw.mp3")] private var Throw:Class;
 		
 		public function Player(x:Number, y:Number) 
 		{
@@ -127,8 +130,10 @@ package
 					this.facing = FlxObject.RIGHT;
 				}
 				//jumping
-				if (FlxG.keys.W && this.isTouching(FlxObject.FLOOR))
+				if (FlxG.keys.W && this.isTouching(FlxObject.FLOOR)){
 					this.velocity.y = -this.maxVelocity.y / 2;
+					FlxG.play(Jump);
+				}
 				
 				//box management
 				if (FlxG.keys.S) {
@@ -137,6 +142,7 @@ package
 						//keep it so you automatically pick up boxes you run into
 					}
 					else { //throw box
+						FlxG.play(Throw);
 						throwBox();
 					}
 				}
@@ -155,8 +161,10 @@ package
 				}
 				
 				//jumping
-				if (FlxG.keys.UP && this.isTouching(FlxObject.FLOOR))
+				if (FlxG.keys.UP && this.isTouching(FlxObject.FLOOR)){
+					FlxG.play(Jump);
 					this.velocity.y = -this.maxVelocity.y / 2;
+				}
 				
 				//box management
 				if (FlxG.keys.DOWN) {
@@ -164,6 +172,7 @@ package
 						//...
 					}
 					else { //throw box
+						FlxG.play(Throw);
 						throwBox();
 					}
 				}

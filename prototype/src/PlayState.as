@@ -16,6 +16,9 @@ package
 		public var boxes:FlxGroup;
 		public var platforms:FlxGroup;
 		public var zones:FlxGroup;
+		//embed sounds
+		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
+		[Embed(source = "../mp3/Chingy_right_thurr.mp3")] private var Music:Class;
 		
 		override public function create():void {
 			FlxG.bgColor = 0xff666666;
@@ -154,6 +157,8 @@ package
 			platforms.add(plat2);
 			
 			add(platforms);
+			
+			FlxG.playMusic(Music);
 		}
 		
 		override public function update():void {
@@ -230,6 +235,7 @@ package
 				for each (var player2:Player in players.members) {
 					if (FlxG.collide(player, player2)) {
 						//players who hold boxes drop them when bumped
+						FlxG.play(Push);
 						player.dropBox();
 						player2.dropBox();
 						
