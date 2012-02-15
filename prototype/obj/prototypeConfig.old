@@ -16,17 +16,17 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'12/02/2012'</value>
+      <value>'2/15/2012'</value>
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
-      <path-element>C:\Users\Braden\gopher\prototype\src</path-element>
-      <path-element>C:\Users\Braden\Downloads\school\ComputerScience\319\AdamAtomic-flixel-8989e50\flixel</path-element>
+      <path-element>C:\Git\gopherthur\prototype\src</path-element>
+      <path-element>C:\Users\Jen\flixel</path-element>
       <path-element>C:\Program Files (x86)\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
   </compiler>
   <file-specs>
-    <path-element>C:\Users\Braden\gopher\prototype\src\Prototype.as</path-element>
+    <path-element>C:\Git\gopherthur\prototype\src\Prototype.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>30</default-frame-rate>

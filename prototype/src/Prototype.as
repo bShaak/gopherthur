@@ -16,7 +16,7 @@ package
 	
 	public class Prototype extends FlxGame {	
 		public function Prototype() {
-			super(320, 240, PlayState, 2, 60, 30, true);
+			super(320, 240, MenuState, 2, 60, 30, true);
 			forceDebugger = true;
 		}
 		
