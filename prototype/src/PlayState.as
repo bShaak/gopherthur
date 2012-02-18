@@ -6,7 +6,7 @@ package
 	 */
 	
 	import org.flixel.*;
-	
+	import playerio.Connection;
 	public class PlayState extends FlxState {
 		
 		public var level:FlxTilemap;
@@ -16,8 +16,9 @@ package
 		public var boxes:FlxGroup;
 		public var platforms:FlxGroup;
 		public var zones:FlxGroup;
-		
-		private var mode:int;
+		protected var running:Boolean = false;
+
+		protected var mode:int;
 		public static const BOX_COLLECT:int = 0;
 		public static const TIMED:int = 1;
 		
@@ -106,20 +107,11 @@ package
 			add(level);
 			
 			players = new FlxGroup();
-			//add two players for now
-			players.add(new Player(FlxG.width * 1 / 10, 185));
-			players.add(new Player(FlxG.width * 9 / 10, 185));
+			zones = new FlxGroup();
+			createPlayers();
 			add(players);
 			
-			//each player has a home zone that they're trying to fill up with blocks,
-			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
-			zones = new FlxGroup();
-			for each (var player:Player in players.members) {
-				var zone:Zone = new Zone(player.getSpawn().x - 25, player.getSpawn().y - 25, 50, 50);
-				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
-				zones.add(zone);
-				add(zone);
-			}
+
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
@@ -169,9 +161,14 @@ package
 			add(platforms);
 			
 			FlxG.playMusic(Music);
+			this.afterCreate();
 		}
 		
 		override public function update():void {
+			if (!running) {
+				return;
+			}
+			
 			//Experiment with mouse click event: change player1 colour when clicked with mouse
 			if (FlxG.mouse.justPressed()) {
 				var currentCursorLocation:FlxPoint;
@@ -301,6 +298,34 @@ package
 					trace ("Invalid game mode was inputted");
 			}
 			return goalsMet;
+		}
+		
+		/**
+		 * Create each of the players and the zones.
+		 */
+		protected function createPlayers():void 
+		{
+			//add two players for now
+			players.add(new ActivePlayer(FlxG.width * 1 / 10, 185, 1, 0xff11aa11, Connection(void), 1));
+			players.add(new ActivePlayer(FlxG.width * 9 / 10, 185, 2, 0xffaa1111, Connection(void), 2));
+			
+			//each player has a home zone that they're trying to fill up with blocks,
+			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
+			for each (var player:Player in players.members) {
+				var zone:Zone = new Zone(player.getSpawn().x - 25, player.getSpawn().y - 25, 50, 50);
+				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
+				zones.add(zone);
+				add(zone);
+			}
+		}
+		
+		/**
+		 * Run any logic necessary after the create function is called.
+		 */
+		protected function afterCreate():void 
+		{
+			running = true;
+			return;
 		}
 	
 	}

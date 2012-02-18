@@ -6,25 +6,25 @@ package
 	 */
 	
 	import org.flixel.*;
-	
+	import playerio.*;
 	public class Player extends FlxSprite
-	{		
-		private static var count:int = 0; //player id counter
+	{	
+		public var id:int;
+		protected var isHoldingBox:Boolean;
+		protected var boxHeld:Box;
+		protected var spawn:FlxPoint;
+		protected var colour:int;
+		protected var throwStrength:FlxPoint;
+		protected var connection:Connection;
 		
-		private var id:int;
-		private var isHoldingBox:Boolean;
-		private var boxHeld:Box;
-		private var spawn:FlxPoint;
-		private var colour:int;
-		private var throwStrength:FlxPoint;
 		//Embed sounds we will use
-		[Embed(source = "../mp3/jump_new.mp3")] private var Jump:Class;
-		[Embed(source = "../mp3/throw.mp3")] private var Throw:Class;
+		[Embed(source = "../mp3/jump_new.mp3")] protected var Jump:Class;
+		[Embed(source = "../mp3/throw.mp3")] protected var Throw:Class;
 		
-		public function Player(x:Number, y:Number) 
+		public function Player(x:Number, y:Number, id:int, color:int, connection:Connection) 
 		{
 			super(x, y);
-			
+
 			spawn = new FlxPoint(x, y); //shouldn't FlxSprite have something like this?... I can't find anything
 			
 			this.maxVelocity.x = 120;
@@ -35,18 +35,13 @@ package
 			this.height = 12;
 			this.isHoldingBox = false;
 			this.throwStrength = new FlxPoint(200, -25); //the velocity the box will have when thrown
+			this.connection = connection;
 			
-			id = ++count;
+			this.id = id;
 			
-			//for now only expect 2 players, so we can cheat a little here
-			if (id == 1) {
-				this.makeGraphic(width, height, 0xff11aa11);
-				this.colour = 0xff11aa11;
-			}
-			else {
-				this.makeGraphic(width, height, 0xffaa1111);
-				this.colour = 0xffaa1111;
-			}
+			// TODO: Handle this better
+			this.makeGraphic(width, height, color);
+			this.colour = color;
 		}
 		
 		public function getColour():int {
@@ -112,84 +107,6 @@ package
 			
 			//also make the box fall to the floor
 			box.velocity.x = 0;
-		}
-		
-		override public function update():void {
-			this.acceleration.x = 0; //keep player from sliding if no button is currently pressed
-			
-			//TODO: define player controls when player object created. can't be bothered yet, so just check who we are with if statements
-			//player1 controls
-			if (id == 1) {
-				//movement
-				if (FlxG.keys.A) {
-					this.acceleration.x = -this.maxVelocity.x * 8;
-					this.facing = FlxObject.LEFT;
-				}
-				else if (FlxG.keys.D) {
-					this.acceleration.x = this.maxVelocity.x * 8;
-					this.facing = FlxObject.RIGHT;
-				}
-				//jumping
-				if (FlxG.keys.W && this.isTouching(FlxObject.FLOOR)){
-					this.velocity.y = -this.maxVelocity.y / 2;
-					FlxG.play(Jump);
-				}
-				
-				//box management
-				if (FlxG.keys.S) {
-					if (!isHoldingBox) {
-						//pick up box in front of player... eventually? maybe we want to
-						//keep it so you automatically pick up boxes you run into
-					}
-					else { //throw box
-						FlxG.play(Throw);
-						throwBox();
-					}
-				}
-			}
-			
-			//player2 controls
-			else if (id == 2) { 
-				//movement
-				if (FlxG.keys.LEFT) {
-					this.acceleration.x = -this.maxVelocity.x * 8;
-					this.facing = FlxObject.LEFT;
-				}
-				else if (FlxG.keys.RIGHT) {
-					this.acceleration.x = this.maxVelocity.x * 8;
-					this.facing = FlxObject.RIGHT;
-				}
-				
-				//jumping
-				if (FlxG.keys.UP && this.isTouching(FlxObject.FLOOR)){
-					FlxG.play(Jump);
-					this.velocity.y = -this.maxVelocity.y / 2;
-				}
-				
-				//box management
-				if (FlxG.keys.DOWN) {
-					if (!isHoldingBox) {
-						//...
-					}
-					else { //throw box
-						FlxG.play(Throw);
-						throwBox();
-					}
-				}
-			}
-			
-			//update held box position
-			if (isHoldingBox) {
-				if (this.facing == FlxObject.LEFT)
-					boxHeld.x = this.getMidpoint().x - this.width;
-				else
-					boxHeld.x = this.getMidpoint().x + this.width/2;
-				
-				boxHeld.y = this.getMidpoint().y - this.height;
-				
-			}
-		}
-		
+		}	
 	}
-
 }

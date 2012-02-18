@@ -19,7 +19,10 @@ package
 			title.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(title);
 			
-			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 60, "PLAY", goToPlayState);
+			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "PLAY", goToPlayState);
+			add(playButton);
+			
+			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 60, "MULTIPLAYER", goToConnectionState);
 			add(playButton);
  
 			var instructions:FlxText = instructions = new FlxText(0, FlxG.height - 32, FlxG.width, "or Press Space To Play");
@@ -42,6 +45,11 @@ package
 		public function goToPlayState():void
 		{
 			FlxG.switchState(new PlayState(PlayState.BOX_COLLECT));
+		} 
+		
+		public function goToConnectionState():void
+		{
+			FlxG.switchState(new ObtainConnectionState());
 		} 
  
 	}
