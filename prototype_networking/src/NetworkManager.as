@@ -5,7 +5,7 @@ package
 	 * @author Jeremy Johnson
 	 */
 	
-	import playerio.*;
+	/*import playerio.*;
 	 
 	public class NetworkManager 
 	{
@@ -24,6 +24,6 @@ package
 		public function subscribePositionUpdates():void {
 			connection.add
 		}
-	}
+	}*/
 
 }

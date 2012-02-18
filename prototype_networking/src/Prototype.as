@@ -13,6 +13,7 @@ package
 	
 	import org.flixel.*;
 	import flash.display.Stage;
+	import flash.events.Event;
 	
 	[SWF(width = "640", height = "480", backgroundColor = "#000000")]
 	
@@ -25,6 +26,13 @@ package
 			
 			forceDebugger = true;
 		}
+		
+		override protected function create(FlashEvent:Event):void
+        {
+            super.create(FlashEvent);
+            stage.removeEventListener(Event.DEACTIVATE, onFocusLost);
+            stage.removeEventListener(Event.ACTIVATE, onFocus);
+        }
 		
 	}
 

@@ -30,7 +30,6 @@ package
 			this.connection = connection;
 			this.playerId = playerId;
 			this.playerCount = playerCount;
-
 		}
 		
 		override public function create():void {
