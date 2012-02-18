@@ -16,9 +16,19 @@ package
 		public var boxes:FlxGroup;
 		public var platforms:FlxGroup;
 		public var zones:FlxGroup;
+		
+		private var mode:int;
+		public static const BOX_COLLECT:int = 0;
+		public static const TIMED:int = 1;
+		
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
 		[Embed(source = "../mp3/Chingy_right_thurr.mp3")] private var Music:Class;
+	
+		public function PlayState(goal:int)
+		{
+			mode = goal;
+		}
 		
 		override public function create():void {
 			FlxG.bgColor = 0xff666666;
@@ -253,27 +263,46 @@ package
 			//box collisions
 			FlxG.collide(boxes, boxes);
 			
-			//check for victory condition (i.e. someone has 3 blocks in their zone)
-			for each (var zone:Zone in zones.members) {
-				var count:int = 0;
-				for each (box in boxes.members) {
-					if ((FlxU.abs(zone.getMidpoint().x - box.getMidpoint().x) <= zone.width / 2) &&
-						(FlxU.abs(zone.getMidpoint().y - box.getMidpoint().y) <= zone.height / 2))
-						count++;
-				}
-				
-				if (count >= 3) {
-					trace("Game over!");
-					for each (player in players.members) {
-						player.dropBox();
-						player.reset(player.getSpawn().x, player.getSpawn().y);
-					}
-					
-					for each (box in boxes.members)
-						box.reset(box.getSpawn().x, box.getSpawn().y);
-				}
-			}
+			//check for victory condition (currently it's just checking if someone has 3 blocks in their zone)
+			checkGoals();
 		}
+		
+		private function checkGoals():Boolean {
+			
+			var goalsMet:Boolean = false;
+			var player:Player;
+			var box:Box;
+			
+			switch (mode) {
+				case BOX_COLLECT:
+					for each (var zone:Zone in zones.members) {
+						var count:int = 0;
+						for each (box in boxes.members) {
+							if ((FlxU.abs(zone.getMidpoint().x - box.getMidpoint().x) <= zone.width / 2) &&
+								(FlxU.abs(zone.getMidpoint().y - box.getMidpoint().y) <= zone.height / 2))
+								count++;
+						}
+					
+					if (count >= 3) {
+						trace("Game over!");
+						for each (player in players.members) {
+							player.dropBox();
+							player.reset(player.getSpawn().x, player.getSpawn().y);
+						}
+						
+						for each (box in boxes.members)
+							box.reset(box.getSpawn().x, box.getSpawn().y);
+						}
+						goalsMet = true;
+					}
+					break;
+					
+				default:
+					trace ("Invalid game mode was inputted");
+			}
+			return goalsMet;
+		}
+	
 	}
 
 }
