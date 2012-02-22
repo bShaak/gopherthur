@@ -27,6 +27,7 @@ namespace BoxSpring {
         // Dictionaries for counting confirmations and triggering events upon confirmation
         private Dictionary<String, int> counts = new Dictionary<string, int>();
         private Dictionary<String, UponConfirm> actions = new Dictionary<string, UponConfirm>();
+        private long startTime;
 
         // A function to be triggered when all players have confirmed a message
         private delegate void UponConfirm();
@@ -100,7 +101,19 @@ namespace BoxSpring {
         /// </summary>
         private void StartGame()
         {
+            startTime = DateTime.Now.Ticks;
+            AddTimer(delegate
+            {
+                // Send the elapsed time in milliseconds.
+                Broadcast("elapsed", (int) ((DateTime.Now.Ticks - startTime) / 10000));
+            }, 100);
+
             Broadcast("startGame");
+        }
+
+        private void AddTimer(Action action)
+        {
+            throw new NotImplementedException();
         }
 
 		/// <summary>

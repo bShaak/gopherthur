@@ -17,7 +17,7 @@ package
 		public var platforms:FlxGroup;
 		public var zones:FlxGroup;
 		protected var running:Boolean = false;
-
+		protected var clock:Clock;
 		protected var mode:int;
 		public static const BOX_COLLECT:int = 0;
 		public static const TIMED:int = 1;
@@ -102,6 +102,8 @@ package
 				1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 );
 			*/
 				
+			clock = createClock();
+			
 			level = new FlxTilemap();
 			level.loadMap(FlxTilemap.arrayToCSV(data, 40), FlxTilemap.ImgAuto, 0, 0, FlxTilemap.AUTO);
 			add(level);
@@ -127,37 +129,52 @@ package
 			//First step: move the path creation to an addPath() function
 			platforms = new FlxGroup();
 			//first add an elevator
-			var elevator:FlxSprite;
-			elevator = new Platform(FlxG.width / 2 - 25, FlxG.height - 80, 50, 10); //TODO: ugh, not so many heuristic numbers floating around here
+			var elevator:Platform
+			
+			// This has way too many parameters. In the future though, this should all be contained in a map file I think.
+			elevator = new Platform(FlxG.width / 2, // ix
+									FlxG.height - 80, // iy
+									FlxG.width / 2, // fx
+									125, // fy
+									2500, // circuitTime
+									0, // initialPosition
+									50, // width
+									10, // height
+									clock); //TODO: ugh, not so many heuristic numbers floating around here
+									
 			elevator.maxVelocity.x = 60;
 			elevator.maxVelocity.y = 50;
-			var elevator_path:FlxPath = new FlxPath();
-			elevator_path.add(FlxG.width/2, FlxG.height - 80);
-			elevator_path.add(FlxG.width/2, 125);
-			elevator.followPath(elevator_path, 50, FlxObject.PATH_YOYO);
+			
 			platforms.add(elevator);
 			
 			//we also want some moving platforms
 			var plat_y:int = 115; //height of these platforms... god this code is ugly
 			
-			var plat1:FlxSprite;
-			plat1 = new Platform(25, plat_y, 50, 10);
+			var plat1:Platform;
+			plat1 = new Platform(50, // ix
+								plat_y, // iy
+								FlxG.width / 2 - 60, // fx
+								plat_y, // fy
+								2500, // circuitTime
+								0, // offset
+								50, //width
+								10, // height
+								clock);;
 			plat1.maxVelocity.x = 30;
-			var plat1_path:FlxPath = new FlxPath();
-			plat1_path.add(50, plat_y);
-			plat1_path.add(FlxG.width/2 - 60, plat_y);
-			plat1.followPath(plat1_path, 50, FlxObject.PATH_YOYO);
 			platforms.add(plat1);
 			
-			var plat2:FlxSprite;
-			plat2 = new Platform(FlxG.width/2 + 35, plat_y, 50, 10);
+			var plat2:Platform;
+			plat2 = new Platform(FlxG.width / 2 + 60, // ix
+								plat_y, // iy
+								FlxG.width - 50, // fx
+								plat_y, // fy
+								2500, // circuitTime
+								1, // offset
+								50, // width
+								10, // height
+								clock);
 			plat2.maxVelocity.x = 30;
-			var plat2_path:FlxPath = new FlxPath();
-			plat2_path.add(FlxG.width/2 + 60, plat_y);
-			plat2_path.add(FlxG.width - 50, plat_y);
-			plat2.followPath(plat2_path, 50, FlxObject.PATH_YOYO);
 			platforms.add(plat2);
-			
 			add(platforms);
 			
 			FlxG.playMusic(Music);
@@ -168,6 +185,8 @@ package
 			if (!running) {
 				return;
 			}
+			
+			clock.addTime(FlxG.elapsed);
 			
 			//Experiment with mouse click event: change player1 colour when clicked with mouse
 			if (FlxG.mouse.justPressed()) {
@@ -328,6 +347,9 @@ package
 			return;
 		}
 	
+		protected function createClock() : Clock {
+			return new Clock(Connection(void));
+		}
 	}
 
 }

@@ -30,7 +30,6 @@ package
 			connection.addMessageHandler("startGame", startGame);
 			connection.addMessageHandler("pos", handlePositionMessage);
 			connection.send("confirm", "readyToAddPlayers");
-
 		}
 		
 		/**
@@ -58,6 +57,10 @@ package
 					p.velocity.y = vy;
 				}
 			}
+		}
+		
+		override protected function createClock() : Clock {
+			return new Clock(connection);
 		}
 		
 		/**
