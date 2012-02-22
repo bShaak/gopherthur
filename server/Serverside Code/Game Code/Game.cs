@@ -10,9 +10,13 @@ namespace BoxSpring {
 	public class Player : BasePlayer {
 		public int x;
 		public int y;
+        public int vx;
+        public int vy;
 		public Player() {
             x = 0;
             y = 0;
+            vx = 0;
+            vy = 0;
 		}
 	}
 
@@ -129,9 +133,13 @@ namespace BoxSpring {
                         // Upon receiving a position message, update the game state and broadcast it.
                         int x = message.GetInt(1);
                         int y = message.GetInt(2);
+                        int vx = message.GetInt(3);
+                        int vy = message.GetInt(4);
                         player.x = x;
                         player.y = y;
-                        Broadcast("pos", player.Id, x, y);
+                        player.vx = vx;
+                        player.vy = vy;
+                        Broadcast("pos", player.Id, x, y, vx, vy);
                         break;
                     }
             }

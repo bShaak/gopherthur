@@ -103,7 +103,7 @@ package
 		 * Broadcast the position of the player
 		 */
 		private function sendPosition():void {
-			connection.send("pos", id, int(x), int(y));
+			connection.send("pos", id, int(x), int(y), int(velocity.x), int(velocity.y));
 		}
 	}
 

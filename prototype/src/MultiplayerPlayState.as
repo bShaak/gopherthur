@@ -41,6 +41,9 @@ package
 			var id:int = m.getInt(0);
 			var x:int = m.getInt(1);
 			var y:int = m.getInt(2);
+			var vx:int = m.getInt(3);
+			var vy:int = m.getInt(4);
+
 
 			// This is an awful way of finding the player by id and should be fixed.
 			for (var i:int = 0; i < players.members.length; i++) {
@@ -51,6 +54,8 @@ package
 				if (p.id == id) {
 					p.x = x;
 					p.y = y;
+					p.velocity.x = vx;
+					p.velocity.y = vy;
 				}
 			}
 		}
