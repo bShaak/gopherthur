@@ -17,7 +17,7 @@ package
 			super(x, y, id, color, connection);
 			
 			// Broadcast the position of the active player every 20ms
-			if (connection != void) {
+			if (connection != null) {
 				setInterval(sendPosition, 20);
 			}
 			this.controlScheme = controlScheme;

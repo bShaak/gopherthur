@@ -325,8 +325,8 @@ package
 		protected function createPlayers():void 
 		{
 			//add two players for now
-			players.add(new ActivePlayer(FlxG.width * 1 / 10, 185, 1, 0xff11aa11, Connection(void), 1));
-			players.add(new ActivePlayer(FlxG.width * 9 / 10, 185, 2, 0xffaa1111, Connection(void), 2));
+			players.add(new ActivePlayer(FlxG.width * 1 / 10, 185, 1, 0xff11aa11, null, 1));
+			players.add(new ActivePlayer(FlxG.width * 9 / 10, 185, 2, 0xffaa1111, null, 2));
 			
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
@@ -348,7 +348,7 @@ package
 		}
 	
 		protected function createClock() : Clock {
-			return new Clock(Connection(void));
+			return new Clock(null);
 		}
 	}
 

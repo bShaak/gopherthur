@@ -65,6 +65,19 @@ namespace BoxSpring {
 			Console.WriteLine("Player " + player.Id + " left the room");
 		}
 
+        public override bool AllowUserJoin(Player player) {
+            int count = 0;
+            foreach (Player p in Players) {
+                count++;
+            }
+            if (count < playerCount)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
         private void SetupGame()
         {
             Console.WriteLine("Starting setup");
