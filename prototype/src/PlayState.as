@@ -16,6 +16,7 @@ package
 		public var boxes:FlxGroup;
 		public var platforms:FlxGroup;
 		public var zones:FlxGroup;
+		public var scoreboard:FlxText;
 		protected var running:Boolean = false;
 		protected var clock:Clock;
 		protected var mode:int;
@@ -104,6 +105,10 @@ package
 				
 			clock = createClock();
 			
+			scoreboard = new FlxText(0, FlxG.height - 20, FlxG.width, "SpringBox");
+			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
+			add(scoreboard);
+			
 			level = new FlxTilemap();
 			level.loadMap(FlxTilemap.arrayToCSV(data, 40), FlxTilemap.ImgAuto, 0, 0, FlxTilemap.AUTO);
 			add(level);
@@ -112,8 +117,6 @@ package
 			zones = new FlxGroup();
 			createPlayers();
 			add(players);
-			
-
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
@@ -281,6 +284,9 @@ package
 			
 			//check for victory condition (currently it's just checking if someone has 3 blocks in their zone)
 			checkGoals();
+			
+			//update scoreboard
+			scoreboard.text = "SCORE: " + players.members[0].getScore() + " - " + players.members[1].getScore();
 		}
 		
 		private function checkGoals():Boolean {
@@ -302,6 +308,9 @@ package
 					if (count >= 3) {
 						trace("Game over!");
 						for each (player in players.members) {
+							if (player.getSpawn().x == zone.getMidpoint().x && player.getSpawn().y == zone.getMidpoint().y) {
+								player.incrementScore();
+							}
 							player.dropBox();
 							player.reset(player.getSpawn().x, player.getSpawn().y);
 						}
