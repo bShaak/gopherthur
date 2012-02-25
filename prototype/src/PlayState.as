@@ -117,11 +117,12 @@ package
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
-			boxes.add(new Box(FlxG.width * 1 / 2 - 10, 20));
-			boxes.add(new Box(FlxG.width * 1 / 2 -  5, 10));
-			boxes.add(new Box(FlxG.width * 1 / 2	 , 20));
-			boxes.add(new Box(FlxG.width * 1 / 2 +  5, 10));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 10, 20));
+			boxes.add(new Box(FlxG.width * 1 / 10 - 10, 185, 0));  // ras
+			/*boxes.add(new Box(FlxG.width * 1 / 2 - 10, 20, 0)); *ras
+			boxes.add(new Box(FlxG.width * 1 / 2 -  5, 10, 1)); 
+			boxes.add(new Box(FlxG.width * 1 / 2	 , 20, 2));
+			boxes.add(new Box(FlxG.width * 1 / 2 +  5, 10, 3));
+			boxes.add(new Box(FlxG.width * 1 / 2 + 10, 20, 4));*/
 			add(boxes);
 			
 			//add the moving platforms 
@@ -177,7 +178,7 @@ package
 			platforms.add(plat2);
 			add(platforms);
 			
-			FlxG.playMusic(Music);
+			//FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
@@ -201,7 +202,6 @@ package
 			
 			super.update();
 			
-			
 			var player:Player;
 			var box:Box;
 			
@@ -210,8 +210,22 @@ package
 				if (box.isAvailable()) {
 					for each (player in players.members) {
 						if (FlxG.collide(player, box)) {
-							if (player.pickupBox(box))
-								trace ("box picked up");
+							/*if (player.getConnection() == void) {   // local multiplayer player
+								if (player.pickupBox(box)) {
+									trace (player.id + "box picked up (local)");
+								}
+							}
+							else {*/
+							if (player.pickupBox(box)) {
+								if ((player.getConnection() != void) && (player.isActive())) {   
+									player.stopInterval();  // to avoid race conditions
+									player.getConnection().send("pickUp", player.x, player.y, player.velocity.x, 
+									player.velocity.y, int(player.facing), box.getBoxID());  // this event needs to be sent ASAP
+									player.startInterval();
+								
+									trace (player.id + "box picked up");
+								}
+							}
 						}
 					}
 				}
@@ -253,7 +267,7 @@ package
 					box.velocity.y = elevator.maxVelocity.y;
 			}
 			
-			FlxG.collide(platforms, players);
+			FlxG.collide(platforms, players); 
 			FlxG.collide(platforms, boxes);
 			
 			//player collisions (bumping one another) -> consider all player pairs
@@ -262,8 +276,13 @@ package
 					if (FlxG.collide(player, player2)) {
 						//players who hold boxes drop them when bumped
 						FlxG.play(Push);
-						player.dropBox();
-						player2.dropBox();
+						if (player.hasBox()) {
+							player.dropBox();		
+							//if ((player.getConnection() != void) && (player.isActive())) {
+							//}	
+						}
+						if (player2.hasBox())
+							player2.dropBox();
 						
 						//determine orientation
 						var dir:int = 1;

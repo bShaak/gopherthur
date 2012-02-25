@@ -148,13 +148,55 @@ namespace BoxSpring {
                         int y = message.GetInt(2);
                         int vx = message.GetInt(3);
                         int vy = message.GetInt(4);
-                        player.x = x;
+
+                        int boxID = message.GetInt(5); // ras
+                        int boxX = message.GetInt(6); // ras
+                        int boxY = message.GetInt(7); // ras
+
+                        //Console.WriteLine(boxID + " " + boxX + " " + boxY);
+
+                        /*player.x = x;
                         player.y = y;
                         player.vx = vx;
-                        player.vy = vy;
-                        Broadcast("pos", player.Id, x, y, vx, vy);
+                        player.vy = vy;*/
+                        
+                        foreach (Player p in Players)
+                        {
+                            if (p.Id != player.Id)
+                                p.Send("pos", player.Id, x, y, vx, vy, boxID, boxX, boxY);
+                        }
+                        //Broadcast("pos", player.Id, x, y, vx, vy);
                         break;
                     }
+                case "pickUp":  // ras
+                    {
+                        int x = message.GetInt(0);
+                        int y = message.GetInt(1);
+                        int vx = message.GetInt(2);
+                        int vy = message.GetInt(3);
+                        int facing = message.GetInt(4);
+                        int boxID = message.GetInt(5);
+                        //Console.WriteLine("PickUp");
+                        foreach (Player p in Players)
+                        {
+                            if (p.Id != player.Id)
+                                p.Send("pickUp", player.Id, x, y, vx, vy, facing, boxID);
+                        }
+                        break;
+                    }
+                case "throw":   // ras
+                    {
+                        int boxID = message.GetInt(0);
+                        int vx = message.GetInt(1);
+                        int vy = message.GetInt(2);
+                        //Console.WriteLine("Here" + boxID + " " + vx + " " + vy);
+                        foreach (Player p in Players)
+                        {
+                            if (p.Id != player.Id)
+                                p.Send("throw", player.Id, boxID, vx, vy);
+                        }
+                        break;
+                    }  //\ras
             }
         }
 	}

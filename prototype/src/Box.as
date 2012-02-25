@@ -15,8 +15,9 @@ package
 		private var isHeld:Boolean;
 		
 		private var spawn:FlxPoint;
+		private var boxID:int;       // ras: for identifying which box is picked up when sending over network
 		
-		public function Box(x:Number, y:Number) 
+		public function Box(x:Number, y:Number, ID:int) 
 		{
 			super(x, y);
 			
@@ -31,8 +32,14 @@ package
 			this.isHeld = false;
 			this.inFlight = false;
 			
+			this.boxID = ID; // ras
+			
 			//set appearance
 			this.makeGraphic(width, height, 0xffffd700);
+		}
+		
+		public function getBoxID():int { // ras
+			return this.boxID;
 		}
 		
 		public function getSpawn():FlxPoint {
@@ -65,6 +72,13 @@ package
 		}
 		
 		override public function update():void {
+			/*if (inFlight)  //ras
+				trace("In flight");
+			else if (isHeld)
+				trace("Held");  
+			else
+				trace("Available"); //\ras*/
+			
 			if (FlxU.abs(this.velocity.x) < 20 && this.inFlight)
 				inFlight = false;
 		}

@@ -17,6 +17,8 @@ package
 		protected var throwStrength:FlxPoint;
 		protected var connection:Connection;
 		
+		protected var activePlayer:Boolean; //ras
+				
 		//Embed sounds we will use
 		[Embed(source = "../mp3/jump_new.mp3")] protected var Jump:Class;
 		[Embed(source = "../mp3/throw.mp3")] protected var Throw:Class;
@@ -38,10 +40,15 @@ package
 			this.connection = connection;
 			
 			this.id = id;
+			this.activePlayer = false; //ras
 			
 			// TODO: Handle this better
 			this.makeGraphic(width, height, color);
 			this.colour = color;
+		}
+		
+		public function getConnection():Connection {
+			return this.connection;
 		}
 		
 		public function getColour():int {
@@ -65,6 +72,7 @@ package
 			
 			this.isHoldingBox = true;
 			this.boxHeld = box;
+			
 			return true;
 		}
 		
@@ -92,7 +100,7 @@ package
 				this.boxHeld.velocity.x = this.throwStrength.x;
 				
 			this.boxHeld = null;
-			this.isHoldingBox = false;
+			this.isHoldingBox = false;  
 			
 			return true;
 		}
@@ -108,5 +116,14 @@ package
 			//also make the box fall to the floor
 			box.velocity.x = 0;
 		}	
+		
+		public function startInterval():void 
+		{trace("Should not be here"); }
+		public function stopInterval():void
+		{}
+		public function isActive():Boolean
+		{
+			return activePlayer;
+		}
 	}
 }

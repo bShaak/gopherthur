@@ -5,6 +5,8 @@ package
 	 * @author Jeremy Johnson
 	 */
 	import playerio.*;
+	import org.flixel.*;
+	
 	public class MultiplayerPlayState extends PlayState 
 	{
 		private var connection:Connection;
@@ -29,6 +31,8 @@ package
 			connection.addMessageHandler("addPlayer", addPlayer);
 			connection.addMessageHandler("startGame", startGame);
 			connection.addMessageHandler("pos", handlePositionMessage);
+			connection.addMessageHandler("pickUp", handlePickUpMessage); //ras
+			connection.addMessageHandler("throw", handleThrowMessage); //ras
 			connection.send("confirm", "readyToAddPlayers");
 		}
 		
@@ -42,7 +46,9 @@ package
 			var y:int = m.getInt(2);
 			var vx:int = m.getInt(3);
 			var vy:int = m.getInt(4);
-
+			var boxID:int = m.getInt(5); //ras
+			var boxX:int = m.getInt(6); //ras
+			var boxY:int = m.getInt(7); //ras
 
 			// This is an awful way of finding the player by id and should be fixed.
 			for (var i:int = 0; i < players.members.length; i++) {
@@ -55,6 +61,72 @@ package
 					p.y = y;
 					p.velocity.x = vx;
 					p.velocity.y = vy;
+					if (boxID != -1) {
+						boxes.members[boxID].x = boxX;
+						boxes.members[boxID].y = boxY;
+						boxes.members[boxID].velocity.x = vx;
+						boxes.members[boxID].velocity.y = vy;
+					}
+				}
+			}
+		}
+		
+		/**
+		 * Another player picked up a box, the screen needs to be updated.
+		 * @param	m message with box index
+		 */
+		private function handlePickUpMessage(m:Message):void { //ras
+			var id:int = m.getInt(0);
+			var x:int = m.getInt(1);
+			var y:int = m.getInt(2);
+			var vx:int = m.getInt(3);
+			var vy:int = m.getInt(4);
+			var facing:int = m.getInt(5);
+			var boxID:int = m.getInt(6);
+						
+			var p:Player;
+			for each(p in players.members) {
+				if (p.id == id) {
+					p.x = x;
+					p.y = y;
+					p.velocity.x = vx;
+					p.velocity.y = vy;
+					
+					if (p.pickupBox(boxes.members[boxID])) {
+						boxes.members[boxID].velocity.x = vx;
+						boxes.members[boxID].velocity.y = vy;
+						
+						if (facing == FlxObject.LEFT)
+							boxes.members[boxID].x = p.getMidpoint().x - p.width;
+						else
+							boxes.members[boxID].x = p.getMidpoint().x + p.width/2;
+				
+						boxes.members[boxID].y = p.getMidpoint().y - p.height;
+						
+						trace("HandlePickUp");
+					}
+				}
+			}
+		}
+		
+		/**
+		 * Another player threw a box, the screen needs to be updated.
+		 * @param	m message with throw parameters
+		 */
+		private function handleThrowMessage(m:Message):void {  //ras
+			trace("***Here throw");
+			var id:int = m.getInt(0);
+			var boxID:int = m.getInt(1);
+			var vx:int = m.getInt(2);
+			var vy:int = m.getInt(3);
+					
+			var p:Player;
+			for each(p in players.members) {
+				if (p.id == id) {
+					p.dropBox();
+					
+					boxes.members[boxID].velocity.x = vx;
+					boxes.members[boxID].velocity.y = vy;
 				}
 			}
 		}

@@ -41,7 +41,7 @@ package
 				
 			//Create or join the room test
 			client.multiplayer.createJoinRoom(
-				"boxspring",						//Room id. If set to null a random roomid is used
+				"springbox",						//Room id. If set to null a random roomid is used
 				"BoxSpring",						//The game type started on the server
 				true,								//Should the room be visible in the lobby?
 				{},									//Room data. This data is returned to lobby list. Variabels can be modifed on the server
