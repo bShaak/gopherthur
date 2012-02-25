@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
@@ -64,6 +64,19 @@ namespace BoxSpring {
 		public override void UserLeft(Player player) {
 			Console.WriteLine("Player " + player.Id + " left the room");
 		}
+
+        public override bool AllowUserJoin(Player player) {
+            int count = 0;
+            foreach (Player p in Players) {
+                count++;
+            }
+            if (count < playerCount)
+            {
+                return true;
+            }
+            return false;
+        }
+
 
         private void SetupGame()
         {
@@ -201,3 +214,4 @@ namespace BoxSpring {
         }
 	}
 }
+        

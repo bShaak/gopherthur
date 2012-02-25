@@ -10,6 +10,7 @@ package
 	public class Player extends FlxSprite
 	{	
 		public var id:int;
+		protected var score:int;
 		protected var isHoldingBox:Boolean;
 		protected var boxHeld:Box;
 		protected var spawn:FlxPoint;
@@ -28,6 +29,8 @@ package
 			super(x, y);
 
 			spawn = new FlxPoint(x, y); //shouldn't FlxSprite have something like this?... I can't find anything
+			
+			score = 0;
 			
 			this.maxVelocity.x = 120;
 			this.maxVelocity.y = 210;
@@ -100,7 +103,7 @@ package
 				this.boxHeld.velocity.x = this.throwStrength.x;
 				
 			this.boxHeld = null;
-			this.isHoldingBox = false;  
+			this.isHoldingBox = false;
 			
 			return true;
 		}
@@ -124,6 +127,14 @@ package
 		public function isActive():Boolean
 		{
 			return activePlayer;
+		}
+		
+		public function incrementScore():void {
+			score++;
+		}
+		
+		public function getScore():int {
+			return score;
 		}
 	}
 }

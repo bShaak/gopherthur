@@ -11,6 +11,7 @@ package
 		
 		private var playerId:int;
 		private var connection:Connection;
+		private var client:Client;
 		
 		override public function create():void
 		{
@@ -34,21 +35,13 @@ package
 		 * @param	client
 		 */
 		private function handleConnect(client:Client):void {
+			this.client = client;
 			trace("Sucessfully connected to player.io");
 				
 			//Set developmentsever (Comment out to connect to your server online)
 			client.multiplayer.developmentServer = "127.0.0.1:8184";
 				
-			//Create or join the room test
-			client.multiplayer.createJoinRoom(
-				"springbox",						//Room id. If set to null a random roomid is used
-				"BoxSpring",						//The game type started on the server
-				true,								//Should the room be visible in the lobby?
-				{},									//Room data. This data is returned to lobby list. Variabels can be modifed on the server
-				{},									//User join data
-				handleJoin,							//Function executed on successful joining of the room
-				handleError							//Function executed if we got a join error
-			);
+			getRoom();
 		}
 		
 		/**
@@ -98,6 +91,60 @@ package
 		 */
 		private function handleError(error:PlayerIOError):void{
 			trace("Got", error);
+		}
+		
+		/**
+		 * Begin the process of finding the user a room.
+		 */
+		private function getRoom():void 
+		{
+			client.multiplayer.listRooms("BoxSpring", { }, 10, 0, joinRoom, function(e:PlayerIOError):void {
+				trace("error");
+				createRoom();
+			});
+		}
+		
+		/**
+		 * Try to join a room from an array of rooms. If it fails, try to join the next in the array.
+		 * If none of the rooms work, create a new room.
+		 * @param	rooms
+		 */
+		private function joinRoom(rooms:Array) : void {
+			if (rooms.length == 0) {
+				createRoom();
+				return;
+			}
+			
+			var room:RoomInfo = rooms.pop();
+			
+			// Only try to join rooms with space.
+			if (room.onlineUsers < 2) {
+				trace("Attempting to join room" + room.id);
+				client.multiplayer.joinRoom(room.id, { }, handleJoin, function(e:PlayerIOError):void {
+					// If we fail in joining, try to join one of the other rooms.
+					joinRoom(rooms);
+				});
+			} else {
+				joinRoom(rooms);
+			}
+		}
+		
+		/**
+		 * Create a new room and join it.
+		 */
+		private function createRoom() : void {
+			trace("Creating room");
+			//Create or join the room test
+			client.multiplayer.createJoinRoom(
+				null,								//Room id. If set to null a random roomid is used
+				"BoxSpring",						//The game type started on the server
+				true,								//Should the room be visible in the lobby?
+				{},									//Room data. This data is returned to lobby list. Variabels can be modifed on the server
+				{},									//User join data
+				handleJoin,							//Function executed on successful joining of the room
+				handleError							//Function executed if we got a join error
+			);
+			trace("Here");
 		}
 	}
 

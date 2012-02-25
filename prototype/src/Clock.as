@@ -11,7 +11,7 @@ package
 		public var elapsed:int = 0;
 		public function Clock(connection:Connection) 
 		{
-			if (connection != void) {
+			if (connection != null) {
 				connection.addMessageHandler("elapsed", handleElapsedMessage);
 			}
 		}
