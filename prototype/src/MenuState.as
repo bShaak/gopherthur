@@ -8,6 +8,7 @@ package
 		private var backgroundColor:FlxSprite;
 		private var title:FlxText;
 		private var playButton:FlxButton;
+		private var mode:FlxText;
 		
 		override public function create():void
 		{
@@ -19,15 +20,18 @@ package
 			title.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(title);
 			
-			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "PLAY", goToPlayState);
+			mode = new FlxText(0, FlxG.height - 105, FlxG.width, "PICK A MODE:");
+			mode.setFormat (null, 12, 0xFFFFFFFF, "center");
+			add(mode);
+			
+			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "PLAY", goToBoxCollectPlayState);
 			add(playButton);
 			
-			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 60, "MULTIPLAYER", goToConnectionState);
+			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 60, "TIMED", goToTimedPlayState);
 			add(playButton);
- 
-			var instructions:FlxText = instructions = new FlxText(0, FlxG.height - 32, FlxG.width, "or Press Space To Play");
-			instructions.setFormat (null, 8, 0xFFFFFFFF, "center");
-			add(instructions);
+
+			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 40, "MULTIPLAYER", goToConnectionState);
+			add(playButton);
  
 		} 
  
@@ -37,15 +41,20 @@ package
  
 			if (FlxG.keys.justPressed("SPACE"))
 			{
-				goToPlayState();
+				//goToPlayState();
 			}
  
 		}
 		
-		public function goToPlayState():void
+		public function goToTimedPlayState():void
+		{
+			FlxG.switchState(new PlayState(PlayState.TIMED));
+		} 
+		
+		public function goToBoxCollectPlayState():void
 		{
 			FlxG.switchState(new PlayState(PlayState.BOX_COLLECT));
-		} 
+		}  
 		
 		public function goToConnectionState():void
 		{

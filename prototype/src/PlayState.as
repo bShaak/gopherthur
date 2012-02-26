@@ -17,11 +17,14 @@ package
 		public var platforms:FlxGroup;
 		public var zones:FlxGroup;
 		public var scoreboard:FlxText;
+		public var roundTime:FlxText;
 		protected var running:Boolean = false;
 		protected var clock:Clock;
+		protected var timer:Clock;
 		protected var mode:int;
 		public static const BOX_COLLECT:int = 0;
 		public static const TIMED:int = 1;
+		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
 		
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
@@ -104,6 +107,13 @@ package
 			*/
 				
 			clock = createClock();
+			
+			if (mode == TIMED) {
+				timer = createClock();
+				roundTime = new FlxText(-10, 10, FlxG.width, "0:00");
+				roundTime.setFormat(null, 12, 0xFFFFFFFF, "right");
+				add(roundTime);
+			}
 			
 			scoreboard = new FlxText(0, FlxG.height - 20, FlxG.width, "SpringBox");
 			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
@@ -340,6 +350,41 @@ package
 						goalsMet = true;
 					}
 					break;
+				
+				case TIMED:	
+					updateTimer();
+					
+					if (timer.elapsed > TIMELIMIT) {
+						var zoneWithMostBoxes:Zone;
+						var maxBoxNum:int = -1;
+						var tie:Boolean = false;
+						
+						for each (var zone1:Zone in zones.members) {
+							var numBoxes:int = getNumBoxesInZone(zone1);
+							if (numBoxes > maxBoxNum) {
+								zoneWithMostBoxes = zone1;
+								maxBoxNum = numBoxes;
+							}
+							else if (numBoxes == maxBoxNum) {
+								tie = true;
+							}
+						}
+						if (!tie) {
+							for each (player in players.members)  { //this is ugly... for future: should be a hash of players to zones (each player has a zone)
+								if (player.getSpawn().x == zoneWithMostBoxes.getMidpoint().x && player.getSpawn().y == zoneWithMostBoxes.getMidpoint().y) {
+										player.incrementScore();
+								}
+								player.dropBox();
+								player.reset(player.getSpawn().x, player.getSpawn().y);
+							}
+							for each (box in boxes.members)
+								box.reset(box.getSpawn().x, box.getSpawn().y);
+						}
+						timer.elapsed = 0;
+						trace ("Game Over!");
+						goalsMet = true;
+					}
+					break;	
 					
 				default:
 					trace ("Invalid game mode was inputted");
@@ -377,6 +422,27 @@ package
 	
 		protected function createClock() : Clock {
 			return new Clock(null);
+		}
+		
+		protected function getNumBoxesInZone(zone:Zone) : int {
+			var numBoxes:int = 0;
+			
+			for each (var box:Box in boxes.members) {
+				if ((FlxU.abs(zone.getMidpoint().x - box.getMidpoint().x) <= zone.width / 2) &&
+					(FlxU.abs(zone.getMidpoint().y - box.getMidpoint().y) <= zone.height / 2))
+					numBoxes++;
+			}
+			return numBoxes;
+		}
+		
+		protected function updateTimer():void {
+			timer.addTime(FlxG.elapsed);
+			var numberOfMinsLeft:int = (TIMELIMIT / 60000) - (timer.elapsed / 60000);
+			var numberOfSecondsLeft:int = 60 - (timer.elapsed / 1000) % 60;
+			var secondsLeft:String;
+			
+			numberOfSecondsLeft < 10 ? secondsLeft = "0" + numberOfSecondsLeft.toString() : secondsLeft = numberOfSecondsLeft.toString();			 
+			roundTime.text = numberOfMinsLeft + ":" + secondsLeft;
 		}
 	}
 
