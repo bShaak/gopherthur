@@ -14,6 +14,7 @@ package
 		//Group together objects
 		public var players:FlxGroup;
 		public var boxes:FlxGroup;
+		public var powerUps:FlxGroup;
 		public var platforms:FlxGroup;
 		public var zones:FlxGroup;
 		public var scoreboard:FlxText;
@@ -138,6 +139,10 @@ package
 			boxes.add(new Box(FlxG.width * 1 / 2 + 10, 20, 4));*/
 			add(boxes);
 			
+			powerUps = new FlxGroup();
+			createPowerUps();
+			add(powerUps);
+			
 			//add the moving platforms 
 			//TODO: all this platform code needs to be cleaned up.
 			//First step: move the path creation to an addPath() function
@@ -217,6 +222,8 @@ package
 			
 			var player:Player;
 			var box:Box;
+			
+			handlePowerUpTriggering();
 			
 			//handle box pickup and throws
 			for each (box in boxes.members) {
@@ -443,6 +450,37 @@ package
 			
 			numberOfSecondsLeft < 10 ? secondsLeft = "0" + numberOfSecondsLeft.toString() : secondsLeft = numberOfSecondsLeft.toString();			 
 			roundTime.text = numberOfMinsLeft + ":" + secondsLeft;
+		}
+		
+		/**
+		 * Create all the powerups at the start of the game.
+		 */
+		protected function createPowerUps():void {
+			powerUps.add(new SpeedBoost(30, 170, 1, clock));
+			powerUps.add(new SpeedBoost(FlxG.width - 30, 170, 2, clock));
+		}
+		
+		/**
+		 * Collide each of the players with the powerups and trigger them.
+		 */
+		protected function handlePowerUpTriggering():void {
+			for each (var player:Player in players.members) {
+				for each (var powerUp:PowerUp in powerUps.members) {
+					if (FlxG.collide(player, powerUp)) {
+						triggerPowerUp(powerUp, player);
+						powerUps.remove(powerUp);
+					}
+				}
+			}
+		}
+		
+		/**
+		 * Trigger a powerUp. This is overridden for multiplayer games.
+		 * @param	powerUp
+		 * @param	player
+		 */
+		protected function triggerPowerUp(powerUp:PowerUp, player:Player):void {
+			powerUp.trigger(player, this);
 		}
 	}
 

@@ -173,6 +173,13 @@ package
 		private function startGame(m:Message):void {
 			running = true;
 		}
+		
+		override protected function triggerPowerUp(powerUp:PowerUp, player:Player):void {
+			super.triggerPowerUp(powerUp, player);
+			
+			// Note: Right now, the only powerup is speed boost which doesn't need to be sent over the network.
+			// In the future, we will probably have ones that require being sent. This is where that should happen.
+		}
 	}
 
 }
