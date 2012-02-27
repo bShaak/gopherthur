@@ -203,120 +203,17 @@ package
 		override public function update():void {
 			if (!running) {
 				return;
-			}
-			
+			}			
+			super.update();
 			clock.addTime(FlxG.elapsed);
 			
-			//Experiment with mouse click event: change player1 colour when clicked with mouse
-			if (FlxG.mouse.justPressed()) {
-				var currentCursorLocation:FlxPoint;
-				currentCursorLocation = new FlxPoint(FlxG.mouse.screenX, FlxG.mouse.screenY);
-				if (players.members[0].overlapsPoint(currentCursorLocation)) {
-					var colour:uint = 0xff000000;
-					colour += FlxG.random() * 16777215;
-					players.members[0].makeGraphic(players.members[0].width, players.members[0].height, colour);
-				}
-			}
-			
-			super.update();
-			
-			var player:Player;
-			var box:Box;
-			
 			handlePowerUpTriggering();
+			handleBoxCollisions();
+			handleElevatorCollisions();
+			handlePlayerCollisions();
 			
-			//handle box pickup and throws
-			for each (box in boxes.members) {
-				if (box.isAvailable()) {
-					for each (player in players.members) {
-						if (FlxG.collide(player, box)) {
-							/*if (player.getConnection() == void) {   // local multiplayer player
-								if (player.pickupBox(box)) {
-									trace (player.id + "box picked up (local)");
-								}
-							}
-							else {*/
-							if (player.pickupBox(box)) {
-								if ((player.getConnection() != void) && (player.isActive())) {   
-									player.stopInterval();  // to avoid race conditions
-									player.getConnection().send("pickUp", player.x, player.y, player.velocity.x, 
-									player.velocity.y, int(player.facing), box.getBoxID());  // this event needs to be sent ASAP
-									player.startInterval();
-								
-									trace (player.id + "box picked up");
-								}
-							}
-						}
-					}
-				}
-				else if (box.isInFlight()) {
-					for each (player in players.members) {
-						if (FlxG.collide(box, player))
-							player.hitWithBox(box);
-					}
-				}
-			}
-			
-			//respawn dead (fallen off screen) players and blocks
-			for each (player in players.members) {
-				if (player.y > FlxG.height) {
-					if (player.hasBox())
-						player.dropBox();
-						
-					player.reset(player.getSpawn().x, player.getSpawn().y);
-				}
-			}
-			for each (box in boxes.members) {
-				if (box.y > FlxG.height)
-					box.reset(box.getSpawn().x, box.getSpawn().y);
-			}
-			
-			//collision detection
-			FlxG.collide(level, players);
-			FlxG.collide(level, boxes);
-			
-			//Elevator collision detection is non-standard: if a sprite is standing on top of the elevator
-			//then give it a downward velocity to keep it glued to the elevator.
-			var elevator:Platform = platforms.members[0]; //yeah that's a hardcoded index...
-			for each (player in players.members) {
-				if (FlxG.collide(elevator, player) && player.isTouching(FlxObject.FLOOR))
-					player.velocity.y = elevator.maxVelocity.y;
-			}
-			for each (box in boxes.members) {
-				if (FlxG.collide(elevator, box) && box.isTouching(FlxObject.FLOOR))
-					box.velocity.y = elevator.maxVelocity.y;
-			}
-			
-			FlxG.collide(platforms, players); 
-			FlxG.collide(platforms, boxes);
-			
-			//player collisions (bumping one another) -> consider all player pairs
-			for each (player in players.members) {
-				for each (var player2:Player in players.members) {
-					if (FlxG.collide(player, player2)) {
-						//players who hold boxes drop them when bumped
-						FlxG.play(Push);
-						if (player.hasBox()) {
-							player.dropBox();		
-							//if ((player.getConnection() != void) && (player.isActive())) {
-							//}	
-						}
-						if (player2.hasBox())
-							player2.dropBox();
-						
-						//determine orientation
-						var dir:int = 1;
-						if (player.x < player2.x)
-							dir = -1;
-						
-						player.velocity.x = dir * player.maxVelocity.x;
-						player2.velocity.x = -dir * player2.maxVelocity.x;
-					}
-				}
-			}
-			
-			//box collisions
-			FlxG.collide(boxes, boxes);
+			respawnPlayers();
+			respawnBoxes();
 			
 			//check for victory condition (currently it's just checking if someone has 3 blocks in their zone)
 			checkGoals();
@@ -397,6 +294,107 @@ package
 					trace ("Invalid game mode was inputted");
 			}
 			return goalsMet;
+		}
+		
+		private function handleBoxCollisions():void 
+		{
+			for each (var box:Box in boxes.members) {
+				if (box.isAvailable()) {
+					for each (var player:Player in players.members) {
+						if (FlxG.collide(player, box)) {
+							if (player.pickupBox(box)) {
+								// TODO: I think this logic should be moved into the player class.
+								if ((player.getConnection() != void) && (player.isActive())) {   
+									player.stopInterval();  // to avoid race conditions
+									player.getConnection().send("pickUp", player.x, player.y, player.velocity.x, 
+									player.velocity.y, int(player.facing), box.getBoxID());  // this event needs to be sent ASAP
+									player.startInterval();
+								
+									trace (player.id + "box picked up");
+								}
+							}
+						}
+					}
+				}
+				else if (box.isInFlight()) {
+					for each (player in players.members) {
+						if (FlxG.collide(box, player))
+							player.hitWithBox(box);
+					}
+				}
+			}
+			
+			FlxG.collide(level, boxes);
+			FlxG.collide(platforms, boxes);
+			FlxG.collide(boxes, boxes);
+		}
+		
+		private function respawnPlayers():void 
+		{
+			for each (var player:Player in players.members) {
+				if (player.y > FlxG.height) {
+					if (player.hasBox())
+						player.dropBox();
+						
+					player.reset(player.getSpawn().x, player.getSpawn().y);
+				}
+			}
+		}
+		
+		private function respawnBoxes():void 
+		{
+			for each (var box:Box in boxes.members) {
+				if (box.y > FlxG.height)
+					box.reset(box.getSpawn().x, box.getSpawn().y);
+			}
+		}
+		
+		private function handleElevatorCollisions():void 
+		{
+			//Elevator collision detection is non-standard: if a sprite is standing on top of the elevator
+			//then give it a downward velocity to keep it glued to the elevator.
+			
+			// TODO: We need to fix the elevator handling.
+			var elevator:Platform = platforms.members[0]; //yeah that's a hardcoded index...
+			for each (var player:Player in players.members) {
+				if (FlxG.collide(elevator, player) && player.isTouching(FlxObject.FLOOR))
+					player.velocity.y = elevator.maxVelocity.y;
+			}
+			for each (var box:Box in boxes.members) {
+				if (FlxG.collide(elevator, box) && box.isTouching(FlxObject.FLOOR))
+					box.velocity.y = elevator.maxVelocity.y;
+			}
+		}
+		
+		private function handlePlayerCollisions():void 
+		{
+			//player collisions (bumping one another) -> consider all player pairs
+			for each (var player:Player in players.members) {
+				for each (var player2:Player in players.members) {
+					if (FlxG.collide(player, player2)) {
+						//players who hold boxes drop them when bumped
+						FlxG.play(Push);
+						if (player.hasBox()) {
+							player.dropBox();		
+							//if ((player.getConnection() != void) && (player.isActive())) {
+							//}	
+						}
+						if (player2.hasBox())
+							player2.dropBox();
+						
+						//determine orientation
+						var dir:int = 1;
+						if (player.x < player2.x)
+							dir = -1;
+						
+						player.velocity.x = dir * player.maxVelocity.x;
+						player2.velocity.x = -dir * player2.maxVelocity.x;
+					}
+				}
+			}
+			
+			FlxG.collide(level, players);
+			FlxG.collide(platforms, players);
 		}
 		
 		/**
