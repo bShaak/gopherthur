@@ -191,6 +191,9 @@ package
 		 * Broadcast the position of the player
 		 */
 		private function sendPosition():void {
+			if (!connection.connected) {
+				stopInterval();
+			}
 			if (!isHoldingBox) {
 				//trace("Not holding");
 				connection.send("pos", id, int(x), int(y), int(velocity.x), int(velocity.y), -1, -1, -1);
@@ -202,5 +205,4 @@ package
 			}
 		}
 	}
-
 }

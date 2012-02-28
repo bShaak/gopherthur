@@ -131,12 +131,12 @@ package
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
-			boxes.add(new Box(FlxG.width * 1 / 10 - 10, 185, 0));  // ras
-			/*boxes.add(new Box(FlxG.width * 1 / 2 - 10, 20, 0)); *ras
+			//boxes.add(new Box(FlxG.width * 1 / 10 - 10, 185, 0));  // ras
+			boxes.add(new Box(FlxG.width * 1 / 2 - 10, 20, 0));
 			boxes.add(new Box(FlxG.width * 1 / 2 -  5, 10, 1)); 
 			boxes.add(new Box(FlxG.width * 1 / 2	 , 20, 2));
 			boxes.add(new Box(FlxG.width * 1 / 2 +  5, 10, 3));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 10, 20, 4));*/
+			boxes.add(new Box(FlxG.width * 1 / 2 + 10, 20, 4));
 			add(boxes);
 			
 			powerUps = new FlxGroup();
