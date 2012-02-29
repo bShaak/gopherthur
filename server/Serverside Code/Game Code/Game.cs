@@ -20,14 +20,31 @@ namespace BoxSpring {
 		}
 	}
 
+    public class Box {
+        public Player holder;
+
+        public Player controller;
+        public int messageId;
+        public Boolean heldForPlayer = false;
+        public Box()
+        {
+        }
+    }
+
 	[RoomType("BoxSpring")]
 	public class GameCode : Game<Player> {
         private int playerCount = 2; // Number of players in the game. Hardcoded for now.
+        private int boxCount = 6; // Hardcoded for now. This will be fixed.
 
         // Dictionaries for counting confirmations and triggering events upon confirmation
         private Dictionary<String, int> counts = new Dictionary<string, int>();
         private Dictionary<String, UponConfirm> actions = new Dictionary<string, UponConfirm>();
         private long startTime;
+
+        private Box[] boxes;
+        private Player masterController;
+
+        private int messageCount = 0;
 
         // A function to be triggered when all players have confirmed a message
         private delegate void UponConfirm();
@@ -44,6 +61,20 @@ namespace BoxSpring {
 
         }
 
+        /// <summary>
+        /// Switch the master controller. Note, right now this only works for 2 players.
+        /// </summary>
+        public void SwitchMasterController()
+        {
+            foreach (Player p in Players)
+            {
+                if (p != masterController)
+                {
+                    masterController = p;
+                    return;
+                }
+            }
+        }
 
 		public override void GameStarted() {
 			Console.WriteLine("Game is started");
@@ -80,8 +111,19 @@ namespace BoxSpring {
 
         private void SetupGame()
         {
+            AddTimer(delegate {
+                SwitchMasterController();
+            }, 1000);
             Console.WriteLine("Starting setup");
+            masterController = Players.GetEnumerator().Current;
+
             Broadcast("setupGame", playerCount);
+
+            boxes = new Box[boxCount];
+            for (int i = 0; i < boxCount; i++)
+            {
+                boxes[i] = new Box();
+            }
 
             // Confirm that all players are ready to start adding the other players to the level
             allConfirm("readyToAddPlayers", new UponConfirm(AddPlayers));
@@ -129,6 +171,23 @@ namespace BoxSpring {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Lookup a player by id
+        /// </summary>
+        /// <param name="id">The player's id</param>
+        /// <returns></returns>
+        public Player GetPlayer(int id)
+        {
+            foreach (Player p in Players)
+            {
+                if (p.Id == id)
+                {
+                    return p;
+                }
+            }
+            return null;
+        }
+
 		/// <summary>
 		/// General message handler.
 		/// </summary>
@@ -136,6 +195,8 @@ namespace BoxSpring {
 		/// <param name="message">The message</param>
         public override void GotMessage(Player player, Message message)
         {
+            messageCount++;
+
             switch (message.Type)
             {
                 case "confirm":
@@ -157,14 +218,11 @@ namespace BoxSpring {
                 case "pos":
                     {
                         // Upon receiving a position message, update the game state and broadcast it.
+                        int id = message.GetInt(0);
                         int x = message.GetInt(1);
                         int y = message.GetInt(2);
                         int vx = message.GetInt(3);
                         int vy = message.GetInt(4);
-
-                        int boxID = message.GetInt(5); // ras
-                        int boxX = message.GetInt(6); // ras
-                        int boxY = message.GetInt(7); // ras
 
                         //Console.WriteLine(boxID + " " + boxX + " " + boxY);
 
@@ -172,44 +230,129 @@ namespace BoxSpring {
                         player.y = y;
                         player.vx = vx;
                         player.vy = vy;*/
-                        
+
                         foreach (Player p in Players)
                         {
-                            if (p.Id != player.Id)
-                                p.Send("pos", player.Id, x, y, vx, vy, boxID, boxX, boxY);
+                            if (p.Id != id)
+                                p.Send("pos", id, x, y, vx, vy);
                         }
                         //Broadcast("pos", player.Id, x, y, vx, vy);
                         break;
                     }
-                case "pickUp":  // ras
+                case "boxpos":
                     {
-                        int x = message.GetInt(0);
-                        int y = message.GetInt(1);
-                        int vx = message.GetInt(2);
-                        int vy = message.GetInt(3);
-                        int facing = message.GetInt(4);
-                        int boxID = message.GetInt(5);
-                        //Console.WriteLine("PickUp");
-                        foreach (Player p in Players)
+                        int id = message.GetInt(0);
+                        int x = message.GetInt(1);
+                        int y = message.GetInt(2);
+                        int vx = message.GetInt(3);
+                        int vy = message.GetInt(4);
+
+                        Box b = boxes[id];
+
+                        if ((b.heldForPlayer && player == b.controller) ||
+                            (!b.heldForPlayer && player == masterController))
                         {
-                            if (p.Id != player.Id)
-                                p.Send("pickUp", player.Id, x, y, vx, vy, facing, boxID);
+                            foreach (Player p in Players)
+                            {
+                                if (p != player)
+                                    p.Send("boxpos", id, x, y, vx, vy);
+                            }
                         }
                         break;
                     }
-                case "throw":   // ras
+                case "boxpickup":
                     {
-                        int boxID = message.GetInt(0);
-                        int vx = message.GetInt(1);
-                        int vy = message.GetInt(2);
-                        //Console.WriteLine("Here" + boxID + " " + vx + " " + vy);
-                        foreach (Player p in Players)
+                        int playerId = message.GetInt(0);
+                        int boxId = message.GetInt(1);
+
+                        Box b = boxes[boxId];
+                        Player p = GetPlayer(playerId);
+
+                        if (b.heldForPlayer)
                         {
-                            if (p.Id != player.Id)
-                                p.Send("throw", player.Id, boxID, vx, vy);
+                            Console.WriteLine("Pickup action for box ignored");
+                            p.Send("rejectpickup", playerId, boxId);
+                            return;
+                        }
+
+                        if (b.holder != null)
+                        {
+                            Console.WriteLine("Error, pickup message for box already held");
+                            return;
+                        }
+
+                        b.holder = p;
+                        b.heldForPlayer = true;
+                        b.controller = p;
+                        b.messageId = messageCount;
+
+                        Console.WriteLine("Player " + playerId + " picks up " + boxId);
+                        foreach (Player o in Players)
+                        {
+                            if (p != o)
+                            {
+                                o.Send("boxpickup", playerId, boxId, messageCount);
+                            }
                         }
                         break;
-                    }  //\ras
+                    }
+                case "boxdrop":
+                    {
+                        int playerId = message.GetInt(0);
+                        int boxId = message.GetInt(1);
+
+                        Box b = boxes[boxId];
+                        Player p = GetPlayer(playerId);
+
+                        if (b.heldForPlayer)
+                        {
+                            Console.WriteLine("Pickup action for box ignored");
+                            p.Send("rejectdrop", playerId, boxId);
+                            return;
+                        }
+
+                        if (b.holder == null)
+                        {
+                            Console.WriteLine("Error, drop message for box not held");
+                            return;
+                        }
+
+                        b.holder = null;
+                        b.heldForPlayer = true;
+                        b.controller = p;
+                        b.messageId = messageCount;
+
+                        Console.WriteLine("Player " + playerId + " drops " + boxId);
+                        foreach (Player o in Players)
+                        {
+                            if (p != o)
+                            {
+                                o.Send("boxdrop", playerId, boxId, messageCount);
+                            }
+                        }
+                        break;
+                    }
+
+                case "confirmboxmes":
+                    {
+                        int messageId = message.GetInt(0);
+                        int boxId = message.GetInt(1);
+                        Box b = boxes[boxId];
+
+                        // Successfully confirm the message.
+                        if (messageId >= b.messageId)
+                        {
+                            Console.WriteLine("Player " + player.Id + " sucessfully confirms for box " + boxId);
+                            b.messageId = -1;
+                            b.heldForPlayer = false;
+                            b.controller = null;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Confirmation failed due to newer message");
+                        }
+                        break;
+                    }
             }
         }
 	}

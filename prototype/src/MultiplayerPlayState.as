@@ -6,6 +6,7 @@ package
 	 */
 	import playerio.*;
 	import org.flixel.*;
+	import flash.utils.*;
 	
 	public class MultiplayerPlayState extends PlayState 
 	{
@@ -13,6 +14,7 @@ package
 		private var playerId:int;
 		private var playerCount:int;
 		private var currentPlayer:Player;
+		private var intervalId:int;
 		
 		public function MultiplayerPlayState(goal:int, connection:Connection, playerId:int, playerCount:int) {
 			super(goal);
@@ -31,11 +33,87 @@ package
 			connection.addMessageHandler("addPlayer", addPlayer);
 			connection.addMessageHandler("startGame", startGame);
 			connection.addMessageHandler("pos", handlePositionMessage);
-			connection.addMessageHandler("pickUp", handlePickUpMessage); //ras
-			connection.addMessageHandler("throw", handleThrowMessage); //ras
+			connection.addMessageHandler("boxpickup", handleBoxPickupMessage);
+			connection.addMessageHandler("boxdrop", handleBoxDropMessage);
+			connection.addMessageHandler("rejectpickup", handleRejectPickupMessage);
+			connection.addMessageHandler("rejectdrop", handleRejectDropMessage);
+			connection.addMessageHandler("boxpos", handleBoxPosMessage);
+
 			connection.send("confirm", "readyToAddPlayers");
 		}
 		
+
+		
+		private function handleBoxPickupMessage(m:Message):void {
+			var player:Player = getPlayer(m.getInt(0));
+			var box:Box = getBox(m.getInt(1));
+			var messageId:int = m.getInt(2);
+			
+			trace("Received pickup message for player", player.id, "and box", box.id);
+
+			box.drop();
+			player.dropBox();
+			if (!player.pickupBox(box)) {
+				trace("Error: Failed to pickup box from message");
+			} else {
+				trace("box picked up", box.isAvailable());
+			}
+			
+			connection.send("confirmboxmes", messageId, box.id);
+		}
+		
+		private function handleBoxDropMessage(m:Message):void {
+			var player:Player = getPlayer(m.getInt(0));
+			var box:Box = getBox(m.getInt(1));
+			var messageId:int = m.getInt(2);
+			
+			trace("Received drop message for player", player.id, "and box", box.id);
+
+			if (player.boxHeld.id != box.id) {
+				trace("Error: Received drop message for box not held");
+			} else {
+				player.throwBox();
+			}
+			connection.send("confirmboxmes", messageId, box.id);
+		}
+
+		private function handleRejectPickupMessage(m:Message):void {
+			var player:Player = getPlayer(m.getInt(0));
+			var box:Box = getBox(m.getInt(1));
+			
+			if (player.boxHeld.id != box.id) {
+				trace("Error: Received reject pickup message for box not held");
+			} else {
+				player.dropBox();
+			}
+		}
+		
+		private function handleRejectDropMessage(m:Message):void {
+			var player:Player = getPlayer(m.getInt(0));
+			var box:Box = getBox(m.getInt(1));
+			
+			box.drop();
+			player.pickupBox(box);
+		}
+		
+		private function handleBoxPosMessage(m:Message):void {
+			var box:Box = getBox(m.getInt(0));
+			var x:int = m.getInt(1);
+			var y:int = m.getInt(2);
+			var vx:int = m.getInt(3);
+			var vy:int = m.getInt(4);
+			box.x = x;
+			box.y = y;
+			box.velocity.x = vx;
+			box.velocity.y = vy;
+		}
+		
+		override protected function boxPickedup(player:Player, box:Box):void {
+			super.boxPickedup(player, box);
+			connection.send("boxpickup", player.id, box.id);
+		}
+
+					
 		/**
 		 * Update a players position from a position message.
 		 * @param	m The position message
@@ -46,89 +124,12 @@ package
 			var y:int = m.getInt(2);
 			var vx:int = m.getInt(3);
 			var vy:int = m.getInt(4);
-			var boxID:int = m.getInt(5); //ras
-			var boxX:int = m.getInt(6); //ras
-			var boxY:int = m.getInt(7); //ras
 
-			// This is an awful way of finding the player by id and should be fixed.
-			for (var i:int = 0; i < players.members.length; i++) {
-				var p:Player = players.members[i];
-				
-				// Update the position of the correct player.
-				// This needs to be done in a much more intellegent way.
-				if (p.id == id) {
-					p.x = x;
-					p.y = y;
-					p.velocity.x = vx;
-					p.velocity.y = vy;
-					if (boxID != -1) {
-						boxes.members[boxID].x = boxX;
-						boxes.members[boxID].y = boxY;
-						boxes.members[boxID].velocity.x = vx;
-						boxes.members[boxID].velocity.y = vy;
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Another player picked up a box, the screen needs to be updated.
-		 * @param	m message with box index
-		 */
-		private function handlePickUpMessage(m:Message):void { //ras
-			var id:int = m.getInt(0);
-			var x:int = m.getInt(1);
-			var y:int = m.getInt(2);
-			var vx:int = m.getInt(3);
-			var vy:int = m.getInt(4);
-			var facing:int = m.getInt(5);
-			var boxID:int = m.getInt(6);
-						
-			var p:Player;
-			for each(p in players.members) {
-				if (p.id == id) {
-					p.x = x;
-					p.y = y;
-					p.velocity.x = vx;
-					p.velocity.y = vy;
-					
-					if (p.pickupBox(boxes.members[boxID])) {
-						boxes.members[boxID].velocity.x = vx;
-						boxes.members[boxID].velocity.y = vy;
-						
-						if (facing == FlxObject.LEFT)
-							boxes.members[boxID].x = p.getMidpoint().x - p.width;
-						else
-							boxes.members[boxID].x = p.getMidpoint().x + p.width/2;
-				
-						boxes.members[boxID].y = p.getMidpoint().y - p.height;
-						
-						trace("HandlePickUp");
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Another player threw a box, the screen needs to be updated.
-		 * @param	m message with throw parameters
-		 */
-		private function handleThrowMessage(m:Message):void {  //ras
-			trace("***Here throw");
-			var id:int = m.getInt(0);
-			var boxID:int = m.getInt(1);
-			var vx:int = m.getInt(2);
-			var vy:int = m.getInt(3);
-					
-			var p:Player;
-			for each(p in players.members) {
-				if (p.id == id) {
-					p.dropBox();
-					
-					boxes.members[boxID].velocity.x = vx;
-					boxes.members[boxID].velocity.y = vy;
-				}
-			}
+			var p:Player = getPlayer(id);
+			p.x = x;
+			p.y = y;
+			p.velocity.x = vx;
+			p.velocity.y = vy;
 		}
 		
 		override protected function createClock() : Clock {
@@ -151,8 +152,9 @@ package
 			
 			if (activePlayer) {
 				player = new ActivePlayer(x, y, id, color, connection, 1);
+				currentPlayer = player;
 			} else {
-				player = new Player(x, y, id, color, connection);
+				player = new Player(x, y, id, color);
 			}
 			players.add(player);
 			var zone:Zone = new Zone(player.getSpawn().x - 25, player.getSpawn().y - 25, 50, 50);
@@ -172,6 +174,17 @@ package
 		 */
 		private function startGame(m:Message):void {
 			running = true;
+			intervalId = setInterval(sendInfo, 20);
+		}
+		
+		/**
+		 * Broadcast all necessary info.
+		 */
+		private function sendInfo():void {
+			connection.send("pos", currentPlayer.id, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y));
+			for each(var box:Box in boxes.members) {
+				connection.send("boxpos", box.id, int(box.x), int(box.y), int(box.velocity.x), int(box.velocity.y));
+			}
 		}
 		
 		override protected function triggerPowerUp(powerUp:PowerUp, player:Player):void {

@@ -8,7 +8,7 @@ package
 	import playerio.*;
 	
 	public class ObtainConnectionState extends FlxState {
-		private static const MAX_ATTEMPTS = 10;
+		private static const MAX_ATTEMPTS:int = 10;
 		private var playerId:int;
 		private var connection:Connection;
 		private var client:Client;
