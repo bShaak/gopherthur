@@ -92,9 +92,13 @@ namespace BoxSpring {
             player.Send("joined", player.Id);
 		}
 
-		public override void UserLeft(Player player) {
-			Console.WriteLine("Player " + player.Id + " left the room");
-		}
+        public override void UserLeft(Player player) {
+            Console.WriteLine("Player " + player.Id + " left the room. Ending game");
+            foreach (Player p in Players)
+            {
+                p.Disconnect();
+            }
+        }
 
         public override bool AllowUserJoin(Player player) {
             int count = 0;
