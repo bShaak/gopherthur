@@ -30,7 +30,10 @@ package
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
 		[Embed(source = "../mp3/Chingy_right_thurr.mp3")] private var Music:Class;
-	
+		
+		//tiles
+		[Embed(source = "textures/default_tiles.png")] private var DefaultTiles:Class;
+		
 		public function PlayState(goal:int)
 		{
 			mode = goal;
@@ -121,7 +124,7 @@ package
 			add(scoreboard);
 			
 			level = new FlxTilemap();
-			level.loadMap(FlxTilemap.arrayToCSV(data, 40), FlxTilemap.ImgAuto, 0, 0, FlxTilemap.AUTO);
+			level.loadMap(FlxTilemap.arrayToCSV(data, 40), DefaultTiles, 16, 16, FlxTilemap.AUTO);
 			add(level);
 			
 			players = new FlxGroup();
@@ -131,12 +134,11 @@ package
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
-			boxes.add(new Box(FlxG.width * 1 / 10 - 10, 185, 0));  // ras
-			/*boxes.add(new Box(FlxG.width * 1 / 2 - 10, 20, 0)); *ras
-			boxes.add(new Box(FlxG.width * 1 / 2 -  5, 10, 1)); 
-			boxes.add(new Box(FlxG.width * 1 / 2	 , 20, 2));
-			boxes.add(new Box(FlxG.width * 1 / 2 +  5, 10, 3));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 10, 20, 4));*/
+			boxes.add(new Box(FlxG.width * 1 / 2 - 20, 40, 0));
+			boxes.add(new Box(FlxG.width * 1 / 2 - 10, 10, 1)); 
+			boxes.add(new Box(FlxG.width * 1 / 2	 , 40, 2));
+			boxes.add(new Box(FlxG.width * 1 / 2 + 10, 10, 3));
+			boxes.add(new Box(FlxG.width * 1 / 2 + 20, 40, 4));
 			add(boxes);
 			
 			powerUps = new FlxGroup();
@@ -152,47 +154,47 @@ package
 			
 			// This has way too many parameters. In the future though, this should all be contained in a map file I think.
 			elevator = new Platform(FlxG.width / 2, // ix
-									FlxG.height - 80, // iy
+									FlxG.height - 160, // iy
 									FlxG.width / 2, // fx
-									125, // fy
+									250, // fy
 									2500, // circuitTime
 									0, // initialPosition
-									50, // width
-									10, // height
+									80, // width
+									16, // height
 									clock); //TODO: ugh, not so many heuristic numbers floating around here
 									
-			elevator.maxVelocity.x = 60;
-			elevator.maxVelocity.y = 50;
+			elevator.maxVelocity.x = 120;
+			elevator.maxVelocity.y = 100;
 			
 			platforms.add(elevator);
 			
 			//we also want some moving platforms
-			var plat_y:int = 115; //height of these platforms... god this code is ugly
+			var plat_y:int = 225; //height of these platforms... god this code is ugly
 			
 			var plat1:Platform;
-			plat1 = new Platform(50, // ix
+			plat1 = new Platform(100, // ix
 								plat_y, // iy
-								FlxG.width / 2 - 60, // fx
+								FlxG.width / 2 - 120, // fx
 								plat_y, // fy
 								2500, // circuitTime
 								0, // offset
-								50, //width
-								10, // height
+								80, //width
+								16, // height
 								clock);;
-			plat1.maxVelocity.x = 30;
+			plat1.maxVelocity.x = 60;
 			platforms.add(plat1);
 			
 			var plat2:Platform;
-			plat2 = new Platform(FlxG.width / 2 + 60, // ix
+			plat2 = new Platform(FlxG.width / 2 + 120, // ix
 								plat_y, // iy
-								FlxG.width - 50, // fx
+								FlxG.width - 100, // fx
 								plat_y, // fy
 								2500, // circuitTime
 								1, // offset
-								50, // width
-								10, // height
+								80, // width
+								16, // height
 								clock);
-			plat2.maxVelocity.x = 30;
+			plat2.maxVelocity.x = 60;
 			platforms.add(plat2);
 			add(platforms);
 			
@@ -403,13 +405,13 @@ package
 		protected function createPlayers():void 
 		{
 			//add two players for now
-			players.add(new ActivePlayer(FlxG.width * 1 / 10, 185, 1, 0xff11aa11, null, 1));
-			players.add(new ActivePlayer(FlxG.width * 9 / 10, 185, 2, 0xffaa1111, null, 2));
+			players.add(new ActivePlayer(FlxG.width * 1 / 10, 370, 1, 0xff11aa11, null, 1));
+			players.add(new ActivePlayer(FlxG.width * 9 / 10, 370, 2, 0xffaa1111, null, 2));
 			
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
 			for each (var player:Player in players.members) {
-				var zone:Zone = new Zone(player.getSpawn().x - 25, player.getSpawn().y - 25, 50, 50);
+				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100);
 				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
 				zones.add(zone);
 				add(zone);

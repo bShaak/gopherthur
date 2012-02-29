@@ -23,12 +23,12 @@ package
 			
 			spawn = new FlxPoint(x, y);
 			
-			this.maxVelocity.x = 200;
-			this.maxVelocity.y = 200;
-			this.acceleration.y = 200;
-			this.drag.x = 200;
-			this.width = 8;
-			this.height = 8;
+			this.maxVelocity.x = 400;
+			this.maxVelocity.y = 400;
+			this.acceleration.y = 400;
+			this.drag.x = 400;
+			this.width = 12;
+			this.height = 18;
 			this.isHeld = false;
 			this.inFlight = false;
 			

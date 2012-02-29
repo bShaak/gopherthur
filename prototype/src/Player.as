@@ -6,6 +6,7 @@ package
 	 */
 	
 	import org.flixel.*;
+	import org.flixel.system.FlxAnim;
 	import playerio.*;
 	public class Player extends FlxSprite
 	{	
@@ -19,10 +20,15 @@ package
 		protected var connection:Connection;
 		
 		protected var activePlayer:Boolean; //ras
-				
+		
+		public static const IDLE_THRESH:Number = 20; //player will appear idle if below this speed
+		
 		//Embed sounds we will use
 		[Embed(source = "../mp3/jump_new.mp3")] protected var Jump:Class;
 		[Embed(source = "../mp3/throw.mp3")] protected var Throw:Class;
+		
+		//animations
+		[Embed(source = "sprites/hop_right_16x24.png")] private var AnimateWalk:Class;
 		
 		public function Player(x:Number, y:Number, id:int, color:int, connection:Connection) 
 		{
@@ -32,22 +38,64 @@ package
 			
 			score = 0;
 			
-			this.maxVelocity.x = 120;
-			this.maxVelocity.y = 210;
-			this.acceleration.y = 200;
+			this.maxVelocity.x = 160;
+			this.maxVelocity.y = 420;
+			this.acceleration.y = 400;
 			this.drag.x = this.maxVelocity.x * 8;
-			this.width = 10;
-			this.height = 12;
+			this.width = 16;
+			this.height = 24;
 			this.isHoldingBox = false;
-			this.throwStrength = new FlxPoint(200, -25); //the velocity the box will have when thrown
+			this.throwStrength = new FlxPoint(400, -50); //the velocity the box will have when thrown
 			this.connection = connection;
 			
 			this.id = id;
 			this.activePlayer = false; //ras
 			
 			// TODO: Handle this better
-			this.makeGraphic(width, height, color);
+			//this.makeGraphic(width, height, color);
 			this.colour = color;
+			
+			this.loadGraphic(AnimateWalk, true, true, 16, 24);
+			this.addAnimation("walk_right", [1, 2, 3, 4, 0], 12, true);
+			this.addAnimation("idle_right", [0], 1, true);
+			this.addAnimation("jumping_right", [2], 1, true);
+			this.addAnimation("falling_right", [3], 1, true);
+			
+			//set default graphic
+			if (this.x < FlxG.width / 2)
+				this.facing = FlxObject.RIGHT;
+			else
+				this.facing = FlxObject.LEFT;
+			play("idle_right");
+		}
+		
+		override public function update():void {
+			//update the sprite's appearance based on their movement.
+			//We tie animations to movement rather than key input due to multiplayer restraints.
+			
+			if (this.velocity.x < 0)
+				this.facing = FlxObject.LEFT;
+			else if (this.velocity.x > 0)
+				this.facing = FlxObject.RIGHT;
+			
+			if (this.isTouching(FlxObject.FLOOR)) {
+				if (Math.abs(this.velocity.x) > IDLE_THRESH) {
+					this.play("walk_right");
+				}
+				else {
+					this.play("idle_right");
+				}
+			}
+			else { //player is in the air
+				if (this.velocity.y > 0) {
+					this.play("falling_right");
+				}
+				else if (this.velocity.y < 0) {
+					this.play("jumping_right");
+				}
+				
+			}
+				
 		}
 		
 		public function getConnection():Connection {
