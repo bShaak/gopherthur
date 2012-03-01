@@ -154,10 +154,8 @@ package
 			var elevator:Platform
 			
 			// This has way too many parameters. In the future though, this should all be contained in a map file I think.
-			elevator = new Platform(FlxG.width / 2, // ix
-									FlxG.height - 80, // iy
-									FlxG.width / 2, // fx
-									125, // fy
+			elevator = new Platform(new FlxPoint(FlxG.width / 2, FlxG.height - 80), // start
+									new FlxPoint(FlxG.width / 2, 125), // end
 									2500, // circuitTime
 									0, // initialPosition
 									50, // width
@@ -173,10 +171,8 @@ package
 			var plat_y:int = 115; //height of these platforms... god this code is ugly
 			
 			var plat1:Platform;
-			plat1 = new Platform(50, // ix
-								plat_y, // iy
-								FlxG.width / 2 - 60, // fx
-								plat_y, // fy
+			plat1 = new Platform(new FlxPoint(50, plat_y), // start
+								new FlxPoint(FlxG.width / 2 - 60, plat_y), // end
 								2500, // circuitTime
 								0, // offset
 								50, //width
@@ -186,10 +182,8 @@ package
 			platforms.add(plat1);
 			
 			var plat2:Platform;
-			plat2 = new Platform(FlxG.width / 2 + 60, // ix
-								plat_y, // iy
-								FlxG.width - 50, // fx
-								plat_y, // fy
+			plat2 = new Platform(new FlxPoint(FlxG.width / 2 + 60, plat_y), // start
+								new FlxPoint(FlxG.width - 50, plat_y), // end
 								2500, // circuitTime
 								1, // offset
 								50, // width

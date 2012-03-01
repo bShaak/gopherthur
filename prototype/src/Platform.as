@@ -10,27 +10,23 @@ package
 	public class Platform extends FlxSprite
 	{
 		private var clock:Clock;
-		private var ix:Number;
-		private var iy:Number;
-		private var fx:Number;
-		private var fy:Number;
+		private var pathStart:FlxPoint;
+		private var pathEnd:FlxPoint;
 		private var initialPosition:Number;
 		private var circuitTime:Number;
 		
 		/**
 		 * Create a moving platform.
-		 * @param	ix The x value at the start of the path for the middle of the platform.
-		 * @param	iy The y value at the start of the path.
-		 * @param	fx The x value at the end of the path.
-		 * @param	fy The y value at the end of the path.
+		 * @param	start The start of the path (for the middle of the platform).
+		 * @param	end The end of the path.
 		 * @param	circuitTime The time in milliseconds for a complete circuit of the path (back and forth)
 		 * @param	initialPosition A number between -1 and 1, representing where in the path the platform should start (0 for ix, iy)
 		 * @param	plat_width The width of the platform.
 		 * @param	plat_height The height of the platform.
 		 * @param	clock The clock to time platform movement.
 		 */
-		public function Platform(ix:Number, iy:Number, fx:Number, fy:Number, circuitTime:Number, initialPosition:Number, plat_width:Number, plat_height:Number, clock:Clock) {
-			super(ix, iy);
+		public function Platform(start:FlxPoint, end:FlxPoint, circuitTime:Number, initialPosition:Number, plat_width:Number, plat_height:Number, clock:Clock) {
+			super(start.x, start.y);
 			
 			this.circuitTime = circuitTime;
 			this.clock = clock;
@@ -40,10 +36,8 @@ package
 			this.makeGraphic(plat_width, plat_height, 0xffaaaaaa);
 			
 			// note, width and height are not set properly until after makeGraphic
-			this.ix = ix - width/2;
-			this.iy = iy - height/2;
-			this.fx = fx - width/2;
-			this.fy = fy - height / 2;
+			this.pathStart = new FlxPoint(start.x - width / 2, start.y - height / 2);
+			this.pathEnd = new FlxPoint(end.x - width / 2, end.y - height / 2 );
 		}
 		
 		override public function update():void {
@@ -59,8 +53,8 @@ package
 			var stage:Number = Math.abs(timeInCircuit * 2 / circuitTime - 1);
 			
 			// Now follow a linear path between the start and end positions.
-			x = ix + (fx - ix) * stage;
-			y = iy + (fy - iy) * stage;
+			x = pathStart.x + (pathEnd.x - pathStart.x) * stage;
+			y = pathStart.y + (pathEnd.y - pathStart.y) * stage;
 		}
 	}
 
