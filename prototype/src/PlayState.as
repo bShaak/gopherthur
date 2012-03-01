@@ -11,7 +11,7 @@ package
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
 		
-		public var level:FlxTilemap;
+		public var level:Level;
 		
 		//Group together objects
 		public var players:FlxGroup;
@@ -125,9 +125,13 @@ package
 			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(scoreboard);
 			
-			level = new FlxTilemap();
+			/*level = new FlxTilemap();
 			level.loadMap(FlxTilemap.arrayToCSV(data, 40), DefaultTiles, 16, 16, FlxTilemap.AUTO);
 			add(level);
+			*/
+			
+			level = new Level("basic");
+			level.initialize();
 			
 			players = new FlxGroup();
 			zones = new FlxGroup();
@@ -321,7 +325,7 @@ package
 				}
 			}
 			
-			FlxG.collide(level, boxes);
+			FlxG.collide(level.masterLevel, boxes);
 			FlxG.collide(platforms, boxes);
 			FlxG.collide(boxes, boxes);
 		}
@@ -385,7 +389,7 @@ package
 				}
 			}
 			
-			FlxG.collide(level, players);
+			FlxG.collide(level.masterLevel, players);
 			FlxG.collide(platforms, players);
 		}
 		
