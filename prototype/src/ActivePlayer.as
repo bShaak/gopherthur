@@ -17,7 +17,7 @@ package
 		protected var jumpTimer:Number;
 		
 		private var controlScheme:Controls;
-		//private var connection:Connection;
+		private var connection:Connection;
 
 		public function ActivePlayer(x:Number, y:Number, id:int, color:int, connection:Connection, controlScheme:Controls) 
 		{
