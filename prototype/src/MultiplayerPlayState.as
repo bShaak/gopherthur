@@ -38,6 +38,7 @@ package
 			connection.addMessageHandler("rejectpickup", handleRejectPickupMessage);
 			connection.addMessageHandler("rejectdrop", handleRejectDropMessage);
 			connection.addMessageHandler("boxpos", handleBoxPosMessage);
+			connection.addMessageHandler("gameover", handleGameOverMessage);
 
 			connection.send("confirm", "readyToAddPlayers");
 		}
@@ -158,7 +159,7 @@ package
 				player = new Player(x, y, id, color);
 			}
 			players.add(player);
-			var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100);
+			var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100, player);
 			zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
 			zones.add(zone);
 			add(zone);
@@ -193,6 +194,25 @@ package
 			
 			// Note: Right now, the only powerup is speed boost which doesn't need to be sent over the network.
 			// In the future, we will probably have ones that require being sent. This is where that should happen.
+		}
+		
+		/**
+		 * Tell the server that a player has met the win conditions.
+		 * @param	winner
+		 */
+		override protected function endGame(winner:Player):void {
+			connection.send("gameover", winner.id);
+		}
+		
+		/**
+		 * Reset the game upon receiving a game over message.
+		 * @param	m
+		 */
+		private function handleGameOverMessage(m:Message):void {
+			var winner:Player = getPlayer(m.getInt(0));
+			winner.incrementScore();
+			resetGame();
+			connection.send("confirm", "gameover");
 		}
 	}
 

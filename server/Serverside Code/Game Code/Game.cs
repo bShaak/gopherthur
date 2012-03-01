@@ -46,6 +46,8 @@ namespace BoxSpring {
 
         private int messageCount = 0;
 
+        private Boolean gameDone = false;
+
         // A function to be triggered when all players have confirmed a message
         private delegate void UponConfirm();
 
@@ -186,6 +188,11 @@ namespace BoxSpring {
                 }
             }
             return null;
+        }
+
+        private void RestartGame()
+        {
+            gameDone = false;
         }
 
 		/// <summary>
@@ -350,6 +357,17 @@ namespace BoxSpring {
                         else
                         {
                             Console.WriteLine("Confirmation failed due to newer message");
+                        }
+                        break;
+                    }
+                case "gameover":
+                    {
+                        int winner = message.GetInt(0);
+                        if (!gameDone)
+                        {
+                            gameDone = true;
+                            Broadcast("gameover", winner);
+                            allConfirm("gameover", new UponConfirm(RestartGame));
                         }
                         break;
                     }
