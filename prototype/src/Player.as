@@ -17,7 +17,6 @@ package
 		protected var spawn:FlxPoint;
 		protected var colour:int;
 		protected var throwStrength:FlxPoint;
-		protected var connection:Connection;
 		
 		protected var activePlayer:Boolean; //ras
 		
@@ -46,7 +45,6 @@ package
 			this.height = 24;
 			this.isHoldingBox = false;
 			this.throwStrength = new FlxPoint(400, -50); //the velocity the box will have when thrown
-			this.connection = connection;
 			this.id = id;
 			
 			// TODO: Handle this better

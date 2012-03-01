@@ -10,8 +10,11 @@ package
 	public class PlayState extends FlxState {
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
+		protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xff11aa11 },
+												   { x: FlxG.width * 9 / 10, y: 370, color:0xffaa1111} ];
+
 		
-		public var level:FlxTilemap;
+		public var level:Level;
 		
 		//Group together objects
 		public var players:FlxGroup;
@@ -116,7 +119,7 @@ package
 			
 			if (mode == TIMED) {
 				timer = createClock();
-				roundTime = new FlxText(-10, 10, FlxG.width, "0:00");
+				roundTime = new FlxText(-25, 25, FlxG.width, "0:00");
 				roundTime.setFormat(null, 12, 0xFFFFFFFF, "right");
 				add(roundTime);
 			}
@@ -125,9 +128,13 @@ package
 			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(scoreboard);
 			
-			level = new FlxTilemap();
+			/*level = new FlxTilemap();
 			level.loadMap(FlxTilemap.arrayToCSV(data, 40), DefaultTiles, 16, 16, FlxTilemap.AUTO);
 			add(level);
+			*/
+			
+			level = new Level("basic");
+			level.initialize();
 			
 			players = new FlxGroup();
 			zones = new FlxGroup();
@@ -213,16 +220,30 @@ package
 			respawnPlayers();
 			respawnBoxes();
 			
-			//check for victory condition (currently it's just checking if someone has 3 blocks in their zone)
-			checkGoals();
+			var winner:Player = checkForWinner();
+			if (winner != null) {
+				endGame(winner);
+			}
 			
 			//update scoreboard
 			scoreboard.text = "SCORE: " + players.members[0].getScore() + " - " + players.members[1].getScore();
 		}
 		
-		private function checkGoals():Boolean {
+		/**
+		 * End the game with the specified winner.
+		 * @param	winner
+		 */
+		protected function endGame(winner:Player):void {
+			winner.incrementScore();
+			resetGame();
+		}
+		
+		/**
+		 * Check if a player has won the game.
+		 * @return The player if there is a winner, null if not.
+		 */
+		private function checkForWinner():Player {
 			
-			var goalsMet:Boolean = false;
 			var player:Player;
 			var box:Box;
 			
@@ -234,22 +255,10 @@ package
 							if ((FlxU.abs(zone.getMidpoint().x - box.getMidpoint().x) <= zone.width / 2) &&
 								(FlxU.abs(zone.getMidpoint().y - box.getMidpoint().y) <= zone.height / 2))
 								count++;
+						}					
+						if (count >= 3) {
+							return zone.player;
 						}
-					
-					if (count >= 3) {
-						trace("Game over!");
-						for each (player in players.members) {
-							if (player.getSpawn().x == zone.getMidpoint().x && player.getSpawn().y == zone.getMidpoint().y) {
-								player.incrementScore();
-							}
-							player.dropBox();
-							player.reset(player.getSpawn().x, player.getSpawn().y);
-						}
-						
-						for each (box in boxes.members)
-							box.reset(box.getSpawn().x, box.getSpawn().y);
-						}
-						goalsMet = true;
 					}
 					break;
 				
@@ -264,6 +273,7 @@ package
 						for each (var zone1:Zone in zones.members) {
 							var numBoxes:int = getNumBoxesInZone(zone1);
 							if (numBoxes > maxBoxNum) {
+								tie = false;
 								zoneWithMostBoxes = zone1;
 								maxBoxNum = numBoxes;
 							}
@@ -272,26 +282,15 @@ package
 							}
 						}
 						if (!tie) {
-							for each (player in players.members)  { //this is ugly... for future: should be a hash of players to zones (each player has a zone)
-								if (player.getSpawn().x == zoneWithMostBoxes.getMidpoint().x && player.getSpawn().y == zoneWithMostBoxes.getMidpoint().y) {
-										player.incrementScore();
-								}
-								player.dropBox();
-								player.reset(player.getSpawn().x, player.getSpawn().y);
-							}
-							for each (box in boxes.members)
-								box.reset(box.getSpawn().x, box.getSpawn().y);
+							return zoneWithMostBoxes.player;
 						}
-						timer.elapsed = 0;
-						trace ("Game Over!");
-						goalsMet = true;
 					}
 					break;	
 					
 				default:
 					trace ("Invalid game mode was inputted");
 			}
-			return goalsMet;
+			return null;
 		}
 		
 		protected function boxPickedup(player:Player, box:Box):void {
@@ -321,7 +320,7 @@ package
 				}
 			}
 			
-			FlxG.collide(level, boxes);
+			FlxG.collide(level.masterLevel, boxes);
 			FlxG.collide(platforms, boxes);
 			FlxG.collide(boxes, boxes);
 		}
@@ -385,7 +384,7 @@ package
 				}
 			}
 			
-			FlxG.collide(level, players);
+			FlxG.collide(level.masterLevel, players);
 			FlxG.collide(platforms, players);
 		}
 		
@@ -395,13 +394,13 @@ package
 		protected function createPlayers():void 
 		{
 			//add two players for now
-			players.add(new ActivePlayer(FlxG.width * 1 / 10, 370, 1, 0xff11aa11, null, wasdControls));
-			players.add(new ActivePlayer(FlxG.width * 9 / 10, 370, 2, 0xffaa1111, null, arrowControls));
+			players.add(new ActivePlayer(startInfo[0].x, startInfo[0].y, 1, startInfo[0].color, null, wasdControls));
+			players.add(new ActivePlayer(startInfo[1].x, startInfo[1].y, 2, startInfo[1].color, null, arrowControls));
 			
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
 			for each (var player:Player in players.members) {
-				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100);
+				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100, player);
 				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
 				zones.add(zone);
 				add(zone);
@@ -434,12 +433,16 @@ package
 		
 		protected function updateTimer():void {
 			timer.addTime(FlxG.elapsed);
-			var numberOfMinsLeft:int = (TIMELIMIT / 60000) - (timer.elapsed / 60000);
-			var numberOfSecondsLeft:int = 60 - (timer.elapsed / 1000) % 60;
-			var secondsLeft:String;
-			
-			numberOfSecondsLeft < 10 ? secondsLeft = "0" + numberOfSecondsLeft.toString() : secondsLeft = numberOfSecondsLeft.toString();			 
-			roundTime.text = numberOfMinsLeft + ":" + secondsLeft;
+			if (timer.elapsed > TIMELIMIT) {
+				roundTime.text = "Overtime!";
+			} else {
+				var numberOfMinsLeft:int = (TIMELIMIT / 60000) - (timer.elapsed / 60000);
+				var numberOfSecondsLeft:int = 60 - (timer.elapsed / 1000) % 60;
+				var secondsLeft:String;
+				
+				numberOfSecondsLeft < 10 ? secondsLeft = "0" + numberOfSecondsLeft.toString() : secondsLeft = numberOfSecondsLeft.toString();			 
+				roundTime.text = numberOfMinsLeft + ":" + secondsLeft;
+			}
 		}
 		
 		/**
@@ -473,10 +476,18 @@ package
 			powerUp.trigger(player, this);
 		}
 		
+		/**
+		 * @param	id The id of the box.
+		 * @return The box.
+		 */
 		protected function getBox(id:int):Box {
 			return boxes.members[id];
 		}
 		
+		/**
+		 * @param	id The id of the player.
+		 * @return The player.
+		 */
 		protected function getPlayer(id:int):Player {
 			for each (var player:Player in players.members) {
 				if (player.id == id) {
@@ -485,6 +496,24 @@ package
 			}
 			return null;
 		}
+		
+		/**
+		 * Reset the player and box locations and the timer.
+		 */
+		protected function resetGame():void 
+		{
+			trace("Game over!");
+			for each (var player:Player in players.members) {
+				player.dropBox();
+				player.reset(player.getSpawn().x, player.getSpawn().y);
+			}
+			
+			for each (var box:Box in boxes.members) {
+				box.reset(box.getSpawn().x, box.getSpawn().y);
+			}
+			if (timer != null) {
+				timer.elapsed = 0;
+			}
+		}
 	}
-
 }

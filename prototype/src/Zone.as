@@ -12,12 +12,13 @@ package
 	 
 	public class Zone extends FlxSprite
 	{
-		
-		public function Zone(x:int, y:int, width:int, height:int) {
+		public var player:Player;
+		public function Zone(x:int, y:int, width:int, height:int, player:Player) {
 			this.x = x;
 			this.y = y;
 			this.width = width;
 			this.height = height;
+			this.player = player;
 			this.makeGraphic(width, height, 0xff11aa11);
 		}
 		

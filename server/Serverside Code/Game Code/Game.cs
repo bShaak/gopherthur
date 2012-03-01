@@ -46,6 +46,8 @@ namespace BoxSpring {
 
         private int messageCount = 0;
 
+        private Boolean gameDone = false;
+
         // A function to be triggered when all players have confirmed a message
         private delegate void UponConfirm();
 
@@ -139,15 +141,11 @@ namespace BoxSpring {
         /// </summary>
         private void AddPlayers()
         {
-            // Start positions and colors for levels. This should be in the level data, not hardcoded here.
-            int[] startX = new int[] { 32 * 9, 32 * 1 };
-            int[] startY = new int[] { 185, 185 };
-            uint[] colors = new uint[] { 0xff11aa11, 0xffaa1111 };
             int i = 0;
             foreach (Player p in Players)
             {
                 Console.WriteLine("Broadcasting add player " + p.Id);
-                Broadcast("addPlayer", p.Id, startX[i], startY[i], colors[i]);
+                Broadcast("addPlayer", p.Id, i);
                 i++;
             }
             
@@ -190,6 +188,11 @@ namespace BoxSpring {
                 }
             }
             return null;
+        }
+
+        private void RestartGame()
+        {
+            gameDone = false;
         }
 
 		/// <summary>
@@ -354,6 +357,17 @@ namespace BoxSpring {
                         else
                         {
                             Console.WriteLine("Confirmation failed due to newer message");
+                        }
+                        break;
+                    }
+                case "gameover":
+                    {
+                        int winner = message.GetInt(0);
+                        if (!gameDone)
+                        {
+                            gameDone = true;
+                            Broadcast("gameover", winner);
+                            allConfirm("gameover", new UponConfirm(RestartGame));
                         }
                         break;
                     }
