@@ -10,6 +10,9 @@ package
 	public class PlayState extends FlxState {
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
+		protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xff11aa11 },
+												   { x: FlxG.width * 9 / 10, y: 370, color:0xffaa1111} ];
+
 		
 		public var level:Level;
 		
@@ -399,8 +402,8 @@ package
 		protected function createPlayers():void 
 		{
 			//add two players for now
-			players.add(new ActivePlayer(FlxG.width * 1 / 10, 370, 1, 0xff11aa11, null, wasdControls));
-			players.add(new ActivePlayer(FlxG.width * 9 / 10, 370, 2, 0xffaa1111, null, arrowControls));
+			players.add(new ActivePlayer(startInfo[0].x, startInfo[0].y, 1, startInfo[0].color, null, wasdControls));
+			players.add(new ActivePlayer(startInfo[1].x, startInfo[1].y, 2, startInfo[1].color, null, arrowControls));
 			
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)

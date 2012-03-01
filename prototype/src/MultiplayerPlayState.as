@@ -142,10 +142,11 @@ package
 		 */
 		private function addPlayer(m:Message):void {
 			var id:int = m.getInt(0);
-			var x:int = m.getInt(1);
-			var y:int = m.getInt(2);
-			var color:int = m.getUInt(3);
+			var playerIndex:int = m.getInt(1);
 			var activePlayer:Boolean = id == playerId;
+			var x:int = startInfo[playerIndex].x;
+			var y:int = startInfo[playerIndex].y;
+			var color:int = startInfo[playerIndex].color;
 			
 			// Create the new player.
 			var player:Player;
@@ -157,7 +158,7 @@ package
 				player = new Player(x, y, id, color);
 			}
 			players.add(player);
-			var zone:Zone = new Zone(player.getSpawn().x - 25, player.getSpawn().y - 25, 50, 50);
+			var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100);
 			zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
 			zones.add(zone);
 			add(zone);
