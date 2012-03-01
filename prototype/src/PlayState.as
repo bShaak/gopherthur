@@ -8,6 +8,8 @@ package
 	import org.flixel.*;
 	import playerio.Connection;
 	public class PlayState extends FlxState {
+		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
+		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
 		
 		public var level:FlxTilemap;
 		
@@ -153,10 +155,8 @@ package
 			var elevator:Platform
 			
 			// This has way too many parameters. In the future though, this should all be contained in a map file I think.
-			elevator = new Platform(FlxG.width / 2, // ix
-									FlxG.height - 160, // iy
-									FlxG.width / 2, // fx
-									250, // fy
+			elevator = new Platform(new FlxPoint(FlxG.width / 2, FlxG.height - 160), // start
+									new FlxPoint(FlxG.width / 2, 250), // end
 									2500, // circuitTime
 									0, // initialPosition
 									80, // width
@@ -172,10 +172,8 @@ package
 			var plat_y:int = 225; //height of these platforms... god this code is ugly
 			
 			var plat1:Platform;
-			plat1 = new Platform(100, // ix
-								plat_y, // iy
-								FlxG.width / 2 - 120, // fx
-								plat_y, // fy
+			plat1 = new Platform(new FlxPoint(100, plat_y), // start
+								new FlxPoint(FlxG.width / 2 - 120, plat_y), // end
 								2500, // circuitTime
 								0, // offset
 								80, //width
@@ -185,10 +183,8 @@ package
 			platforms.add(plat1);
 			
 			var plat2:Platform;
-			plat2 = new Platform(FlxG.width / 2 + 120, // ix
-								plat_y, // iy
-								FlxG.width - 100, // fx
-								plat_y, // fy
+			plat2 = new Platform(new FlxPoint(FlxG.width / 2 + 120, plat_y), // start
+								new FlxPoint(FlxG.width - 100, plat_y), // end
 								2500, // circuitTime
 								1, // offset
 								80, // width
@@ -399,8 +395,8 @@ package
 		protected function createPlayers():void 
 		{
 			//add two players for now
-			players.add(new ActivePlayer(FlxG.width * 1 / 10, 370, 1, 0xff11aa11, null, 1));
-			players.add(new ActivePlayer(FlxG.width * 9 / 10, 370, 2, 0xffaa1111, null, 2));
+			players.add(new ActivePlayer(FlxG.width * 1 / 10, 370, 1, 0xff11aa11, null, wasdControls));
+			players.add(new ActivePlayer(FlxG.width * 9 / 10, 370, 2, 0xffaa1111, null, arrowControls));
 			
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)

@@ -151,7 +151,7 @@ package
 			var player:Player;
 			
 			if (activePlayer) {
-				player = new ActivePlayer(x, y, id, color, connection, 1);
+				player = new ActivePlayer(x, y, id, color, connection, wasdControls);
 				currentPlayer = player;
 			} else {
 				player = new Player(x, y, id, color);
