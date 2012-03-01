@@ -8,6 +8,8 @@ package
 	import org.flixel.*;
 	import playerio.Connection;
 	public class PlayState extends FlxState {
+		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
+		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
 		
 		public var level:FlxTilemap;
 		
@@ -398,8 +400,8 @@ package
 		protected function createPlayers():void 
 		{
 			//add two players for now
-			players.add(new ActivePlayer(FlxG.width * 1 / 10, 185, 1, 0xff11aa11, null, 1));
-			players.add(new ActivePlayer(FlxG.width * 9 / 10, 185, 2, 0xffaa1111, null, 2));
+			players.add(new ActivePlayer(FlxG.width * 1 / 10, 185, 1, 0xff11aa11, null, wasdControls));
+			players.add(new ActivePlayer(FlxG.width * 9 / 10, 185, 2, 0xffaa1111, null, arrowControls));
 			
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
