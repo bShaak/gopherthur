@@ -7,11 +7,9 @@ package
 	
 	import playerio.*;
 	import org.flixel.*;
-	import flash.utils.*;
 	
 	public class ActivePlayer extends Player 
 	{
-		
 		private var controlScheme:int;
 		private var intervalID:int; //ras
 		
@@ -19,14 +17,12 @@ package
 		protected var jumpKeyHeld:Boolean;		
 		protected var jumpTimer:Number;
 		
+		//private var connection:Connection;
+				
 		public function ActivePlayer(x:Number, y:Number, id:int, color:int, connection:Connection, controlScheme:int) 
 		{
-			super(x, y, id, color, connection);
-			
-			// Broadcast the position of the active player every 20ms
-			if (connection != void) {
-				startInterval();
-			}
+			super(x, y, id, color);
+			this.connection = connection;
 			this.controlScheme = controlScheme;
 			activePlayer = true;  //ras
 			
@@ -79,20 +75,11 @@ package
 					}
 					else { //throw box
 						FlxG.play(Throw);
-						if (connection != void) {
-							var vx:int;
-							var vy:int;
-							vy = this.throwStrength.y;
-							if (this.facing == FlxObject.LEFT)
-								vx = -this.throwStrength.x;
-							else
-								vx = this.throwStrength.x;
-							trace("Throwing...");
-							stopInterval();  // to avoid race conditions
-							connection.send("throw", boxHeld.getBoxID(), vx, vy);  // this event needs to be sent ASAP
-							startInterval();
-						}
+						var boxId:int = boxHeld.id;
 						throwBox();
+						if (connection != null) {
+							connection.send("boxdrop", id, boxId);
+						}
 					}
 				}
 			}
@@ -126,46 +113,7 @@ package
 				}
 			}
 			
-			//update held box position
-			if (isHoldingBox) {
-				if (this.facing == FlxObject.LEFT)
-					boxHeld.x = this.getMidpoint().x - this.width;
-				else
-					boxHeld.x = this.getMidpoint().x + this.width/2;
-				
-				boxHeld.y = this.getMidpoint().y - this.height;
-				
-			}
-		}
-
-		override public function startInterval():void {   //ras 
-			intervalID = setInterval(sendPosition, 20);
-			trace("IntervalID: " + intervalID);
-		}
-		
-		override public function stopInterval():void {  //ras
-			clearInterval(intervalID);
-		}
-		
-		override public function isActive():Boolean
-		{
-			return activePlayer;
-		}
-		
-		/**
-		 * Broadcast the position of the player
-		 */
-		private function sendPosition():void {
-			if (!isHoldingBox) {
-				//trace("Not holding");
-				connection.send("pos", id, int(x), int(y), int(velocity.x), int(velocity.y), -1, -1, -1);
-			}
-			else {
-				//trace("Holding");
-				connection.send("pos", id, int(x), int(y), int(velocity.x), int(velocity.y), 
-				boxHeld.getBoxID(), boxHeld.x, boxHeld.y);
-			}
+			positionBox();
 		}
 	}
-
 }

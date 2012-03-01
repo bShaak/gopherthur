@@ -13,11 +13,12 @@ package
 									  //This is required for players to hit one another with boxes, rather than
 									  //just play catch with the box.
 		private var isHeld:Boolean;
+		public var holder:Player;
 		
 		private var spawn:FlxPoint;
-		private var boxID:int;       // ras: for identifying which box is picked up when sending over network
+		public var id:int;       // ras: for identifying which box is picked up when sending over network
 		
-		public function Box(x:Number, y:Number, ID:int) 
+		public function Box(x:Number, y:Number, id:int) 
 		{
 			super(x, y);
 			
@@ -32,14 +33,10 @@ package
 			this.isHeld = false;
 			this.inFlight = false;
 			
-			this.boxID = ID; // ras
+			this.id = id; // ras
 			
 			//set appearance
 			this.makeGraphic(width, height, 0xffffd700);
-		}
-		
-		public function getBoxID():int { // ras
-			return this.boxID;
 		}
 		
 		public function getSpawn():FlxPoint {
@@ -54,11 +51,22 @@ package
 			return this.inFlight;
 		}
 		
-		public function pickUp():Boolean {
+		public function pickUp(p:Player):Boolean {
 			if (!isAvailable())
 				return false;
 			
 			isHeld = true;
+			holder = p;
+			return true;
+		}
+		
+		public function dropThrow():Boolean {
+			if (!isHeld) 
+				return false;
+				
+			isHeld = false;
+			holder = null;
+			inFlight = true;
 			return true;
 		}
 		
@@ -67,18 +75,12 @@ package
 				return false;
 			
 			isHeld = false;
-			inFlight = true;
+			holder.dropBox(); // Note, this will not infinitely recurse as isHeld is set false before call.
+			holder = null;
 			return true;
 		}
 		
-		override public function update():void {
-			/*if (inFlight)  //ras
-				trace("In flight");
-			else if (isHeld)
-				trace("Held");  
-			else
-				trace("Available"); //\ras*/
-			
+		override public function update():void {			
 			if (FlxU.abs(this.velocity.x) < 20 && this.inFlight)
 				inFlight = false;
 		}

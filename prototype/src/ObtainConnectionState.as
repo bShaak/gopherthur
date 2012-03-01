@@ -8,18 +8,24 @@ package
 	import playerio.*;
 	
 	public class ObtainConnectionState extends FlxState {
-		
+		private static const MAX_ATTEMPTS:int = 10;
 		private var playerId:int;
 		private var connection:Connection;
 		private var client:Client;
+		private var gameJoined:Boolean;
+		private var attemptCount:int;
+		private var consolePos:int = 0;
 		
 		override public function create():void
 		{
-			add(new FlxText(0, 0, 100, "Obtaining connection"));
+			this.gameJoined = false;
+			this.attemptCount = 0;
+			
+			printMes("Obtaining connection");
 			
 			trace("Attempting to connect to player.io");
 			PlayerIO.connect(
-				Prototype.globalStage,								//Referance to stage
+				Prototype.globalStage,					//Referance to stage
 				"spring-box-subs29zgv0uqr24vblklca",	//Game id (Get your own at playerio.com. 1: Create user, 2:Goto admin pannel, 3:Create game, 4: Copy game id inside the "")
 				"public",							//Connection id, default is public
 				"GuestUser",						//Username
@@ -29,6 +35,11 @@ package
 				handleError							//Function executed if we recive an error
 			);
 		}
+				
+		private function printMes(mes:String):void {
+			add(new FlxText(0, consolePos, 300, mes));
+			consolePos += 20;
+		}
 		
 		/**
 		 * Join a room after connecting to player.io.
@@ -37,6 +48,7 @@ package
 		private function handleConnect(client:Client):void {
 			this.client = client;
 			trace("Sucessfully connected to player.io");
+			printMes("Connected to player.io");
 				
 			//Set developmentsever (Comment out to connect to your server online)
 			client.multiplayer.developmentServer = "127.0.0.1:8184";
@@ -50,6 +62,7 @@ package
 		 */
 		private function handleJoin(connection:Connection):void {
 			trace("Sucessfully connected to the multiplayer server. Waiting for second player.");
+			printMes("Waiting for a second player.");
 			this.connection = connection;
 			connection.addDisconnectHandler(handleDisconnect);
 			connection.addMessageHandler("joined", registerId);
@@ -73,15 +86,24 @@ package
 		 */
 		private function setupGame(m:Message):void {
 			trace("Game setting up");
+			gameJoined = true;
 			FlxG.switchState(new MultiplayerPlayState(PlayState.BOX_COLLECT, connection, playerId, m.getInt(0)));
 		}
 		
 		/**
 		 * Handle a disconnect from the server.
-		 * TODO: Add error handling.
 		 */
-		private function handleDisconnect():void{
-			trace("Disconnected from server")
+		private function handleDisconnect():void {
+			trace("disconnect", gameJoined);
+			if (gameJoined) {
+				FlxG.switchState(new MultiplayerErrorState("Sorry, you got disconnected from the game."));
+			} else {
+				if (attemptCount < MAX_ATTEMPTS) {
+					getRoom();
+				} else {
+					FlxG.switchState(new MultiplayerErrorState("Sorry, something went wrong finding you a game."));
+				}
+			}
 		}
 		
 		/**
@@ -90,7 +112,7 @@ package
 		 * @param	error The error.
 		 */
 		private function handleError(error:PlayerIOError):void{
-			trace("Got", error);
+			trace(error);
 		}
 		
 		/**
@@ -98,8 +120,9 @@ package
 		 */
 		private function getRoom():void 
 		{
+			attemptCount++;
 			client.multiplayer.listRooms("BoxSpring", { }, 10, 0, joinRoom, function(e:PlayerIOError):void {
-				trace("error");
+				trace("Error finding rooms.");
 				createRoom();
 			});
 		}
@@ -110,6 +133,10 @@ package
 		 * @param	rooms
 		 */
 		private function joinRoom(rooms:Array) : void {
+			if (gameJoined) {
+				return;
+			}
+			
 			if (rooms.length == 0) {
 				createRoom();
 				return;
@@ -133,7 +160,12 @@ package
 		 * Create a new room and join it.
 		 */
 		private function createRoom() : void {
+			if (gameJoined) {
+				return;
+			}
+			
 			trace("Creating room");
+			printMes("Creating room");
 			//Create or join the room test
 			client.multiplayer.createJoinRoom(
 				null,								//Room id. If set to null a random roomid is used
@@ -144,8 +176,6 @@ package
 				handleJoin,							//Function executed on successful joining of the room
 				handleError							//Function executed if we got a join error
 			);
-			trace("Here");
 		}
 	}
-
 }

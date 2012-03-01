@@ -13,7 +13,7 @@ package
 		public var id:int;
 		protected var score:int;
 		protected var isHoldingBox:Boolean;
-		protected var boxHeld:Box;
+		public var boxHeld:Box;
 		protected var spawn:FlxPoint;
 		protected var colour:int;
 		protected var throwStrength:FlxPoint;
@@ -22,7 +22,7 @@ package
 		protected var activePlayer:Boolean; //ras
 		
 		public static const IDLE_THRESH:Number = 20; //player will appear idle if below this speed
-		
+
 		//Embed sounds we will use
 		[Embed(source = "../mp3/jump_new.mp3")] protected var Jump:Class;
 		[Embed(source = "../mp3/throw.mp3")] protected var Throw:Class;
@@ -30,7 +30,7 @@ package
 		//animations
 		[Embed(source = "sprites/hop_right_16x24.png")] private var AnimateWalk:Class;
 		
-		public function Player(x:Number, y:Number, id:int, color:int, connection:Connection) 
+		public function Player(x:Number, y:Number, id:int, color:int) 
 		{
 			super(x, y);
 
@@ -47,9 +47,7 @@ package
 			this.isHoldingBox = false;
 			this.throwStrength = new FlxPoint(400, -50); //the velocity the box will have when thrown
 			this.connection = connection;
-			
 			this.id = id;
-			this.activePlayer = false; //ras
 			
 			// TODO: Handle this better
 			//this.makeGraphic(width, height, color);
@@ -95,11 +93,8 @@ package
 				}
 				
 			}
-				
-		}
-		
-		public function getConnection():Connection {
-			return this.connection;
+			
+			positionBox();
 		}
 		
 		public function getColour():int {
@@ -118,7 +113,7 @@ package
 			if (this.isHoldingBox == true)
 				return false; //can only hold one
 			
-			if (!box.pickUp()) //see if box is available for pickup
+			if (!box.pickUp(this)) //see if box is available for pickup
 				return false;
 			
 			this.isHoldingBox = true;
@@ -130,10 +125,10 @@ package
 		public function dropBox():Boolean {
 			if (!isHoldingBox)
 				return false;
-			
+				
+			this.isHoldingBox = false;
 			this.boxHeld.drop();
 			this.boxHeld = null;
-			this.isHoldingBox = false;
 			
 			return true;
 		}
@@ -142,7 +137,7 @@ package
 			if (!this.isHoldingBox)
 				return false;
 				
-			this.boxHeld.drop();
+			this.boxHeld.dropThrow();
 			
 			this.boxHeld.velocity.y = this.throwStrength.y;
 			if (this.facing == FlxObject.LEFT)
@@ -166,15 +161,6 @@ package
 			
 			//also make the box fall to the floor
 			box.velocity.x = 0;
-		}	
-		
-		public function startInterval():void 
-		{trace("Should not be here"); }
-		public function stopInterval():void
-		{}
-		public function isActive():Boolean
-		{
-			return activePlayer;
 		}
 		
 		public function incrementScore():void {
@@ -183,6 +169,29 @@ package
 		
 		public function getScore():int {
 			return score;
+		}
+		//
+		//override public function update():void {
+			//if (velocity.x < 0) {
+				//facing = FlxObject.LEFT;
+			//} else if (velocity.x > 0) {
+				//facing = FlxObject.RIGHT;
+			//}
+			//positionBox();
+		//}
+		//
+		protected function positionBox():void 
+		{
+			//update held box position
+			if (isHoldingBox) {
+				if (this.facing == FlxObject.LEFT)
+					boxHeld.x = this.getMidpoint().x - this.width;
+				else
+					boxHeld.x = this.getMidpoint().x + this.width/2;
+				
+				boxHeld.y = this.getMidpoint().y - this.height;
+				
+			}
 		}
 	}
 }

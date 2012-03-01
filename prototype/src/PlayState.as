@@ -298,21 +298,20 @@ package
 			return goalsMet;
 		}
 		
+		protected function boxPickedup(player:Player, box:Box):void {
+			trace (player.id + "box picked up");
+		}
+		
 		private function handleBoxCollisions():void 
 		{
 			for each (var box:Box in boxes.members) {
 				if (box.isAvailable()) {
 					for each (var player:Player in players.members) {
 						if (FlxG.collide(player, box)) {
-							if (player.pickupBox(box)) {
-								// TODO: I think this logic should be moved into the player class.
-								if ((player.getConnection() != void) && (player.isActive())) {   
-									player.stopInterval();  // to avoid race conditions
-									player.getConnection().send("pickUp", player.x, player.y, player.velocity.x, 
-									player.velocity.y, int(player.facing), box.getBoxID());  // this event needs to be sent ASAP
-									player.startInterval();
-								
-									trace (player.id + "box picked up");
+							// This may not be the best solution. Currently, a player can only determine if *they* have picked up a box, not another player.
+							if (player is ActivePlayer) {
+								if (player.pickupBox(box)) {
+									boxPickedup(player, box);
 								}
 							}
 						}
@@ -376,13 +375,8 @@ package
 					if (FlxG.collide(player, player2)) {
 						//players who hold boxes drop them when bumped
 						FlxG.play(Push);
-						if (player.hasBox()) {
-							player.dropBox();		
-							//if ((player.getConnection() != void) && (player.isActive())) {
-							//}	
-						}
-						if (player2.hasBox())
-							player2.dropBox();
+						player.dropBox();
+						player2.dropBox();
 						
 						//determine orientation
 						var dir:int = 1;
@@ -481,6 +475,19 @@ package
 		 */
 		protected function triggerPowerUp(powerUp:PowerUp, player:Player):void {
 			powerUp.trigger(player, this);
+		}
+		
+		protected function getBox(id:int):Box {
+			return boxes.members[id];
+		}
+		
+		protected function getPlayer(id:int):Player {
+			for each (var player:Player in players.members) {
+				if (player.id == id) {
+					return player;
+				}
+			}
+			return null;
 		}
 	}
 
