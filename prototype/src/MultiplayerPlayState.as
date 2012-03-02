@@ -70,11 +70,16 @@ package
 			
 			trace("Received drop message for player", player.id, "and box", box.id);
 
-			if (player.boxHeld.id != box.id) {
-				trace("Error: Received drop message for box not held");
-			} else {
-				player.throwBox();
+			if (!player.hasBox()) {
+				box.drop();
+				player.pickupBox(box);
+			} else if (player.boxHeld.id != box.id) {
+				player.dropBox();
+				box.drop();
+				player.pickupBox(box);
 			}
+			player.throwBox();
+			
 			connection.send("confirmboxmes", messageId, box.id);
 		}
 
