@@ -25,12 +25,14 @@ package
 					masterLevel.add(layerMap1);
 					//masterLevel.add(layerMap2);
 					break;
-					
-				/*case ("ray_test_map"):
+				/*	
+				case ("ray_test_map"):
 					var tileMap:FlxTilemap = new FlxTilemap();
 					tileMap.loadMap(new RayTestMap, BasicTiles, 16, 16, FlxTilemap.OFF, 0, 1, 1);
 					masterLevel.add(tileMap);
-					break;*/
+					break;
+				*/
+
 			}
 		}
 

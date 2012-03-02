@@ -33,7 +33,8 @@ package
 			this.immovable = true; //objects on top won't weigh it down
 			this.initialPosition = initialPosition;
 			
-			this.makeGraphic(plat_width, plat_height, 0xffaaaaaa);
+			//this.makeGraphic(plat_width, plat_height, 0xffaaaaaa);
+			this.makeGraphic(plat_width, plat_height, 0xffcd6600);
 			
 			// note, width and height are not set properly until after makeGraphic
 			this.pathStart = new FlxPoint(start.x - width / 2, start.y - height / 2);
