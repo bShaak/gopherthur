@@ -329,12 +329,19 @@ package
 		{
 			for each (var player:Player in players.members) {
 				if (player.y > FlxG.height) {
-					if (player.hasBox())
-						player.dropBox();
-						
-					player.reset(player.getSpawn().x, player.getSpawn().y);
+					respawnPlayer(player);
 				}
 			}
+		}
+		
+		protected function respawnPlayer(player:Player):void {
+			if (player.hasBox()) {
+				var box:Box = player.boxHeld;
+				player.dropBox();
+				box.reset(box.getSpawn().x, box.getSpawn().y);
+			}
+			
+			player.reset(player.getSpawn().x, player.getSpawn().y);
 		}
 		
 		private function respawnBoxes():void 

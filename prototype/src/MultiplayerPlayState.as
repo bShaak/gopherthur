@@ -39,7 +39,7 @@ package
 			connection.addMessageHandler("rejectdrop", handleRejectDropMessage);
 			connection.addMessageHandler("boxpos", handleBoxPosMessage);
 			connection.addMessageHandler("gameover", handleGameOverMessage);
-
+			connection.addMessageHandler("respawnplayer", handleRepawnPlayerMessage);
 			connection.send("confirm", "readyToAddPlayers");
 		}
 		
@@ -213,6 +213,31 @@ package
 			winner.incrementScore();
 			resetGame();
 			connection.send("confirm", "gameover");
+		}
+		
+		override protected function respawnPlayer(player:Player):void {
+			if (player is ActivePlayer) {
+				if (player.hasBox()) {
+					connection.send("respawnplayer", player.id, player.boxHeld.id);
+				}
+				super.respawnPlayer(player);
+			}
+		}
+		
+		/**
+		 * Respawn a player from a message.
+		 * @param	m
+		 */
+		protected function handleRepawnPlayerMessage(m:Message) {
+			var player:Player = getPlayer(m.getInt(0));
+			var boxId:int = m.getInt(1);
+			var messageCount:int = m.getInt(2);
+			if (player.boxHeld.id != boxId) {
+				trace("Error, respawn message with incorrect box");
+			}
+			
+			super.respawnPlayer(player);
+			connection.send("confirmboxmes", messageCount, boxId);
 		}
 	}
 
