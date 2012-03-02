@@ -10,10 +10,14 @@ package
 	import flash.events.*;
 	
 	public class PlayState extends FlxState {
+		//animations
+		[Embed(source = "sprites/hop_right_16x24_red.png")] protected static const AnimateWalkRed:Class;
+		[Embed(source = "sprites/hop_right_16x24_blue.png")] protected static const AnimateWalkBlue:Class;
+		
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
-		protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xff11aa11 },
-												   { x: FlxG.width * 9 / 10, y: 370, color:0xffaa1111} ];
+		protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xff11aa11, walkAnimation: AnimateWalkRed},
+												   { x: FlxG.width * 9 / 10, y: 370, color:0xffaa1111, walkAnimation: AnimateWalkBlue} ];
 
 		
 		public var level:Level;
@@ -78,6 +82,7 @@ package
 			boxes = new FlxGroup();
 			//boxes.add(new Box(20, 300, 0));
 			//boxes.add(new Box(35, 300, 1));
+
 			boxes.add(new Box(FlxG.width * 1 / 2 - 25, 40, 0));
 			boxes.add(new Box(FlxG.width * 1 / 2 - 15, 10, 1)); 
 			boxes.add(new Box(FlxG.width * 1 / 2 - 5, 40, 2));
@@ -337,8 +342,8 @@ package
 		protected function createPlayers():void 
 		{
 			//add two players for now
-			players.add(new ActivePlayer(startInfo[0].x, startInfo[0].y, 1, startInfo[0].color, null, wasdControls));
-			players.add(new ActivePlayer(startInfo[1].x, startInfo[1].y, 2, startInfo[1].color, null, arrowControls));
+			players.add(new ActivePlayer(startInfo[0].x, startInfo[0].y, 1, startInfo[0].color, null, wasdControls, startInfo[0].walkAnimation));
+			players.add(new ActivePlayer(startInfo[1].x, startInfo[1].y, 2, startInfo[1].color, null, arrowControls, startInfo[1].walkAnimation));
 						
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
