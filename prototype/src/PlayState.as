@@ -31,6 +31,7 @@ package
 		public static const BOX_COLLECT:int = 0;
 		public static const TIMED:int = 1;
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
+		protected var MAX_SCORE:int = 3; //define a score at which the game ends for box collecting mode
 		
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
@@ -156,6 +157,7 @@ package
 			
 			//update scoreboard
 			scoreboard.text = "SCORE: " + players.members[0].getScore() + " - " + players.members[1].getScore();
+			checkGameOver();
 		}
 		
 		/**
@@ -450,6 +452,17 @@ package
 			if (timer != null) {
 				timer.elapsed = 0;
 			}
+		}
+		
+		protected function checkGameOver():void {
+		
+			for each (var player:Player in players.members) {
+				if ( player.getScore() >= MAX_SCORE ) {
+					
+					FlxG.switchState( new GameOverState(mode, null, -1, -1));
+				}
+			}
+			
 		}
 	}
 }
