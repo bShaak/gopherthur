@@ -38,8 +38,8 @@ package
 			score = 0;
 			
 			this.maxVelocity.x = 160;
-			this.maxVelocity.y = 420;
-			this.acceleration.y = 400;
+			this.maxVelocity.y = 480;
+			this.acceleration.y = 720;
 			this.drag.x = this.maxVelocity.x * 8;
 			this.width = 16;
 			this.height = 24;
@@ -168,16 +168,7 @@ package
 		public function getScore():int {
 			return score;
 		}
-		//
-		//override public function update():void {
-			//if (velocity.x < 0) {
-				//facing = FlxObject.LEFT;
-			//} else if (velocity.x > 0) {
-				//facing = FlxObject.RIGHT;
-			//}
-			//positionBox();
-		//}
-		//
+
 		protected function positionBox():void 
 		{
 			//update held box position

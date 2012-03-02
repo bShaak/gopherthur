@@ -45,7 +45,7 @@ package
 		}
 		
 		override public function create():void {
-			FlxG.bgColor = 0xff666666;
+			FlxG.bgColor = 0xff66cdaa;
 			
 			clock = createClock();
 			

@@ -53,7 +53,7 @@ package
 				jumpKeyHeld = true;
 				jumpTimer = 0;
 			}
-			if (controlScheme.jump() && jumpKeyHeld && jumpTimer <= 0.3) {
+			if (controlScheme.jump() && jumpKeyHeld && jumpTimer <= 0.35) {
 				this.velocity.y = -this.maxVelocity.y / 3;
 				jumpTimer += FlxG.elapsed;
 			}
