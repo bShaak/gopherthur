@@ -185,7 +185,7 @@ package
 								0, // offset
 								80, //width
 								16, // height
-								clock);;
+								clock);
 			plat1.maxVelocity.x = 60;
 			platforms.add(plat1);
 			
