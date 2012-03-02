@@ -7,6 +7,8 @@ package
 	
 	import org.flixel.*;
 	import playerio.Connection;
+	import flash.events.*;
+	
 	public class PlayState extends FlxState {
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
@@ -74,11 +76,13 @@ package
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
-			boxes.add(new Box(FlxG.width * 1 / 2 - 20, 40, 0));
-			boxes.add(new Box(FlxG.width * 1 / 2 - 10, 10, 1)); 
-			boxes.add(new Box(FlxG.width * 1 / 2	 , 40, 2));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 10, 10, 3));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 20, 40, 4));
+			//boxes.add(new Box(20, 300, 0));
+			//boxes.add(new Box(35, 300, 1));
+			boxes.add(new Box(FlxG.width * 1 / 2 - 25, 40, 0));
+			boxes.add(new Box(FlxG.width * 1 / 2 - 15, 10, 1)); 
+			boxes.add(new Box(FlxG.width * 1 / 2 - 5, 40, 2));
+			boxes.add(new Box(FlxG.width * 1 / 2 + 5, 10, 3));
+			boxes.add(new Box(FlxG.width * 1 / 2 + 15, 40, 4));
 			add(boxes);
 			
 			powerUps = new FlxGroup();
@@ -335,7 +339,7 @@ package
 			//add two players for now
 			players.add(new ActivePlayer(startInfo[0].x, startInfo[0].y, 1, startInfo[0].color, null, wasdControls));
 			players.add(new ActivePlayer(startInfo[1].x, startInfo[1].y, 2, startInfo[1].color, null, arrowControls));
-			
+						
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
 			for each (var player:Player in players.members) {
@@ -387,8 +391,8 @@ package
 		 * Create all the powerups at the start of the game.
 		 */
 		protected function createPowerUps():void {
-			powerUps.add(new SpeedBoost(30, 170, 1, clock));
-			powerUps.add(new SpeedBoost(FlxG.width - 30, 170, 2, clock));
+			powerUps.add(new SpeedBoost(40, 340, 1, clock));
+			powerUps.add(new SpeedBoost(FlxG.width - 50, 340, 2, clock));
 		}
 		
 		/**

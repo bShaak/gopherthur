@@ -33,7 +33,7 @@ package
 		 * @return True if the key representing drop is pressed.
 		 */
 		public function drop():Boolean {
-			return FlxG.keys[dropK];
+			return FlxG.keys.justPressed(dropK);
 		}
 		
 		/**

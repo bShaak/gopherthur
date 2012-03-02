@@ -7,6 +7,7 @@ package
 	
 	import playerio.*;
 	import org.flixel.*;
+	import flash.events.*;
 	
 	public class ActivePlayer extends Player 
 	{
@@ -30,6 +31,8 @@ package
 			jumpTimer = 0;
 		}
 	
+		
+		
 		override public function update():void {
 			super.update();
 			this.acceleration.x = 0; //keep player from sliding if no button is currently pressed

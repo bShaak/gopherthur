@@ -8,6 +8,7 @@ package
 	import org.flixel.*;
 	import org.flixel.system.FlxAnim;
 	import playerio.*;
+	
 	public class Player extends FlxSprite
 	{	
 		public var id:int;
@@ -46,7 +47,7 @@ package
 			this.isHoldingBox = false;
 			this.throwStrength = new FlxPoint(400, -50); //the velocity the box will have when thrown
 			this.id = id;
-			
+
 			// TODO: Handle this better
 			//this.makeGraphic(width, height, color);
 			this.colour = color;

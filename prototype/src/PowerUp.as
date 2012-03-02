@@ -14,8 +14,8 @@ package
 		{
 			super(x, y);
 			
-			this.width = 8;
-			this.height = 8;
+			this.width = 12;
+			this.height = 12;
 			
 			this.id = id;
 			this.makeGraphic(width, height, color);
