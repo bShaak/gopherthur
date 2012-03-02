@@ -258,7 +258,7 @@ package
 		 * Respawn a player from a message.
 		 * @param	m
 		 */
-		protected function handleRepawnPlayerMessage(m:Message) {
+		protected function handleRepawnPlayerMessage(m:Message):void {
 			var player:Player = getPlayer(m.getInt(0));
 			var boxId:int = m.getInt(1);
 			var messageCount:int = m.getInt(2);
@@ -268,6 +268,19 @@ package
 			
 			super.respawnPlayer(player);
 			connection.send("confirmboxmes", messageCount, boxId);
+		}
+		
+		override protected function checkGameOver():void {
+			//for right now, just do nothing because this crashes the game in multiplayer
+			/*
+			for each (var player:Player in players.members) {
+					if ( player.getScore() >= MAX_SCORE ) {
+						
+						FlxG.switchState( new GameOverState(mode, connection, playerId, playerCount));
+					}
+				}
+			*/
+			
 		}
 	}
 
