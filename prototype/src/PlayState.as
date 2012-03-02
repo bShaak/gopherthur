@@ -53,11 +53,11 @@ package
 			if (mode == TIMED) {
 				timer = createClock();
 				roundTime = new FlxText(-25, 25, FlxG.width, "0:00");
-				roundTime.setFormat(null, 12, 0xFFFFFFFF, "right");
+				roundTime.setFormat(null, 14, 0xFFFFFFFF, "right");
 				add(roundTime);
 			}
 			
-			scoreboard = new FlxText(0, FlxG.height - 20, FlxG.width, "SpringBox");
+			scoreboard = new FlxText(0, FlxG.height - 25, FlxG.width, "SpringBox");
 			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(scoreboard);
 			
