@@ -278,7 +278,7 @@ namespace BoxSpring {
                         if (b.heldForPlayer)
                         {
                             Console.WriteLine("Pickup action for box ignored");
-                            p.Send("rejectpickup", playerId, boxId);
+                            p.Send("rejectpickup", playerId, boxId, messageCount);
                             return;
                         }
 
@@ -314,7 +314,7 @@ namespace BoxSpring {
                         if (b.heldForPlayer)
                         {
                             Console.WriteLine("Pickup action for box ignored");
-                            p.Send("rejectdrop", playerId, boxId);
+                            p.Send("rejectdrop", playerId, boxId, messageCount);
                             return;
                         }
 

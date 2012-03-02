@@ -14,6 +14,7 @@ package
 									  //just play catch with the box.
 		private var isHeld:Boolean;
 		public var holder:Player;
+		public var lastMessage:int = -1;
 		
 		private var spawn:FlxPoint;
 		public var id:int;       // ras: for identifying which box is picked up when sending over network

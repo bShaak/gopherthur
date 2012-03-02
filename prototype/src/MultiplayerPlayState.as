@@ -50,6 +50,12 @@ package
 			var box:Box = getBox(m.getInt(1));
 			var messageId:int = m.getInt(2);
 			
+			if (messageId < box.lastMessage) {
+				trace("Ignoring less recent message");
+				return;
+			}
+			box.lastMessage = messageId;
+			
 			trace("Received pickup message for player", player.id, "and box", box.id);
 
 			box.drop();
@@ -68,6 +74,11 @@ package
 			var box:Box = getBox(m.getInt(1));
 			var messageId:int = m.getInt(2);
 			
+			if (messageId < box.lastMessage) {
+				trace("Ignoring less recent message");
+				return;
+			}
+			box.lastMessage = messageId;
 			trace("Received drop message for player", player.id, "and box", box.id);
 
 			if (!player.hasBox()) {
@@ -86,6 +97,13 @@ package
 		private function handleRejectPickupMessage(m:Message):void {
 			var player:Player = getPlayer(m.getInt(0));
 			var box:Box = getBox(m.getInt(1));
+			var messageId:int = m.getInt(2);
+			
+			if (messageId < box.lastMessage) {
+				trace("Ignoring less recent message");
+				return;
+			}
+			box.lastMessage = messageId;
 			
 			if (player.boxHeld.id != box.id) {
 				trace("Error: Received reject pickup message for box not held");
@@ -97,6 +115,13 @@ package
 		private function handleRejectDropMessage(m:Message):void {
 			var player:Player = getPlayer(m.getInt(0));
 			var box:Box = getBox(m.getInt(1));
+			var messageId:int = m.getInt(2);
+			
+			if (messageId < box.lastMessage) {
+				trace("Ignoring less recent message");
+				return;
+			}
+			box.lastMessage = messageId;
 			
 			box.drop();
 			player.pickupBox(box);
