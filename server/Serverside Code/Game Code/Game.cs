@@ -34,7 +34,7 @@ namespace BoxSpring {
 	[RoomType("BoxSpring")]
 	public class GameCode : Game<Player> {
         private int playerCount = 2; // Number of players in the game. Hardcoded for now.
-        private int boxCount = 6; // Hardcoded for now. This will be fixed.
+        private int boxCount = 5; // Hardcoded for now. This will be fixed.
 
         // Dictionaries for counting confirmations and triggering events upon confirmation
         private Dictionary<String, int> counts = new Dictionary<string, int>();
@@ -371,7 +371,33 @@ namespace BoxSpring {
                         }
                         break;
                     }
+                case "respawnplayer":
+                    {
+                        int id = message.GetInt(0);
+                        int boxId = message.GetInt(1);
+                        Player p = GetPlayer(id);
+                        Box b = GetBox(boxId);
+
+                        foreach (Player o in Players)
+                        {
+                            if (o != p)
+                            {
+                                o.Send("respawnplayer", id, boxId, messageCount);
+                            }
+                        }
+                        b.holder = null;
+                        b.heldForPlayer = true;
+                        b.messageId = messageCount;
+                        b.controller = p;
+
+                        break;
+                    }
             }
+        }
+
+        private Box GetBox(int boxId)
+        {
+            return boxes[boxId];
         }
 	}
 }
