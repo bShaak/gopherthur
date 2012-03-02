@@ -101,10 +101,11 @@ package
 
 		private function onEnterFrame(event:Event):void
 		{
-			if (nextFrameHide)
+			if (nextFrameHide) {			
 				if (_textField != null) {
 					_textField.visible = false;
 				}
+			}
 			nextFrameHide = true;
 		}
 		
@@ -156,6 +157,14 @@ package
 		public function getText():String
 		{
 			return _textField.text;
+		}
+		
+		/**
+		 * This is a hack, but the text area will not go away by normal means.
+		 */
+		public function remove():void {
+			_textField.visible = false;
+			FlxG.stage.removeChild(_textField);
 		}
 	}
 }

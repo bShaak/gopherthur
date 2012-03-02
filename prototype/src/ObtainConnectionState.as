@@ -15,7 +15,7 @@ package
 		private var gameJoined:Boolean;
 		private var attemptCount:int;
 		private var consolePos:int = 60;
-		private var ip:FlxText;
+		private var ip:FlxInputText;
 		private var startButton:FlxButton;
 		
 		override public function create():void
@@ -99,6 +99,7 @@ package
 		private function setupGame(m:Message):void {
 			trace("Game setting up");
 			gameJoined = true;
+			ip.remove();
 			FlxG.switchState(new MultiplayerPlayState(PlayState.BOX_COLLECT, connection, playerId, m.getInt(0)));
 		}
 		
