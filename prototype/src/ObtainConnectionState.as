@@ -14,14 +14,31 @@ package
 		private var client:Client;
 		private var gameJoined:Boolean;
 		private var attemptCount:int;
-		private var consolePos:int = 0;
+		private var consolePos:int = 90;
+		private var ip:FlxInputText;
+		private var startButton:FlxButton;
+		private var connectMsg:FlxText;
 		
 		override public function create():void
 		{
 			this.gameJoined = false;
 			this.attemptCount = 0;
 			
+			var ipLabel:FlxText = new FlxText(10, 10, 350, "PLEASE ENTER SERVER IP ADDRESS");
+			ipLabel.setFormat(null, 13);
+			add(ipLabel);
+			
+			ip = new FlxInputText(10, 40, 220, 15, "127.0.0.1", 0x000000, null, 15);
+			add(ip);
+			startButton = new FlxButton(240, 40, "START", startSetup);
+			add(startButton);
+		}
+		
+		private function startSetup():void {
+			startButton.active = false;
+			startButton.update();
 			printMes("Obtaining connection");
+			
 			
 			trace("Attempting to connect to player.io");
 			PlayerIO.connect(
@@ -37,8 +54,10 @@ package
 		}
 				
 		private function printMes(mes:String):void {
-			add(new FlxText(0, consolePos, 300, mes));
+			connectMsg = new FlxText(10, consolePos, 300, mes);
+			connectMsg.setFormat(null, 12);
 			consolePos += 20;
+			add(connectMsg);
 		}
 		
 		/**
@@ -51,7 +70,7 @@ package
 			printMes("Connected to player.io");
 				
 			//Set developmentsever (Comment out to connect to your server online)
-			client.multiplayer.developmentServer = "127.0.0.1:8184";
+			client.multiplayer.developmentServer = ip.text + ":8184";
 				
 			getRoom();
 		}
@@ -62,7 +81,7 @@ package
 		 */
 		private function handleJoin(connection:Connection):void {
 			trace("Sucessfully connected to the multiplayer server. Waiting for second player.");
-			printMes("Waiting for a second player.");
+			printMes("Waiting for a second player . . .");
 			this.connection = connection;
 			connection.addDisconnectHandler(handleDisconnect);
 			connection.addMessageHandler("joined", registerId);
@@ -87,6 +106,7 @@ package
 		private function setupGame(m:Message):void {
 			trace("Game setting up");
 			gameJoined = true;
+			ip.remove();
 			FlxG.switchState(new MultiplayerPlayState(PlayState.BOX_COLLECT, connection, playerId, m.getInt(0)));
 		}
 		

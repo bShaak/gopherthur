@@ -16,15 +16,15 @@ package
 			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0xFF0080C0);
 			add(backgroundColor);
 			
-			title = new FlxText(0, 16, FlxG.width, "SpringBox");
-			title.setFormat (null, 16, 0xFFFFFFFF, "center");
+			title = new FlxText(0, 30, FlxG.width, "SpringBox");
+			title.setFormat (null, 25, 0xFFFFFFFF, "center");
 			add(title);
 			
 			mode = new FlxText(0, FlxG.height - 105, FlxG.width, "PICK A MODE:");
-			mode.setFormat (null, 12, 0xFFFFFFFF, "center");
+			mode.setFormat (null, 14, 0xFFFFFFFF, "center");
 			add(mode);
 			
-			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "PLAY", goToBoxCollectPlayState);
+			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 80, "PLAY", goToBoxCollectPlayState);
 			add(playButton);
 			
 			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 60, "TIMED", goToTimedPlayState);

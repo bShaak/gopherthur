@@ -15,11 +15,12 @@ package
 	import flash.display.Stage;
 	import flash.events.Event;
 
-	[SWF(width = "960", height = "720", backgroundColor = "#000000")]
+	//[SWF(width = "960", height = "720", backgroundColor = "#000000")]
+	[SWF(width = "640", height = "480", backgroundColor = "#000000")]
 	
 	public class Prototype extends FlxGame {	
 		public static var globalStage:Stage;
-		public static const SCALE:Number = 1.5;
+		public static const SCALE:Number = 1;
 
 		public function Prototype() {
 			super(640, 480, MenuState, SCALE, 60, 30, true);

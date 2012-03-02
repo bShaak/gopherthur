@@ -7,11 +7,13 @@ package
 	
 	import org.flixel.*;
 	import playerio.Connection;
+	import flash.events.*;
+	
 	public class PlayState extends FlxState {
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
-		protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xff11aa11 },
-												   { x: FlxG.width * 9 / 10, y: 370, color:0xffaa1111} ];
+		protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xff22dc22 },//color:0xff11aa11 },
+												   { x: FlxG.width * 9 / 10, y: 370, color:0xffdc2222} ];//color:0xffaa1111} ];
 
 		
 		public var level:Level;
@@ -47,17 +49,17 @@ package
 		
 		override public function create():void {
 			FlxG.bgColor = 0xff66cdaa;
-			
+						
 			clock = createClock();
 			
 			if (mode == TIMED) {
 				timer = createClock();
 				roundTime = new FlxText(-25, 25, FlxG.width, "0:00");
-				roundTime.setFormat(null, 12, 0xFFFFFFFF, "right");
+				roundTime.setFormat(null, 14, 0xFFFFFFFF, "right");
 				add(roundTime);
 			}
 			
-			scoreboard = new FlxText(0, FlxG.height - 20, FlxG.width, "SpringBox");
+			scoreboard = new FlxText(0, FlxG.height - 25, FlxG.width, "SpringBox");
 			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(scoreboard);
 			
@@ -69,15 +71,19 @@ package
 			players = new FlxGroup();
 			zones = new FlxGroup();
 			createPlayers();
+			add(zones);
 			add(players);
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
-			boxes.add(new Box(FlxG.width * 1 / 2 - 20, 40, 0));
-			boxes.add(new Box(FlxG.width * 1 / 2 - 10, 10, 1)); 
-			boxes.add(new Box(FlxG.width * 1 / 2	 , 40, 2));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 10, 10, 3));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 20, 40, 4));
+			/*boxes.add(new Box(20, 300, 0));
+			boxes.add(new Box(35, 300, 1));
+			boxes.add(new Box(230, 300, 2));*/
+			boxes.add(new Box(FlxG.width * 1 / 2 - 25, 40, 0));
+			boxes.add(new Box(FlxG.width * 1 / 2 - 15, 10, 1)); 
+			boxes.add(new Box(FlxG.width * 1 / 2 - 5, 40, 2));
+			boxes.add(new Box(FlxG.width * 1 / 2 + 5, 10, 3));
+			boxes.add(new Box(FlxG.width * 1 / 2 + 15, 40, 4));
 			add(boxes);
 			
 			powerUps = new FlxGroup();
@@ -115,7 +121,7 @@ package
 								0, // offset
 								80, //width
 								16, // height
-								clock);;
+								clock);
 			plat1.maxVelocity.x = 60;
 			platforms.add(plat1);
 			
@@ -334,14 +340,14 @@ package
 			//add two players for now
 			players.add(new ActivePlayer(startInfo[0].x, startInfo[0].y, 1, startInfo[0].color, null, wasdControls));
 			players.add(new ActivePlayer(startInfo[1].x, startInfo[1].y, 2, startInfo[1].color, null, arrowControls));
-			
+						
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
 			for each (var player:Player in players.members) {
-				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100, player);
-				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
+				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 53, 100, 100, player);
+				//zone.makeGraphic(zone.width, zone.height, player.getColour() | 0xff002222);
+				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0x55000000); //0xffaa1111 - 
 				zones.add(zone);
-				add(zone);
 			}
 		}
 		
@@ -387,8 +393,8 @@ package
 		 * Create all the powerups at the start of the game.
 		 */
 		protected function createPowerUps():void {
-			powerUps.add(new SpeedBoost(30, 170, 1, clock));
-			powerUps.add(new SpeedBoost(FlxG.width - 30, 170, 2, clock));
+			powerUps.add(new SpeedBoost(40, 340, 1, clock));
+			powerUps.add(new SpeedBoost(FlxG.width - 50, 340, 2, clock));
 		}
 		
 		/**
