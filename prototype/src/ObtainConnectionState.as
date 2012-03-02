@@ -14,13 +14,25 @@ package
 		private var client:Client;
 		private var gameJoined:Boolean;
 		private var attemptCount:int;
-		private var consolePos:int = 0;
+		private var consolePos:int = 60;
+		private var ip:FlxText;
+		private var startButton:FlxButton;
 		
 		override public function create():void
 		{
 			this.gameJoined = false;
 			this.attemptCount = 0;
 			
+			add(new FlxText(10, 10, 300, "PLEASE ENTER SERVER IP ADDRESS"));
+			ip = new FlxInputText(10, 40, 220, 30, "127.0.0.1", 0x00000000, null, 20);
+			add(ip);
+			startButton = new FlxButton(200, 30, "START", startSetup);
+			add(startButton);
+		}
+		
+		private function startSetup():void {
+			startButton.active = false;
+			startButton.update();
 			printMes("Obtaining connection");
 			
 			trace("Attempting to connect to player.io");
@@ -51,7 +63,7 @@ package
 			printMes("Connected to player.io");
 				
 			//Set developmentsever (Comment out to connect to your server online)
-			client.multiplayer.developmentServer = "127.0.0.1:8184";
+			client.multiplayer.developmentServer = ip.text + ":8184";
 				
 			getRoom();
 		}
