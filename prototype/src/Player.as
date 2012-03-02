@@ -27,10 +27,9 @@ package
 		[Embed(source = "../mp3/jump_new.mp3")] protected var Jump:Class;
 		[Embed(source = "../mp3/throw.mp3")] protected var Throw:Class;
 		
-		//animations
-		[Embed(source = "sprites/hop_right_16x24.png")] private var AnimateWalk:Class;
+
 		
-		public function Player(x:Number, y:Number, id:int, color:int) 
+		public function Player(x:Number, y:Number, id:int, color:int, walkAnimation:Class) 
 		{
 			super(x, y);
 
@@ -52,7 +51,9 @@ package
 			//this.makeGraphic(width, height, color);
 			this.colour = color;
 			
-			this.loadGraphic(AnimateWalk, true, true, 16, 24);
+		
+			this.loadGraphic(walkAnimation, true, true, 16, 24);
+				
 			this.addAnimation("walk_right", [1, 2, 3, 4, 0], 12, true);
 			this.addAnimation("idle_right", [0], 1, true);
 			this.addAnimation("jumping_right", [2], 1, true);
