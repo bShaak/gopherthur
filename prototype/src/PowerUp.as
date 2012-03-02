@@ -9,6 +9,7 @@ package
 	public class PowerUp extends FlxSprite 
 	{
 		public var id:int;
+		private var cnt:int;
 		
 		public function PowerUp(x:int, y:int, id:int, color:int) 
 		{
@@ -16,9 +17,19 @@ package
 			
 			this.width = 12;
 			this.height = 12;
-			
+			this.cnt = 0;
 			this.id = id;
 			this.makeGraphic(width, height, color);
+		}
+		
+		override public function update():void {
+			if (cnt < 30)
+				this.visible = false;
+			else if (cnt < 60)
+				this.visible = true;
+			else 
+				cnt = 0;
+			cnt++;
 		}
 		
 		public function trigger(player:Player, game:PlayState):void {

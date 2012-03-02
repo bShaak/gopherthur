@@ -49,7 +49,7 @@ package
 		
 		override public function create():void {
 			FlxG.bgColor = 0xff66cdaa;
-			
+						
 			clock = createClock();
 			
 			if (mode == TIMED) {
@@ -76,13 +76,14 @@ package
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
-			//boxes.add(new Box(20, 300, 0));
-			//boxes.add(new Box(35, 300, 1));
-			boxes.add(new Box(FlxG.width * 1 / 2 - 25, 40, 0));
+			boxes.add(new Box(20, 300, 0));
+			boxes.add(new Box(35, 300, 1));
+			boxes.add(new Box(230, 300, 2));
+			/*boxes.add(new Box(FlxG.width * 1 / 2 - 25, 40, 0));
 			boxes.add(new Box(FlxG.width * 1 / 2 - 15, 10, 1)); 
 			boxes.add(new Box(FlxG.width * 1 / 2 - 5, 40, 2));
 			boxes.add(new Box(FlxG.width * 1 / 2 + 5, 10, 3));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 15, 40, 4));
+			boxes.add(new Box(FlxG.width * 1 / 2 + 15, 40, 4));*/
 			add(boxes);
 			
 			powerUps = new FlxGroup();
@@ -343,8 +344,8 @@ package
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
 			for each (var player:Player in players.members) {
-				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100, player);
-				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
+				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 53, 100, 100, player);
+				zone.makeGraphic(zone.width, zone.height, player.getColour() | 0xff002222);
 				zones.add(zone);
 			}
 		}
