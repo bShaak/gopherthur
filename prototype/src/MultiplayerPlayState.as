@@ -192,7 +192,6 @@ package
 			var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100, player);
 			zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
 			zones.add(zone);
-			add(zone);
 			
 			// If we have added every player, we are ready to start.
 			if (players.length == playerCount) {

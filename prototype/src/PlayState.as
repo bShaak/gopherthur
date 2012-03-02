@@ -69,6 +69,7 @@ package
 			players = new FlxGroup();
 			zones = new FlxGroup();
 			createPlayers();
+			add(zones);
 			add(players);
 			
 			//create the goal boxes
@@ -341,7 +342,6 @@ package
 				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100, player);
 				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
 				zones.add(zone);
-				add(zone);
 			}
 		}
 		
