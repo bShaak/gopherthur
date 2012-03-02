@@ -101,8 +101,10 @@ package
 
 		private function onEnterFrame(event:Event):void
 		{
-			if(nextFrameHide)
-				_textField.visible=false;
+			if (nextFrameHide)
+				if (_textField != null) {
+					_textField.visible = false;
+				}
 			nextFrameHide = true;
 		}
 		
