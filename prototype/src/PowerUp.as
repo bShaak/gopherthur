@@ -25,7 +25,7 @@ package
 		override public function update():void {
 			if (cnt < 30)
 				this.visible = false;
-			else if (cnt < 60)
+			else if (cnt < 90)
 				this.visible = true;
 			else 
 				cnt = 0;
