@@ -35,7 +35,7 @@ package
 		
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
-		[Embed(source = "../mp3/Chingy_right_thurr.mp3")] private var Music:Class;
+		[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
 		
 		//tiles
 		//[Embed(source = "textures/default_tiles.png")] private var DefaultTiles:Class;
@@ -131,7 +131,7 @@ package
 			platforms.add(plat2);
 			add(platforms);
 			
-			//FlxG.playMusic(Music);
+			FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
