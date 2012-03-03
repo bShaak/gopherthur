@@ -46,7 +46,7 @@ package
 			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 420, "BASIC MAP", chooseBasic);
 			add(playButton);
 			
-			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 400, "FAKE MAP", chooseFake);
+			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 400, "SKYSCRAPER", chooseSkyscraper);
 			add(playButton);
 			
 			//img = new ImgButton(imageClass, 40, 30, "basic");
@@ -70,8 +70,8 @@ package
 			levelSelected = Level.levelData;
 		}
 		
-		public function chooseFake():void {
-			levelSelected = null;
+		public function chooseSkyscraper():void {
+			levelSelected = Level.skyscraper;
 		}
 		
 		public function play():void

@@ -76,7 +76,6 @@ package
 			FlxG.switchState( new LevelSelect(PlayState.BOX_COLLECT, null, -1, -1));
 			//FlxG.switchState(new PlayState(Level.levelData, PlayState.BOX_COLLECT));
 			//FlxG.switchState(new PlayState(Level.skyscraper, PlayState.BOX_COLLECT));
-
 		}  
 		
 		public function goToConnectionState():void
