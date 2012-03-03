@@ -15,6 +15,7 @@ package
 		private var playerCount:int;
 		private var currentPlayer:Player;
 		private var intervalId:int;
+		private var roundId:int = 0;
 		
 		public function MultiplayerPlayState(goal:int, connection:Connection, playerId:int, playerCount:int) {
 			super(goal);
@@ -212,9 +213,11 @@ package
 		 * Broadcast all necessary info.
 		 */
 		private function sendInfo():void {
-			connection.send("pos", currentPlayer.id, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y));
-			for each(var box:Box in boxes.members) {
-				connection.send("boxpos", box.id, int(box.x), int(box.y), int(box.velocity.x), int(box.velocity.y));
+			if (connection.connected) {
+				connection.send("pos", currentPlayer.id, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y));
+				for each(var box:Box in boxes.members) {
+					connection.send("boxpos", box.id, int(box.x), int(box.y), int(box.velocity.x), int(box.velocity.y));
+				}
 			}
 		}
 		
@@ -230,7 +233,9 @@ package
 		 * @param	winner
 		 */
 		override protected function endGame(winner:Player):void {
-			connection.send("gameover", winner.id);
+			if (winner is ActivePlayer) {
+				connection.send("gameover", winner.id, roundId);
+			}
 		}
 		
 		/**
@@ -241,7 +246,7 @@ package
 			var winner:Player = getPlayer(m.getInt(0));
 			winner.incrementScore();
 			resetGame();
-			connection.send("confirm", "gameover");
+			roundId++;
 		}
 		
 		override protected function respawnPlayer(player:Player):void {

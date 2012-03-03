@@ -45,8 +45,7 @@ namespace BoxSpring {
         private Player masterController;
 
         private int messageCount = 0;
-
-        private Boolean gameDone = false;
+        private int roundId = 0;
 
         // A function to be triggered when all players have confirmed a message
         private delegate void UponConfirm();
@@ -188,11 +187,6 @@ namespace BoxSpring {
                 }
             }
             return null;
-        }
-
-        private void RestartGame()
-        {
-            gameDone = false;
         }
 
 		/// <summary>
@@ -363,11 +357,12 @@ namespace BoxSpring {
                 case "gameover":
                     {
                         int winner = message.GetInt(0);
-                        if (!gameDone)
+                        int round = message.GetInt(1);
+                        Console.WriteLine("Gameover " + round + ", " + roundId);
+                        if (round == roundId)
                         {
-                            gameDone = true;
+                            roundId++;
                             Broadcast("gameover", winner);
-                            allConfirm("gameover", new UponConfirm(RestartGame));
                         }
                         break;
                     }
