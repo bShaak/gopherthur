@@ -291,8 +291,8 @@ package
 					if (FlxG.collide(player, player2)) {
 						//players who hold boxes drop them when bumped
 						FlxG.play(Push);
-						player.dropBox();
-						player2.dropBox();
+						//player.dropBox();
+						//player2.dropBox();
 						
 						//determine orientation
 						var dir:int = 1;
