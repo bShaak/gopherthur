@@ -10,11 +10,19 @@ package
 		private var playButton:FlxButton;
 		private var mode:FlxText;
 		
+		[Embed (source="sprites/mainBox.png")] protected var MainBox:Class;
+		
 		override public function create():void
 		{
 			backgroundColor = new FlxSprite(0,0);
 			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0xFF0080C0);
 			add(backgroundColor);
+			
+			
+			
+			var mainBox:FlxSprite = new FlxSprite(220, 70, MainBox);
+			mainBox.loadGraphic(MainBox, false, false, 215, 238);
+			add(mainBox);
 			
 			title = new FlxText(0, 30, FlxG.width, "SpringBox");
 			title.setFormat (null, 25, 0xFFFFFFFF, "center");
