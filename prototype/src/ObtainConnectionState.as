@@ -18,6 +18,11 @@ package
 		private var ip:FlxInputText;
 		private var startButton:FlxButton;
 		private var connectMsg:FlxText;
+		private var levelSelected:Object;
+		
+		public function ObtainConnectionState(data:Object) {
+			levelSelected = data;
+		}
 		
 		override public function create():void
 		{
@@ -30,8 +35,11 @@ package
 			
 			ip = new FlxInputText(10, 40, 220, 15, "127.0.0.1", 0x000000, null, 15);
 			add(ip);
-			startButton = new FlxButton(240, 40, "START", startSetup);
+			startButton = new FlxButtonBig(240, 35, null, startSetup);
 			add(startButton);
+			var startButtonLabel:FlxText = new FlxText(284, 44, 80, "START");
+			startButtonLabel.setFormat(null, 15, 0x000000, "center");
+			add(startButtonLabel);
 		}
 		
 		private function startSetup():void {
@@ -107,7 +115,7 @@ package
 			trace("Game setting up");
 			gameJoined = true;
 			ip.remove();
-			FlxG.switchState(new MultiplayerPlayState(PlayState.BOX_COLLECT, "basic", connection, playerId, m.getInt(0)));
+			FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connection, playerId, m.getInt(0)));
 		}
 		
 		/**

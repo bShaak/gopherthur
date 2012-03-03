@@ -19,15 +19,15 @@ package
 		private var connect:Connection;
 		private var pID:int;
 		private var pCount:int;
-		private var levelSelected:String;
+		private var levelSelected:Object;
  
-		public function GameOverState(mode:int, aLevel:String, connection:Connection, playerId:int, playerCount:int)
+		public function GameOverState(data:Object, mode:int, connection:Connection, playerId:int, playerCount:int)
 		{
 			gameMode = mode;
 			connect = connection;
 			pID = playerId;
 			pCount = playerCount;
-			levelSelected = aLevel;
+			levelSelected = data;
 			
 		}
 		
@@ -61,21 +61,22 @@ package
 			if(pID == -1){
 				// collect
 				if (gameMode == 0) {
-					FlxG.switchState(new PlayState(PlayState.BOX_COLLECT, levelSelected));
+
+					FlxG.switchState(new PlayState(levelSelected, PlayState.BOX_COLLECT));
 				}
 				// Timed
 				else if (gameMode == 1) {
-					FlxG.switchState( new PlayState(PlayState.TIMED, levelSelected));
+					FlxG.switchState( new PlayState(levelSelected, PlayState.TIMED));
 				}
 			}
 			else {
 				// collect
 				if (gameMode == 0) {
-					FlxG.switchState(new MultiplayerPlayState(PlayState.BOX_COLLECT, levelSelected, connect, pID, pCount));
+					FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connect, pID, pCount));
 				}
 				// Timed
 				else if (gameMode == 1) {
-					FlxG.switchState(new MultiplayerPlayState(PlayState.TIMED, levelSelected, connect, pID, pCount));
+					FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.TIMED, connect, pID, pCount));
 				}
 			}
 		}

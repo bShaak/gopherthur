@@ -67,6 +67,12 @@ namespace BoxSpring {
         /// </summary>
         public void SwitchMasterController()
         {
+            // Don't switch if disabled.
+            if (masterController == null)
+            {
+                return;
+            }
+
             foreach (Player p in Players)
             {
                 if (p != masterController)
@@ -116,11 +122,16 @@ namespace BoxSpring {
 
         private void SetupGame()
         {
+            // This is dumb, but the player iterator seems to work strangely.
+            foreach (Player p in Players)
+            {
+                masterController = p;
+                break;
+            }
             AddTimer(delegate {
                 SwitchMasterController();
             }, 1000);
             Console.WriteLine("Starting setup");
-            masterController = Players.GetEnumerator().Current;
 
             Broadcast("setupGame", playerCount);
 
@@ -133,6 +144,12 @@ namespace BoxSpring {
             // Confirm that all players are ready to start adding the other players to the level
             allConfirm("readyToAddPlayers", new UponConfirm(AddPlayers));
 
+        }
+
+        private void RestartGame()
+        {
+            masterController = Players.GetEnumerator().Current;
+            Broadcast("reset");
         }
 
         /// <summary>
@@ -269,7 +286,7 @@ namespace BoxSpring {
                         Box b = boxes[boxId];
                         Player p = GetPlayer(playerId);
 
-                        if (b.heldForPlayer)
+                        if (b.heldForPlayer && b.controller != p)
                         {
                             Console.WriteLine("Pickup action for box ignored");
                             p.Send("rejectpickup", playerId, boxId, messageCount);
@@ -290,10 +307,7 @@ namespace BoxSpring {
                         Console.WriteLine("Player " + playerId + " picks up " + boxId);
                         foreach (Player o in Players)
                         {
-                            if (p != o)
-                            {
-                                o.Send("boxpickup", playerId, boxId, messageCount);
-                            }
+                            o.Send("boxpickup", playerId, boxId, messageCount);
                         }
                         break;
                     }
@@ -301,13 +315,14 @@ namespace BoxSpring {
                     {
                         int playerId = message.GetInt(0);
                         int boxId = message.GetInt(1);
+                        Boolean shouldThrow = message.GetBoolean(2);
 
                         Box b = boxes[boxId];
                         Player p = GetPlayer(playerId);
 
-                        if (b.heldForPlayer)
+                        if (b.heldForPlayer && b.controller != p)
                         {
-                            Console.WriteLine("Pickup action for box ignored");
+                            Console.WriteLine("Pickup action for box ignored. player: " + playerId + "box " + boxId);
                             p.Send("rejectdrop", playerId, boxId, messageCount);
                             return;
                         }
@@ -326,10 +341,7 @@ namespace BoxSpring {
                         Console.WriteLine("Player " + playerId + " drops " + boxId);
                         foreach (Player o in Players)
                         {
-                            if (p != o)
-                            {
-                                o.Send("boxdrop", playerId, boxId, messageCount);
-                            }
+                            o.Send("boxdrop", playerId, boxId, messageCount, shouldThrow);
                         }
                         break;
                     }
@@ -341,7 +353,7 @@ namespace BoxSpring {
                         Box b = boxes[boxId];
 
                         // Successfully confirm the message.
-                        if (messageId >= b.messageId)
+                        if (messageId >= b.messageId && player != b.controller)
                         {
                             Console.WriteLine("Player " + player.Id + " sucessfully confirms for box " + boxId);
                             b.messageId = -1;
@@ -362,7 +374,14 @@ namespace BoxSpring {
                         if (round == roundId)
                         {
                             roundId++;
+                            foreach (Box b in boxes)
+                            {
+                                b.heldForPlayer = false;
+                                b.controller = null;
+                            }
+                            masterController = null;
                             Broadcast("gameover", winner);
+                            allConfirm("gameover", new UponConfirm(RestartGame));
                         }
                         break;
                     }
