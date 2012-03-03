@@ -16,10 +16,7 @@ package
 		
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
-		//protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xff11aa11 },
-		//										   { x: FlxG.width * 9 / 10, y: 370, color:0xffaa1111} ];
-
-		
+	
 		//public var level:Level;
 		public var levelData:Object;
 		//Group together objects
@@ -38,11 +35,11 @@ package
 		public static const BOX_COLLECT:int = 0;
 		public static const TIMED:int = 1;
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
-		protected var MAX_SCORE:int = 3; //define a score at which the game ends for box collecting mode
+		protected var MAX_SCORE:int = 3; //define a score at which the game ends
 		
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
-		[Embed(source = "../mp3/Chingy_right_thurr.mp3")] private var Music:Class;
+		[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
 		
 		//tiles
 		//[Embed(source = "textures/default_tiles.png")] private var DefaultTiles:Class;
@@ -55,7 +52,7 @@ package
 		
 		override public function create():void {
 			FlxG.bgColor = 0xff66cdaa;
-			
+						
 			clock = createClock();
 			
 			if (mode == TIMED) {
@@ -81,7 +78,7 @@ package
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
-			
+	
 			var index:int = 0 ;
 			for each(var boxinfo:Object in levelData.boxes) {
 				boxes.add(new Box(boxinfo.x, boxinfo.y, index));
@@ -120,7 +117,7 @@ package
 			}
 			add(platforms);
 			
-			//FlxG.playMusic(Music);
+			FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
@@ -334,14 +331,15 @@ package
 		protected function createPlayers():void 
 		{
 			//add two players for now
-			players.add(new ActivePlayer(levelData.startInfo[0].x, levelData.startInfo[0].y, 1, levelData.startInfo[0].color, null, wasdControls));
-			players.add(new ActivePlayer(levelData.startInfo[1].x, levelData.startInfo[1].y, 2, levelData.startInfo[1].color, null, arrowControls));
-
+			players.add(new ActivePlayer(levelData.startInfo[0].x, levelData.startInfo[0].y, 1, levelData.startInfo[0].color, null, wasdControls, levelData.startInfo[0].walkAnimation));
+			players.add(new ActivePlayer(levelData.startInfo[1].x, levelData.startInfo[1].y, 2, levelData.startInfo[1].color, null, arrowControls, levelData.startInfo[1].walkAnimation));
+			
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
 			for each (var player:Player in players.members) {
-				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100, player);
-				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
+				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 53, 100, 100, player);
+				//zone.makeGraphic(zone.width, zone.height, player.getColour() | 0xff002222);
+				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0x55000000); //0xffaa1111 - 
 				zones.add(zone);
 			}
 		}
@@ -470,11 +468,10 @@ package
 		
 			for each (var player:Player in players.members) {
 				if ( player.getScore() >= MAX_SCORE ) {
-					
+					//FlxG.pauseSounds();
 					FlxG.switchState( new GameOverState(mode, null, -1, -1));
 				}
 			}
-			
 		}
 	}
 }

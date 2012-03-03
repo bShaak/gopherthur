@@ -20,9 +20,9 @@ package
 		private var controlScheme:Controls;
 		private var connection:Connection;
 
-		public function ActivePlayer(x:Number, y:Number, id:int, color:int, connection:Connection, controlScheme:Controls) 
+		public function ActivePlayer(x:Number, y:Number, id:int, color:int, connection:Connection, controlScheme:Controls, walkAnimation:Class) 
 		{
-			super(x, y, id, color);
+			super(x, y, id, color, walkAnimation);
 			this.connection = connection;
 			this.controlScheme = controlScheme;
 			activePlayer = true;  //ras

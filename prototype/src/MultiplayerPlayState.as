@@ -15,6 +15,7 @@ package
 		private var playerCount:int;
 		private var currentPlayer:Player;
 		private var intervalId:int;
+		private var roundId:int = 0;
 		
 		public function MultiplayerPlayState(goal:int, connection:Connection, playerId:int, playerCount:int) {
 			super(Level.levelData, goal);
@@ -175,22 +176,24 @@ package
 			var id:int = m.getInt(0);
 			var playerIndex:int = m.getInt(1);
 			var activePlayer:Boolean = id == playerId;
+
 			var x:int = levelData.startInfo[playerIndex].x;
 			var y:int = levelData.startInfo[playerIndex].y;
 			var color:int = levelData.startInfo[playerIndex].color;
+			var walkAnimation:Class = levelData.startInfo[playerIndex].walkAnimation;
 			
 			// Create the new player.
 			var player:Player;
 			
 			if (activePlayer) {
-				player = new ActivePlayer(x, y, id, color, connection, wasdControls);
+				player = new ActivePlayer(x, y, id, color, connection, wasdControls, walkAnimation);
 				currentPlayer = player;
 			} else {
-				player = new Player(x, y, id, color);
+				player = new Player(x, y, id, color, walkAnimation);
 			}
 			players.add(player);
 			var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100, player);
-			zone.makeGraphic(zone.width, zone.height, player.getColour() - 0xbb000000);
+			zone.makeGraphic(zone.width, zone.height, 0xffaa1111 - 0xbb000000);//player.getColour() - 0xbb000000);
 			zones.add(zone);
 			
 			// If we have added every player, we are ready to start.
@@ -212,9 +215,11 @@ package
 		 * Broadcast all necessary info.
 		 */
 		private function sendInfo():void {
-			connection.send("pos", currentPlayer.id, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y));
-			for each(var box:Box in boxes.members) {
-				connection.send("boxpos", box.id, int(box.x), int(box.y), int(box.velocity.x), int(box.velocity.y));
+			if (connection.connected) {
+				connection.send("pos", currentPlayer.id, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y));
+				for each(var box:Box in boxes.members) {
+					connection.send("boxpos", box.id, int(box.x), int(box.y), int(box.velocity.x), int(box.velocity.y));
+				}
 			}
 		}
 		
@@ -230,7 +235,9 @@ package
 		 * @param	winner
 		 */
 		override protected function endGame(winner:Player):void {
-			connection.send("gameover", winner.id);
+			if (winner is ActivePlayer) {
+				connection.send("gameover", winner.id, roundId);
+			}
 		}
 		
 		/**
@@ -241,7 +248,7 @@ package
 			var winner:Player = getPlayer(m.getInt(0));
 			winner.incrementScore();
 			resetGame();
-			connection.send("confirm", "gameover");
+			roundId++;
 		}
 		
 		override protected function respawnPlayer(player:Player):void {
