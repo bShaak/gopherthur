@@ -281,7 +281,7 @@ namespace BoxSpring {
                         Box b = boxes[boxId];
                         Player p = GetPlayer(playerId);
 
-                        if (b.heldForPlayer)
+                        if (b.heldForPlayer && b.controller != p)
                         {
                             Console.WriteLine("Pickup action for box ignored");
                             p.Send("rejectpickup", playerId, boxId, messageCount);
@@ -302,10 +302,7 @@ namespace BoxSpring {
                         Console.WriteLine("Player " + playerId + " picks up " + boxId);
                         foreach (Player o in Players)
                         {
-                            if (p != o)
-                            {
-                                o.Send("boxpickup", playerId, boxId, messageCount);
-                            }
+                            o.Send("boxpickup", playerId, boxId, messageCount);
                         }
                         break;
                     }
@@ -313,13 +310,14 @@ namespace BoxSpring {
                     {
                         int playerId = message.GetInt(0);
                         int boxId = message.GetInt(1);
+                        Boolean shouldThrow = message.GetBoolean(2);
 
                         Box b = boxes[boxId];
                         Player p = GetPlayer(playerId);
 
-                        if (b.heldForPlayer)
+                        if (b.heldForPlayer && b.controller != p)
                         {
-                            Console.WriteLine("Pickup action for box ignored");
+                            Console.WriteLine("Pickup action for box ignored. player: " + playerId + "box " + boxId);
                             p.Send("rejectdrop", playerId, boxId, messageCount);
                             return;
                         }
@@ -338,10 +336,7 @@ namespace BoxSpring {
                         Console.WriteLine("Player " + playerId + " drops " + boxId);
                         foreach (Player o in Players)
                         {
-                            if (p != o)
-                            {
-                                o.Send("boxdrop", playerId, boxId, messageCount);
-                            }
+                            o.Send("boxdrop", playerId, boxId, messageCount, shouldThrow);
                         }
                         break;
                     }

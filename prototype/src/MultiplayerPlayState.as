@@ -75,6 +75,7 @@ package
 			var player:Player = getPlayer(m.getInt(0));
 			var box:Box = getBox(m.getInt(1));
 			var messageId:int = m.getInt(2);
+			var shouldThrow:Boolean = m.getBoolean(3);
 			
 			if (messageId < box.lastMessage) {
 				trace("Ignoring less recent message");
@@ -91,7 +92,11 @@ package
 				box.drop();
 				player.pickupBox(box);
 			}
-			player.throwBox();
+			if (shouldThrow) {
+				player.throwBox();
+			} else {
+				player.dropBox();
+			}
 			
 			connection.send("confirmboxmes", messageId, box.id);
 		}
@@ -126,6 +131,7 @@ package
 			box.lastMessage = messageId;
 			
 			box.drop();
+			player.dropBox();
 			player.pickupBox(box);
 		}
 		
@@ -293,6 +299,15 @@ package
 				}
 			*/
 			
+		}
+		
+		override protected function dropBoxesOnCollision(player:Player):void 
+		{
+			if (player.hasBox()) {
+				var boxId:int = player.boxHeld.id;
+				player.dropBox();
+				connection.send("boxdrop", player.id, boxId, false);
+			}
 		}
 	}
 

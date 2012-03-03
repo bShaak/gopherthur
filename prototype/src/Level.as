@@ -9,14 +9,18 @@ package
 	{		
 		[Embed(source = "sprites/hop_right_16x24_red.png")] protected static const AnimateWalkRed:Class;
 		[Embed(source = "sprites/hop_right_16x24_blue.png")] protected static const AnimateWalkBlue:Class;
+		[Embed(source = "levels/mapCSV_Basic_Map1.csv", mimeType = "application/octet-stream")] public static var BasicMap:Class;
+		[Embed(source = "levels/Basic.png")] public static var BasicTiles:Class;
 		
 		public function Level() { }
 		
 		public static var levelData:Object = { startInfo: [ { x: FlxG.width / 10, y: 370, color:0xff11aa11, walkAnimation: AnimateWalkRed }, //player 1
 															{ x: FlxG.width * 9 / 10, y: 370, color:0xffaa1111, walkAnimation: AnimateWalkBlue } ], //player 2
 									
-									maps: [ { map_type: 0  } ],			 
+									maps: [ { layout: BasicMap, tilemap: BasicTiles  } ],			 
 												 
+									bg_color: 0xff66cdaa,
+									
 									boxes: [ { x:FlxG.width * 1 / 2 - 25, y:40 }, //initial box positions
 											 { x:FlxG.width * 1 / 2 - 15, y: 10 },
 											 { x:FlxG.width * 1 / 2 - 5, y:40 },

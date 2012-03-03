@@ -21,6 +21,7 @@
     <class path="..\..\..\flixel" />
     <class path="..\..\..\code\flixel" />
     <class path="..\..\..\Downloads\school\ComputerScience\319\AdamAtomic-flixel-8989e50\flixel" />
+    <class path="..\..\flixel" />
   </classpaths>
   <!-- Build options -->
   <build>
