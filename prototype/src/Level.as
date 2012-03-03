@@ -17,8 +17,10 @@ package
 		public static var levelData:Object = { startInfo: [ { x: FlxG.width / 10, y: 370, color:0xff11aa11, walkAnimation: AnimateWalkRed }, //player 1
 															{ x: FlxG.width * 9 / 10, y: 370, color:0xffaa1111, walkAnimation: AnimateWalkBlue } ], //player 2
 									
-															maps: [ { layout: BasicMap, tilemap: BasicTiles  } ],			 
+									maps: [ { layout: BasicMap, tilemap: BasicTiles  } ],			 
 												 
+									bg_color: 0xff66cdaa,
+									
 									boxes: [ { x:FlxG.width * 1 / 2 - 25, y:40 }, //initial box positions
 											 { x:FlxG.width * 1 / 2 - 15, y: 10 },
 											 { x:FlxG.width * 1 / 2 - 5, y:40 },
