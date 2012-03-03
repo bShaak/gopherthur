@@ -17,7 +17,7 @@ package
 		private var intervalId:int;
 		
 		public function MultiplayerPlayState(goal:int, connection:Connection, playerId:int, playerCount:int) {
-			super(goal);
+			super(Level.levelData, goal);
 			this.connection = connection;
 			this.playerId = playerId;
 			this.playerCount = playerCount;
@@ -175,9 +175,9 @@ package
 			var id:int = m.getInt(0);
 			var playerIndex:int = m.getInt(1);
 			var activePlayer:Boolean = id == playerId;
-			var x:int = startInfo[playerIndex].x;
-			var y:int = startInfo[playerIndex].y;
-			var color:int = startInfo[playerIndex].color;
+			var x:int = levelData.startInfo[playerIndex].x;
+			var y:int = levelData.startInfo[playerIndex].y;
+			var color:int = levelData.startInfo[playerIndex].color;
 			
 			// Create the new player.
 			var player:Player;

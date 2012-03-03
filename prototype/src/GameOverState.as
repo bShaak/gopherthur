@@ -52,11 +52,11 @@ package
 			if(pID == -1){
 				// collect
 				if (gameMode == 0) {
-					FlxG.switchState(new PlayState(PlayState.BOX_COLLECT));
+					FlxG.switchState(new PlayState(Level.levelData, PlayState.BOX_COLLECT));
 				}
 				// Timed
 				else if (gameMode == 1) {
-					FlxG.switchState( new PlayState(PlayState.TIMED));
+					FlxG.switchState( new PlayState(Level.levelData, PlayState.TIMED));
 				}
 			}
 			else {

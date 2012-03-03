@@ -48,12 +48,12 @@ package
 		
 		public function goToTimedPlayState():void
 		{
-			FlxG.switchState(new PlayState(PlayState.TIMED));
+			FlxG.switchState(new PlayState(Level.levelData, PlayState.TIMED));
 		} 
 		
 		public function goToBoxCollectPlayState():void
 		{
-			FlxG.switchState(new PlayState(PlayState.BOX_COLLECT));
+			FlxG.switchState(new PlayState(Level.levelData, PlayState.BOX_COLLECT));
 		}  
 		
 		public function goToConnectionState():void
