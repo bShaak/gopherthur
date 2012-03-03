@@ -41,6 +41,7 @@ package
 			connection.addMessageHandler("boxpos", handleBoxPosMessage);
 			connection.addMessageHandler("gameover", handleGameOverMessage);
 			connection.addMessageHandler("respawnplayer", handleRepawnPlayerMessage);
+			connection.addMessageHandler("reset", handleResetMessage);
 			connection.send("confirm", "readyToAddPlayers");
 		}
 		
@@ -247,6 +248,10 @@ package
 			var winner:Player = getPlayer(m.getInt(0));
 			winner.incrementScore();
 			resetGame();
+			connection.send("confirm", "gameover");
+		}
+		
+		private function handleResetMessage(m:Message):void {
 			roundId++;
 		}
 		

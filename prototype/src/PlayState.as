@@ -81,9 +81,9 @@ package
 			//create the goal boxes
 			boxes = new FlxGroup();
 
-			/*boxes.add(new Box(20, 300, 0));
-			boxes.add(new Box(35, 300, 1));
-			boxes.add(new Box(230, 300, 2));*/
+			//boxes.add(new Box(20, 300, 0));
+			//boxes.add(new Box(35, 300, 1));
+			//boxes.add(new Box(230, 300, 2));
 			boxes.add(new Box(FlxG.width * 1 / 2 - 25, 40, 0));
 			boxes.add(new Box(FlxG.width * 1 / 2 - 15, 10, 1)); 
 			boxes.add(new Box(FlxG.width * 1 / 2 - 5, 40, 2));
@@ -451,7 +451,6 @@ package
 		 */
 		protected function resetGame():void 
 		{
-			trace("Game over!");
 			for each (var player:Player in players.members) {
 				player.dropBox();
 				player.reset(player.getSpawn().x, player.getSpawn().y);
