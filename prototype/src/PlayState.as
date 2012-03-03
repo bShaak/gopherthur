@@ -69,15 +69,6 @@ package
 			//create the goal boxes
 			boxes = new FlxGroup();
 
-			/*boxes.add(new Box(20, 300, 0));
-			boxes.add(new Box(35, 300, 1));
-			boxes.add(new Box(230, 300, 2));
-			//boxes.add(new Box(FlxG.width * 1 / 2 - 25, 40, 0));
-			//boxes.add(new Box(FlxG.width * 1 / 2 - 15, 10, 1)); 
-			//boxes.add(new Box(FlxG.width * 1 / 2 - 5, 40, 2));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 5, 10, 3));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 15, 40, 4));*/
-
 			var index:int = 0 ;
 			for each(var boxinfo:Object in levelData.boxes) {
 				boxes.add(new Box(boxinfo.x, boxinfo.y, index));
@@ -112,14 +103,14 @@ package
 														platforminfo.width, // width
 														platforminfo.height, // height
 														clock);
-			
+				
 				newPlatform.maxVelocity.x = platforminfo.maxVelocity_x;
 				newPlatform.maxVelocity.y = platforminfo.maxVelocity_y;
 				platforms.add(newPlatform);
 			}
 			add(platforms);
 			
-			//FlxG.playMusic(Music);
+			FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
