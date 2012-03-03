@@ -14,6 +14,11 @@ package
 		[Embed(source = "levels/Basic.png")] public var BasicTiles:Class;
 		public static const BASIC_MAP:int = 0;
 		
+		//TODO: move these into Level.as
+		[Embed(source = "levels/mapCSV_Skyscraper_Map1.csv", mimeType = "application/octet-stream")] public var SkyscraperTileMap:Class;
+		[Embed(source = "levels/skyscraper_textures.png")] public var SkyscraperTextures:Class;
+		public static const SKYSCRAPER:int = 1;
+		
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
 	
@@ -117,7 +122,7 @@ package
 			}
 			add(platforms);
 			
-			FlxG.playMusic(Music);
+			//FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
@@ -288,8 +293,16 @@ package
 			for each (var platform:Platform in platforms.members) {
 				if (platform.maxVelocity.y != 0) {
 					for each (var player:Player in players.members) {
-						if (FlxG.collide(platform, player) && player.isTouching(FlxObject.FLOOR))
-							player.velocity.y = platform.maxVelocity.y;
+						if (FlxG.collide(platform, player)) {
+							if (player.isTouching(FlxObject.FLOOR))
+								player.velocity.y = platform.maxVelocity.y; //TODO this won't be the right value anymore, 
+																			//since the platforms follow waypoints, not moving at max velocity
+							//kill players who get squished!
+							else if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) {
+								respawnPlayer(player);
+							}
+						}
+						
 					}
 					for each (var box:Box in boxes.members) {
 						if (FlxG.collide(platform, box) && box.isTouching(FlxObject.FLOOR))
@@ -349,6 +362,12 @@ package
 				case (BASIC_MAP):	
 					var layerMap:FlxTilemap = new FlxTilemap();
 					layerMap.loadMap(new BasicMap, BasicTiles, 16, 16, FlxTilemap.OFF, 0, 1, 1);
+					masterMap.add(layerMap);
+					break;
+				
+				case (SKYSCRAPER):	
+					var layerMap:FlxTilemap = new FlxTilemap();
+					layerMap.loadMap(new SkyscraperTileMap, SkyscraperTextures, 16, 16, FlxTilemap.OFF, 0, 1, 1);
 					masterMap.add(layerMap);
 					break;
 			}

@@ -54,6 +54,7 @@ package
 		public function goToBoxCollectPlayState():void
 		{
 			FlxG.switchState(new PlayState(Level.levelData, PlayState.BOX_COLLECT));
+			//FlxG.switchState(new PlayState(Level.skyscraper, PlayState.BOX_COLLECT));
 		}  
 		
 		public function goToConnectionState():void
