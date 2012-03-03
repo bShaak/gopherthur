@@ -16,9 +16,10 @@ package
 		private var currentPlayer:Player;
 		private var intervalId:int;
 		private var roundId:int = 0;
-		
-		public function MultiplayerPlayState(goal:int, connection:Connection, playerId:int, playerCount:int) {
-			super(Level.levelData, goal);
+
+		public function MultiplayerPlayState(data:Object, goal:int, connection:Connection, playerId:int, playerCount:int) {
+			super(data, goal);
+
 			this.connection = connection;
 			this.playerId = playerId;
 			this.playerCount = playerCount;

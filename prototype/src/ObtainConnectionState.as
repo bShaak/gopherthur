@@ -18,6 +18,11 @@ package
 		private var ip:FlxInputText;
 		private var startButton:FlxButton;
 		private var connectMsg:FlxText;
+		private var levelSelected:Object;
+		
+		public function ObtainConnectionState(data:Object) {
+			levelSelected = data;
+		}
 		
 		override public function create():void
 		{
@@ -110,7 +115,7 @@ package
 			trace("Game setting up");
 			gameJoined = true;
 			ip.remove();
-			FlxG.switchState(new MultiplayerPlayState(PlayState.BOX_COLLECT, connection, playerId, m.getInt(0)));
+			FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connection, playerId, m.getInt(0)));
 		}
 		
 		/**

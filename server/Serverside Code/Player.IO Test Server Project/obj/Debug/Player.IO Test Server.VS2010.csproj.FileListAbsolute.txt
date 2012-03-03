@@ -8,3 +8,13 @@ C:\Users\Ras\Documents\UBC\Term_2_Spring_2012\CS_319\gopherthur\server\Serversid
 C:\Users\Ras\Documents\UBC\Term_2_Spring_2012\CS_319\gopherthur\server\Serverside Code\Player.IO Test Server Project\obj\Debug\ResolveAssemblyReference.cache
 C:\Users\Ras\Documents\UBC\Term_2_Spring_2012\CS_319\gopherthur\server\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.exe
 C:\Users\Ras\Documents\UBC\Term_2_Spring_2012\CS_319\gopherthur\server\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.pdb
+C:\Users\Braden\gopher\gopherthur\server\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.exe
+C:\Users\Braden\gopher\gopherthur\server\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.pdb
+C:\Users\Braden\gopher\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\Test Server.exe
+C:\Users\Braden\gopher\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\Test Server.pdb
+C:\Users\Braden\gopher\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\FridgeMagnets.dll
+C:\Users\Braden\gopher\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO Development Server.exe
+C:\Users\Braden\gopher\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO GameLibrary.dll
+C:\Users\Braden\gopher\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\FridgeMagnets.pdb
+C:\Users\Braden\gopher\gopherthur\server\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\Braden\gopher\gopherthur\server\Serverside Code\Player.IO Test Server Project\obj\Debug\ResolveAssemblyReference.cache

@@ -32,13 +32,14 @@ package
 		public static const BOX_COLLECT:int = 0;
 		public static const TIMED:int = 1;
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
-		protected var MAX_SCORE:int = 3; //define a score at which the game ends
+		protected var MAX_SCORE:int = 1; //define a score at which the game ends
 		
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
 		[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
 		
 		public function PlayState(data:Object, goal:int)
+
 		{
 			levelData = data;
 			mode = goal;
@@ -451,8 +452,8 @@ package
 		
 			for each (var player:Player in players.members) {
 				if ( player.getScore() >= MAX_SCORE ) {
-					//FlxG.pauseSounds();
-					FlxG.switchState( new GameOverState(mode, null, -1, -1));
+					FlxG.pauseSounds();
+					FlxG.switchState( new GameOverState(levelData, mode, null, -1, -1));
 				}
 			}
 			
