@@ -8,6 +8,7 @@ package
 	import PlayState;
 	import org.flixel.*;
 	import playerio.*;
+	import flash.system.fscommand;
 	
 	public class  GameOverState extends FlxState
 	{
@@ -40,8 +41,14 @@ package
 			
 			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "PLAY AGAIN", playAgain);
 			add(playButton);
+			
+			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 60, "MAIN MENU", gotoMenu);
+			add(playButton);
+			
+			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 40, "EXIT", exitGame);
+			add(playButton);
 		}
-		
+
 		override public function update():void
 		{
 			super.update();
@@ -69,6 +76,14 @@ package
 					FlxG.switchState(new MultiplayerPlayState(PlayState.TIMED, connect, pID, pCount));
 				}
 			}
+		}
+		
+		public function gotoMenu():void {
+			FlxG.switchState( new MenuState());
+		}
+		
+		public function exitGame():void {
+			fscommand("quit");
 		}
 	}
 	

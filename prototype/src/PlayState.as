@@ -10,10 +10,14 @@ package
 	import flash.events.*;
 	
 	public class PlayState extends FlxState {
+		//animations
+		[Embed(source = "sprites/hop_right_16x24_red.png")] protected static const AnimateWalkRed:Class;
+		[Embed(source = "sprites/hop_right_16x24_blue.png")] protected static const AnimateWalkBlue:Class;
+		
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
-		protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xff22dc22 },//color:0xff11aa11 },
-												   { x: FlxG.width * 9 / 10, y: 370, color:0xffdc2222} ];//color:0xffaa1111} ];
+		protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xff22dc22, walkAnimation: AnimateWalkRed},
+												   { x: FlxG.width * 9 / 10, y: 370, color:0xffdc2222, walkAnimation: AnimateWalkBlue} ];
 
 		
 		public var level:Level;
@@ -33,11 +37,11 @@ package
 		public static const BOX_COLLECT:int = 0;
 		public static const TIMED:int = 1;
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
-		protected var MAX_SCORE:int = 3; //define a score at which the game ends for box collecting mode
+		protected var MAX_SCORE:int = 3; //define a score at which the game ends
 		
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
-		[Embed(source = "../mp3/Chingy_right_thurr.mp3")] private var Music:Class;
+		[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
 		
 		//tiles
 		//[Embed(source = "textures/default_tiles.png")] private var DefaultTiles:Class;
@@ -76,6 +80,7 @@ package
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
+
 			/*boxes.add(new Box(20, 300, 0));
 			boxes.add(new Box(35, 300, 1));
 			boxes.add(new Box(230, 300, 2));*/
@@ -137,7 +142,7 @@ package
 			platforms.add(plat2);
 			add(platforms);
 			
-			//FlxG.playMusic(Music);
+			FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
@@ -338,8 +343,8 @@ package
 		protected function createPlayers():void 
 		{
 			//add two players for now
-			players.add(new ActivePlayer(startInfo[0].x, startInfo[0].y, 1, startInfo[0].color, null, wasdControls));
-			players.add(new ActivePlayer(startInfo[1].x, startInfo[1].y, 2, startInfo[1].color, null, arrowControls));
+			players.add(new ActivePlayer(startInfo[0].x, startInfo[0].y, 1, startInfo[0].color, null, wasdControls, startInfo[0].walkAnimation));
+			players.add(new ActivePlayer(startInfo[1].x, startInfo[1].y, 2, startInfo[1].color, null, arrowControls, startInfo[1].walkAnimation));
 						
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
@@ -464,7 +469,7 @@ package
 		
 			for each (var player:Player in players.members) {
 				if ( player.getScore() >= MAX_SCORE ) {
-					
+					//FlxG.pauseSounds();
 					FlxG.switchState( new GameOverState(mode, null, -1, -1));
 				}
 			}
