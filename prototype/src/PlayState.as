@@ -10,14 +10,6 @@ package
 	import flash.events.*;
 	
 	public class PlayState extends FlxState {
-		[Embed(source = "levels/mapCSV_Basic_Map1.csv", mimeType = "application/octet-stream")] public var BasicMap:Class;
-		[Embed(source = "levels/Basic.png")] public var BasicTiles:Class;
-		public static const BASIC_MAP:int = 0;
-		
-		//TODO: move these into Level.as
-		[Embed(source = "levels/mapCSV_Skyscraper_Map1.csv", mimeType = "application/octet-stream")] public var SkyscraperTileMap:Class;
-		[Embed(source = "levels/skyscraper_textures.png")] public var SkyscraperTextures:Class;
-		public static const SKYSCRAPER:int = 1;
 		
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
@@ -46,9 +38,6 @@ package
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
 		[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
 		
-		//tiles
-		//[Embed(source = "textures/default_tiles.png")] private var DefaultTiles:Class;
-		
 		public function PlayState(data:Object, goal:int)
 		{
 			levelData = data;
@@ -56,7 +45,7 @@ package
 		}
 		
 		override public function create():void {
-			FlxG.bgColor = 0xff66cdaa;
+			FlxG.bgColor = levelData.bg_color;
 						
 			clock = createClock();
 			
@@ -70,10 +59,6 @@ package
 			scoreboard = new FlxText(0, FlxG.height - 25, FlxG.width, "SpringBox");
 			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(scoreboard);
-			
-			//TODO: add menu to handle level selection
-			//level = new Level();
-			//levelData = level.levelData;
 			
 			players = new FlxGroup();
 			zones = new FlxGroup();
@@ -98,7 +83,9 @@ package
 			masterMap = new FlxGroup();
 			
 			for each (var map:Object in levelData.maps) {
-				addToMasterMap(map.map_type);
+				var layerMap:FlxTilemap = new FlxTilemap();
+				layerMap.loadMap(new map.layout, map.tilemap, 16, 16, FlxTilemap.OFF, 0, 1, 1);
+				masterMap.add(layerMap);
 			}
 			add(masterMap);
 			
@@ -276,38 +263,23 @@ package
 		
 		private function handleElevatorCollisions():void 
 		{
-			//Elevator collision detection is non-standard: if a sprite is standing on top of the elevator
-			//then give it a downward velocity to keep it glued to the elevator.
-			
-			// TODO: We need to fix the elevator handling.
-			/*var elevator:Platform = platforms.members[0]; //yeah that's a hardcoded index...
-			for each (var player:Player in players.members) {
-				if (FlxG.collide(elevator, player) && player.isTouching(FlxObject.FLOOR))
-					player.velocity.y = elevator.maxVelocity.y;
-			}
-			for each (var box:Box in boxes.members) {
-				if (FlxG.collide(elevator, box) && box.isTouching(FlxObject.FLOOR))
-					box.velocity.y = elevator.maxVelocity.y;
-			}*/
-			
 			for each (var platform:Platform in platforms.members) {
-				if (platform.maxVelocity.y != 0) {
-					for each (var player:Player in players.members) {
-						if (FlxG.collide(platform, player)) {
-							if (player.isTouching(FlxObject.FLOOR))
-								player.velocity.y = platform.maxVelocity.y; //TODO this won't be the right value anymore, 
-																			//since the platforms follow waypoints, not moving at max velocity
-							//kill players who get squished!
-							else if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) {
-								respawnPlayer(player);
-							}
+				for each (var player:Player in players.members) {
+					if (FlxG.collide(platform, player)) {
+						//Elevator collision detection is non-standard: if a sprite is standing on top of the elevator
+						//then give it a downward velocity to keep it glued to the elevator.
+						if (platform.maxVelocity.y != 0) {
+							player.velocity.y = platform.maxVelocity.y; //NOTE: this wont work, platforms follow waypoints now, not a velocity/path.
 						}
-						
+						//Players get squished if stuck between moving platform and a wall
+						else if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) {
+							respawnPlayer(player);
+						}
 					}
-					for each (var box:Box in boxes.members) {
-						if (FlxG.collide(platform, box) && box.isTouching(FlxObject.FLOOR))
-							box.velocity.y = platform.maxVelocity.y;
-					}
+				}
+				for each (var box:Box in boxes.members) {
+					if (FlxG.collide(platform, box) && box.isTouching(FlxObject.FLOOR))
+						box.velocity.y = platform.maxVelocity.y;
 				}
 			}
 		}
@@ -320,8 +292,8 @@ package
 					if (FlxG.collide(player, player2)) {
 						//players who hold boxes drop them when bumped
 						FlxG.play(Push);
-						player.dropBox();
-						player2.dropBox();
+						dropBoxesOnCollision(player);
+						dropBoxesOnCollision(player2);
 						
 						//determine orientation
 						var dir:int = 1;
@@ -336,6 +308,11 @@ package
 			
 			FlxG.collide(masterMap, players);
 			FlxG.collide(platforms, players);
+		}
+		
+		protected function dropBoxesOnCollision(player:Player):void 
+		{
+			player.dropBox();
 		}
 		
 		/**
@@ -356,23 +333,7 @@ package
 				zones.add(zone);
 			}
 		}
-		
-		public function addToMasterMap(mapType:int) : void {
-			switch (mapType) {
-				case (BASIC_MAP):	
-					var layerMap:FlxTilemap = new FlxTilemap();
-					layerMap.loadMap(new BasicMap, BasicTiles, 16, 16, FlxTilemap.OFF, 0, 1, 1);
-					masterMap.add(layerMap);
-					break;
-				
-				case (SKYSCRAPER):	
-					var layerMap:FlxTilemap = new FlxTilemap();
-					layerMap.loadMap(new SkyscraperTileMap, SkyscraperTextures, 16, 16, FlxTilemap.OFF, 0, 1, 1);
-					masterMap.add(layerMap);
-					break;
-			}
-		}
-		
+
 		/**
 		 * Run any logic necessary after the create function is called.
 		 */
