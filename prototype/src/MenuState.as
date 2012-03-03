@@ -48,12 +48,14 @@ package
 		
 		public function goToTimedPlayState():void
 		{
-			FlxG.switchState(new PlayState(PlayState.TIMED));
+			//FlxG.switchState(new PlayState(PlayState.TIMED));
+			FlxG.switchState( new LevelSelect(PlayState.TIMED, null, -1, -1));
 		} 
 		
 		public function goToBoxCollectPlayState():void
 		{
-			FlxG.switchState(new PlayState(PlayState.BOX_COLLECT));
+			//FlxG.switchState(new PlayState(PlayState.BOX_COLLECT));
+			FlxG.switchState( new LevelSelect(PlayState.BOX_COLLECT, null, -1, -1));
 		}  
 		
 		public function goToConnectionState():void

@@ -30,6 +30,7 @@ package
 		public var zones:FlxGroup;
 		public var scoreboard:FlxText;
 		public var roundTime:FlxText;
+		public var levelSelected:String;
 		protected var running:Boolean = false;
 		protected var clock:Clock;
 		protected var timer:Clock;
@@ -37,7 +38,7 @@ package
 		public static const BOX_COLLECT:int = 0;
 		public static const TIMED:int = 1;
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
-		protected var MAX_SCORE:int = 3; //define a score at which the game ends
+		protected var MAX_SCORE:int = 1; //define a score at which the game ends
 		
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
@@ -46,9 +47,10 @@ package
 		//tiles
 		//[Embed(source = "textures/default_tiles.png")] private var DefaultTiles:Class;
 		
-		public function PlayState(goal:int)
+		public function PlayState(goal:int, aLevel:String)
 		{
 			mode = goal;
+			levelSelected = aLevel;
 		}
 		
 		override public function create():void {
@@ -68,7 +70,9 @@ package
 			add(scoreboard);
 			
 			//TODO: add menu to handle level selection
-			level = new Level("basic");
+			//level = new Level("basic");
+			//trace(levelSelected);
+			level = new Level(levelSelected);
 			//level = new Level("ray_test_map");
 			level.initialize();
 			
@@ -469,8 +473,8 @@ package
 		
 			for each (var player:Player in players.members) {
 				if ( player.getScore() >= MAX_SCORE ) {
-					//FlxG.pauseSounds();
-					FlxG.switchState( new GameOverState(mode, null, -1, -1));
+					FlxG.pauseSounds();
+					FlxG.switchState( new GameOverState(mode, levelSelected, null, -1, -1));
 				}
 			}
 			

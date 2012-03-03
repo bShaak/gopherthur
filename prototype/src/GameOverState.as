@@ -19,13 +19,15 @@ package
 		private var connect:Connection;
 		private var pID:int;
 		private var pCount:int;
+		private var levelSelected:String;
  
-		public function GameOverState(mode:int, connection:Connection, playerId:int, playerCount:int)
+		public function GameOverState(mode:int, aLevel:String, connection:Connection, playerId:int, playerCount:int)
 		{
 			gameMode = mode;
 			connect = connection;
 			pID = playerId;
 			pCount = playerCount;
+			levelSelected = aLevel;
 			
 		}
 		
@@ -59,21 +61,21 @@ package
 			if(pID == -1){
 				// collect
 				if (gameMode == 0) {
-					FlxG.switchState(new PlayState(PlayState.BOX_COLLECT));
+					FlxG.switchState(new PlayState(PlayState.BOX_COLLECT, levelSelected));
 				}
 				// Timed
 				else if (gameMode == 1) {
-					FlxG.switchState( new PlayState(PlayState.TIMED));
+					FlxG.switchState( new PlayState(PlayState.TIMED, levelSelected));
 				}
 			}
 			else {
 				// collect
 				if (gameMode == 0) {
-					FlxG.switchState(new MultiplayerPlayState(PlayState.BOX_COLLECT, connect, pID, pCount));
+					FlxG.switchState(new MultiplayerPlayState(PlayState.BOX_COLLECT, levelSelected, connect, pID, pCount));
 				}
 				// Timed
 				else if (gameMode == 1) {
-					FlxG.switchState(new MultiplayerPlayState(PlayState.TIMED, connect, pID, pCount));
+					FlxG.switchState(new MultiplayerPlayState(PlayState.TIMED, levelSelected, connect, pID, pCount));
 				}
 			}
 		}

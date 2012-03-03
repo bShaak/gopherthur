@@ -107,7 +107,7 @@ package
 			trace("Game setting up");
 			gameJoined = true;
 			ip.remove();
-			FlxG.switchState(new MultiplayerPlayState(PlayState.BOX_COLLECT, connection, playerId, m.getInt(0)));
+			FlxG.switchState(new MultiplayerPlayState(PlayState.BOX_COLLECT, "basic", connection, playerId, m.getInt(0)));
 		}
 		
 		/**
