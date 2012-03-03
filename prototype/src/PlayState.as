@@ -10,8 +10,6 @@ package
 	import flash.events.*;
 	
 	public class PlayState extends FlxState {
-		[Embed(source = "levels/mapCSV_Basic_Map1.csv", mimeType = "application/octet-stream")] public var BasicMap:Class;
-		[Embed(source = "levels/Basic.png")] public var BasicTiles:Class;
 		public static const BASIC_MAP:int = 0;
 		
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
@@ -66,10 +64,6 @@ package
 			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(scoreboard);
 			
-			//TODO: add menu to handle level selection
-			//level = new Level();
-			//levelData = level.levelData;
-			
 			players = new FlxGroup();
 			zones = new FlxGroup();
 			createPlayers();
@@ -93,7 +87,9 @@ package
 			masterMap = new FlxGroup();
 			
 			for each (var map:Object in levelData.maps) {
-				addToMasterMap(map.map_type);
+				var layerMap:FlxTilemap = new FlxTilemap();
+				layerMap.loadMap(new map.layout, map.tilemap, 16, 16, FlxTilemap.OFF, 0, 1, 1);
+				masterMap.add(layerMap);
 			}
 			add(masterMap);
 			
@@ -273,18 +269,6 @@ package
 		{
 			//Elevator collision detection is non-standard: if a sprite is standing on top of the elevator
 			//then give it a downward velocity to keep it glued to the elevator.
-			
-			// TODO: We need to fix the elevator handling.
-			/*var elevator:Platform = platforms.members[0]; //yeah that's a hardcoded index...
-			for each (var player:Player in players.members) {
-				if (FlxG.collide(elevator, player) && player.isTouching(FlxObject.FLOOR))
-					player.velocity.y = elevator.maxVelocity.y;
-			}
-			for each (var box:Box in boxes.members) {
-				if (FlxG.collide(elevator, box) && box.isTouching(FlxObject.FLOOR))
-					box.velocity.y = elevator.maxVelocity.y;
-			}*/
-			
 			for each (var platform:Platform in platforms.members) {
 				if (platform.maxVelocity.y != 0) {
 					for each (var player:Player in players.members) {
@@ -341,16 +325,6 @@ package
 				//zone.makeGraphic(zone.width, zone.height, player.getColour() | 0xff002222);
 				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0x55000000); //0xffaa1111 - 
 				zones.add(zone);
-			}
-		}
-		
-		public function addToMasterMap(mapType:int) : void {
-			switch (mapType) {
-				case (BASIC_MAP):	
-					var layerMap:FlxTilemap = new FlxTilemap();
-					layerMap.loadMap(new BasicMap, BasicTiles, 16, 16, FlxTilemap.OFF, 0, 1, 1);
-					masterMap.add(layerMap);
-					break;
 			}
 		}
 		
