@@ -10,23 +10,21 @@ package
 	import flash.events.*;
 	
 	public class PlayState extends FlxState {
-		//animations
-		[Embed(source = "sprites/hop_right_16x24_red.png")] protected static const AnimateWalkRed:Class;
-		[Embed(source = "sprites/hop_right_16x24_blue.png")] protected static const AnimateWalkBlue:Class;
+		[Embed(source = "levels/mapCSV_Basic_Map1.csv", mimeType = "application/octet-stream")] public var BasicMap:Class;
+		[Embed(source = "levels/Basic.png")] public var BasicTiles:Class;
+		public static const BASIC_MAP:int = 0;
 		
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
-		protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xff22dc22, walkAnimation: AnimateWalkRed},
-												   { x: FlxG.width * 9 / 10, y: 370, color:0xffdc2222, walkAnimation: AnimateWalkBlue} ];
-
-		
-		public var level:Level;
-		
+	
+		//public var level:Level;
+		public var levelData:Object;
 		//Group together objects
 		public var players:FlxGroup;
 		public var boxes:FlxGroup;
 		public var powerUps:FlxGroup;
 		public var platforms:FlxGroup;
+		public var masterMap:FlxGroup;
 		public var zones:FlxGroup;
 		public var scoreboard:FlxText;
 		public var roundTime:FlxText;
@@ -46,8 +44,9 @@ package
 		//tiles
 		//[Embed(source = "textures/default_tiles.png")] private var DefaultTiles:Class;
 		
-		public function PlayState(goal:int)
+		public function PlayState(data:Object, goal:int)
 		{
+			levelData = data;
 			mode = goal;
 		}
 		
@@ -68,9 +67,8 @@ package
 			add(scoreboard);
 			
 			//TODO: add menu to handle level selection
-			level = new Level("basic");
-			//level = new Level("ray_test_map");
-			level.initialize();
+			//level = new Level();
+			//levelData = level.levelData;
 			
 			players = new FlxGroup();
 			zones = new FlxGroup();
@@ -80,66 +78,43 @@ package
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
-
-			//boxes.add(new Box(20, 300, 0));
-			//boxes.add(new Box(35, 300, 1));
-			//boxes.add(new Box(230, 300, 2));
-			boxes.add(new Box(FlxG.width * 1 / 2 - 25, 40, 0));
-			boxes.add(new Box(FlxG.width * 1 / 2 - 15, 10, 1)); 
-			boxes.add(new Box(FlxG.width * 1 / 2 - 5, 40, 2));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 5, 10, 3));
-			boxes.add(new Box(FlxG.width * 1 / 2 + 15, 40, 4));
+	
+			var index:int = 0 ;
+			for each(var boxinfo:Object in levelData.boxes) {
+				boxes.add(new Box(boxinfo.x, boxinfo.y, index));
+				index++;
+			}
 			add(boxes);
 			
 			powerUps = new FlxGroup();
 			createPowerUps();
 			add(powerUps);
 			
+			masterMap = new FlxGroup();
+			
+			for each (var map:Object in levelData.maps) {
+				addToMasterMap(map.map_type);
+			}
+			add(masterMap);
+			
 			//add the moving platforms 
 			//TODO: all this platform code needs to be cleaned up.
 			//First step: move the path creation to an addPath() function
 			platforms = new FlxGroup();
-			//first add an elevator
-			var elevator:Platform
+
+			for each(var platforminfo:Object in levelData.platforms) {
+				var newPlatform:Platform = new Platform(new FlxPoint(platforminfo.start_x, platforminfo.start_y), // start
+														new FlxPoint(platforminfo.end_x, platforminfo.end_y), // end
+														platforminfo.circuitTime, // circuitTime
+														platforminfo.offset, // offset
+														platforminfo.width, // width
+														platforminfo.height, // height
+														clock);
 			
-			// This has way too many parameters. In the future though, this should all be contained in a map file I think.
-			elevator = new Platform(new FlxPoint(FlxG.width / 2, FlxG.height - 160), // start
-									new FlxPoint(FlxG.width / 2, 250), // end
-									2500, // circuitTime
-									0, // initialPosition
-									80, // width
-									16, // height
-									clock); //TODO: ugh, not so many heuristic numbers floating around here
-									
-			elevator.maxVelocity.x = 120;
-			elevator.maxVelocity.y = 100;
-			
-			platforms.add(elevator);
-			
-			//we also want some moving platforms
-			var plat_y:int = 225; //height of these platforms... god this code is ugly
-			
-			var plat1:Platform;
-			plat1 = new Platform(new FlxPoint(100, plat_y), // start
-								new FlxPoint(FlxG.width / 2 - 120, plat_y), // end
-								2500, // circuitTime
-								0, // offset
-								80, //width
-								16, // height
-								clock);
-			plat1.maxVelocity.x = 60;
-			platforms.add(plat1);
-			
-			var plat2:Platform;
-			plat2 = new Platform(new FlxPoint(FlxG.width / 2 + 120, plat_y), // start
-								new FlxPoint(FlxG.width - 100, plat_y), // end
-								2500, // circuitTime
-								1, // offset
-								80, // width
-								16, // height
-								clock);
-			plat2.maxVelocity.x = 60;
-			platforms.add(plat2);
+				newPlatform.maxVelocity.x = platforminfo.maxVelocity_x;
+				newPlatform.maxVelocity.y = platforminfo.maxVelocity_y;
+				platforms.add(newPlatform);
+			}
 			add(platforms);
 			
 			FlxG.playMusic(Music);
@@ -262,7 +237,7 @@ package
 				}
 			}
 			
-			FlxG.collide(level.masterLevel, boxes);
+			FlxG.collide(masterMap, boxes);
 			FlxG.collide(platforms, boxes);
 			FlxG.collide(boxes, boxes);
 		}
@@ -300,7 +275,7 @@ package
 			//then give it a downward velocity to keep it glued to the elevator.
 			
 			// TODO: We need to fix the elevator handling.
-			var elevator:Platform = platforms.members[0]; //yeah that's a hardcoded index...
+			/*var elevator:Platform = platforms.members[0]; //yeah that's a hardcoded index...
 			for each (var player:Player in players.members) {
 				if (FlxG.collide(elevator, player) && player.isTouching(FlxObject.FLOOR))
 					player.velocity.y = elevator.maxVelocity.y;
@@ -308,6 +283,19 @@ package
 			for each (var box:Box in boxes.members) {
 				if (FlxG.collide(elevator, box) && box.isTouching(FlxObject.FLOOR))
 					box.velocity.y = elevator.maxVelocity.y;
+			}*/
+			
+			for each (var platform:Platform in platforms.members) {
+				if (platform.maxVelocity.y != 0) {
+					for each (var player:Player in players.members) {
+						if (FlxG.collide(platform, player) && player.isTouching(FlxObject.FLOOR))
+							player.velocity.y = platform.maxVelocity.y;
+					}
+					for each (var box:Box in boxes.members) {
+						if (FlxG.collide(platform, box) && box.isTouching(FlxObject.FLOOR))
+							box.velocity.y = platform.maxVelocity.y;
+					}
+				}
 			}
 		}
 		
@@ -333,7 +321,7 @@ package
 				}
 			}
 			
-			FlxG.collide(level.masterLevel, players);
+			FlxG.collide(masterMap, players);
 			FlxG.collide(platforms, players);
 		}
 		
@@ -343,9 +331,9 @@ package
 		protected function createPlayers():void 
 		{
 			//add two players for now
-			players.add(new ActivePlayer(startInfo[0].x, startInfo[0].y, 1, startInfo[0].color, null, wasdControls, startInfo[0].walkAnimation));
-			players.add(new ActivePlayer(startInfo[1].x, startInfo[1].y, 2, startInfo[1].color, null, arrowControls, startInfo[1].walkAnimation));
-						
+			players.add(new ActivePlayer(levelData.startInfo[0].x, levelData.startInfo[0].y, 1, levelData.startInfo[0].color, null, wasdControls, levelData.startInfo[0].walkAnimation));
+			players.add(new ActivePlayer(levelData.startInfo[1].x, levelData.startInfo[1].y, 2, levelData.startInfo[1].color, null, arrowControls, levelData.startInfo[1].walkAnimation));
+			
 			//each player has a home zone that they're trying to fill up with blocks,
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
 			for each (var player:Player in players.members) {
@@ -353,6 +341,16 @@ package
 				//zone.makeGraphic(zone.width, zone.height, player.getColour() | 0xff002222);
 				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0x55000000); //0xffaa1111 - 
 				zones.add(zone);
+			}
+		}
+		
+		public function addToMasterMap(mapType:int) : void {
+			switch (mapType) {
+				case (BASIC_MAP):	
+					var layerMap:FlxTilemap = new FlxTilemap();
+					layerMap.loadMap(new BasicMap, BasicTiles, 16, 16, FlxTilemap.OFF, 0, 1, 1);
+					masterMap.add(layerMap);
+					break;
 			}
 		}
 		
@@ -398,10 +396,11 @@ package
 		 * Create all the powerups at the start of the game.
 		 */
 		protected function createPowerUps():void {
-			powerUps.add(new SpeedBoost(40, 340, 1, clock));
-			powerUps.add(new SpeedBoost(FlxG.width - 50, 340, 2, clock));
+			var index:int = 0;
+			for each (var speedBoost:Object in levelData.powerUps.speedBoosts) {
+				powerUps.add(new SpeedBoost(speedBoost.x, speedBoost.y, index, clock));
+			}	
 		}
-		
 		/**
 		 * Collide each of the players with the powerups and trigger them.
 		 */
@@ -472,7 +471,6 @@ package
 					FlxG.switchState( new GameOverState(mode, null, -1, -1));
 				}
 			}
-			
 		}
 	}
 }
