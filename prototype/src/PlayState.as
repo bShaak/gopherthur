@@ -16,8 +16,8 @@ package
 		
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
-		protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xff22dc22, walkAnimation: AnimateWalkRed},
-												   { x: FlxG.width * 9 / 10, y: 370, color:0xffdc2222, walkAnimation: AnimateWalkBlue} ];
+		protected static const startInfo:Array = [ { x: FlxG.width / 10, y: 370, color:0xaa22dc22, walkAnimation: AnimateWalkRed},
+												   { x: FlxG.width * 9 / 10, y: 370, color:0xaadc2222, walkAnimation: AnimateWalkBlue} ];
 
 		
 		public var level:Level;
@@ -81,12 +81,12 @@ package
 			//create the goal boxes
 			boxes = new FlxGroup();
 
-			/*boxes.add(new Box(20, 300, 0));
+			boxes.add(new Box(20, 300, 0));
 			boxes.add(new Box(35, 300, 1));
-			boxes.add(new Box(230, 300, 2));*/
-			boxes.add(new Box(FlxG.width * 1 / 2 - 25, 40, 0));
-			boxes.add(new Box(FlxG.width * 1 / 2 - 15, 10, 1)); 
-			boxes.add(new Box(FlxG.width * 1 / 2 - 5, 40, 2));
+			boxes.add(new Box(230, 300, 2));
+			//boxes.add(new Box(FlxG.width * 1 / 2 - 25, 40, 0));
+			//boxes.add(new Box(FlxG.width * 1 / 2 - 15, 10, 1)); 
+			//boxes.add(new Box(FlxG.width * 1 / 2 - 5, 40, 2));
 			boxes.add(new Box(FlxG.width * 1 / 2 + 5, 10, 3));
 			boxes.add(new Box(FlxG.width * 1 / 2 + 15, 40, 4));
 			add(boxes);
@@ -350,8 +350,7 @@ package
 			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
 			for each (var player:Player in players.members) {
 				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 53, 100, 100, player);
-				//zone.makeGraphic(zone.width, zone.height, player.getColour() | 0xff002222);
-				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0x55000000); //0xffaa1111 - 
+				zone.makeGraphic(zone.width, zone.height, player.getColour()); 
 				zones.add(zone);
 			}
 		}

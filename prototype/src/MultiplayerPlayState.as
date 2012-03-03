@@ -192,7 +192,7 @@ package
 			}
 			players.add(player);
 			var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100, player);
-			zone.makeGraphic(zone.width, zone.height, 0xffaa1111 - 0xbb000000);//player.getColour() - 0xbb000000);
+			zone.makeGraphic(zone.width, zone.height, player.getColour());
 			zones.add(zone);
 			
 			// If we have added every player, we are ready to start.
@@ -234,6 +234,7 @@ package
 		 * @param	winner
 		 */
 		override protected function endGame(winner:Player):void {
+			resetGame();
 			if (winner is ActivePlayer) {
 				connection.send("gameover", winner.id, roundId);
 			}
