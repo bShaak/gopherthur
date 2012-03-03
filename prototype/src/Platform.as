@@ -9,6 +9,8 @@ package
 	 
 	public class Platform extends FlxSprite
 	{
+		[Embed(source = "/textures/metal.png")] private var MetalTexture:Class;
+		
 		private var clock:Clock;
 		private var pathStart:FlxPoint;
 		private var pathEnd:FlxPoint;
@@ -35,6 +37,7 @@ package
 			
 			//this.makeGraphic(plat_width, plat_height, 0xffaaaaaa);
 			this.makeGraphic(plat_width, plat_height, 0xffcd6600);
+			this.loadGraphic(MetalTexture, false, false, plat_width, plat_height);
 			
 			// note, width and height are not set properly until after makeGraphic
 			this.pathStart = new FlxPoint(start.x - width / 2, start.y - height / 2);
