@@ -30,8 +30,11 @@ package
 			
 			ip = new FlxInputText(10, 40, 220, 15, "127.0.0.1", 0x000000, null, 15);
 			add(ip);
-			startButton = new FlxButton(240, 40, "START", startSetup);
+			startButton = new FlxButtonBig(240, 35, null, startSetup);
 			add(startButton);
+			var startButtonLabel:FlxText = new FlxText(284, 44, 80, "START");
+			startButtonLabel.setFormat(null, 15, 0x000000, "center");
+			add(startButtonLabel);
 		}
 		
 		private function startSetup():void {
