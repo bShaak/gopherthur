@@ -148,7 +148,12 @@ namespace BoxSpring {
 
         private void RestartGame()
         {
-            masterController = Players.GetEnumerator().Current;
+            // This is dumb, but the player iterator seems to work strangely.
+            foreach (Player p in Players)
+            {
+                masterController = p;
+                break;
+            }
             Broadcast("reset");
         }
 
@@ -353,7 +358,7 @@ namespace BoxSpring {
                         Box b = boxes[boxId];
 
                         // Successfully confirm the message.
-                        if (messageId >= b.messageId && player != b.controller)
+                        if (messageId >= b.messageId && b.heldForPlayer && player != b.controller)
                         {
                             Console.WriteLine("Player " + player.Id + " sucessfully confirms for box " + boxId);
                             b.messageId = -1;

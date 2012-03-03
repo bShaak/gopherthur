@@ -27,8 +27,6 @@ package
 		[Embed(source = "../mp3/jump_new.mp3")] protected var Jump:Class;
 		[Embed(source = "../mp3/throw.mp3")] protected var Throw:Class;
 		
-
-		
 		public function Player(x:Number, y:Number, id:int, color:int, walkAnimation:Class) 
 		{
 			super(x, y);

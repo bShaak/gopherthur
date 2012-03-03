@@ -10,7 +10,6 @@ package
 	import flash.events.*;
 	
 	public class PlayState extends FlxState {
-		public static const BASIC_MAP:int = 0;
 		
 		protected static const wasdControls:Controls = new Controls("W", "A", "S", "D");
 		protected static const arrowControls:Controls = new Controls("UP", "LEFT", "DOWN", "RIGHT");
@@ -38,9 +37,6 @@ package
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
 		[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
-		
-		//tiles
-		//[Embed(source = "textures/default_tiles.png")] private var DefaultTiles:Class;
 		
 		public function PlayState(data:Object, goal:int)
 
@@ -124,7 +120,7 @@ package
 			}
 			add(platforms);
 			
-			FlxG.playMusic(Music);
+			//FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
@@ -278,15 +274,22 @@ package
 		
 		private function handleElevatorCollisions():void 
 		{
-			//Elevator collision detection is non-standard: if a sprite is standing on top of the elevator
-			//then give it a downward velocity to keep it glued to the elevator.
 			for each (var platform:Platform in platforms.members) {
-				if (platform.maxVelocity.y != 0) {
-					for each (var player:Player in players.members) {
-						if (FlxG.collide(platform, player))  
-							player.velocity.y = platform.maxVelocity.y * 0.7;  // this fixes the elvator bug somehow (ras)
+				for each (var player:Player in players.members) {
+					if (FlxG.collide(platform, player)) {
+						//Elevator collision detection is non-standard: if a sprite is standing on top of the elevator
+						//then give it a downward velocity to keep it glued to the elevator.
+						if (platform.maxVelocity.y != 0) {
+							player.velocity.y = platform.maxVelocity.y * 0.7; // this fixes the elvator bug somehow (ras)
+						}
+						//Players get squished if stuck between moving platform and a wall
+						else if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) {
+							respawnPlayer(player);
+						}
 					}
-					for each (var box:Box in boxes.members) {
+				}
+				for each (var box:Box in boxes.members) {
+					if (platform.maxVelocity.y != 0) {
 						if (FlxG.collide(platform, box) && box.isTouching(FlxObject.FLOOR))
 							box.velocity.y = platform.maxVelocity.y;
 					}
@@ -342,7 +345,7 @@ package
 				zones.add(zone);
 			}
 		}
-		
+
 		/**
 		 * Run any logic necessary after the create function is called.
 		 */
