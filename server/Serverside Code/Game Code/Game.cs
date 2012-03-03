@@ -67,6 +67,12 @@ namespace BoxSpring {
         /// </summary>
         public void SwitchMasterController()
         {
+            // Don't switch if disabled.
+            if (masterController == null)
+            {
+                return;
+            }
+
             foreach (Player p in Players)
             {
                 if (p != masterController)
@@ -133,6 +139,12 @@ namespace BoxSpring {
             // Confirm that all players are ready to start adding the other players to the level
             allConfirm("readyToAddPlayers", new UponConfirm(AddPlayers));
 
+        }
+
+        private void RestartGame()
+        {
+            masterController = Players.GetEnumerator().Current;
+            Broadcast("reset");
         }
 
         /// <summary>
@@ -362,7 +374,14 @@ namespace BoxSpring {
                         if (round == roundId)
                         {
                             roundId++;
+                            foreach (Box b in boxes)
+                            {
+                                b.heldForPlayer = false;
+                                b.controller = null;
+                            }
+                            masterController = null;
                             Broadcast("gameover", winner);
+                            allConfirm("gameover", new UponConfirm(RestartGame));
                         }
                         break;
                     }

@@ -18,7 +18,7 @@ package
 		private var roundId:int = 0;
 		
 		public function MultiplayerPlayState(goal:int, connection:Connection, playerId:int, playerCount:int) {
-			super(goal);
+			super(Level.levelData, goal);
 			this.connection = connection;
 			this.playerId = playerId;
 			this.playerCount = playerCount;
@@ -41,6 +41,7 @@ package
 			connection.addMessageHandler("boxpos", handleBoxPosMessage);
 			connection.addMessageHandler("gameover", handleGameOverMessage);
 			connection.addMessageHandler("respawnplayer", handleRepawnPlayerMessage);
+			connection.addMessageHandler("reset", handleResetMessage);
 			connection.send("confirm", "readyToAddPlayers");
 		}
 		
@@ -176,10 +177,11 @@ package
 			var id:int = m.getInt(0);
 			var playerIndex:int = m.getInt(1);
 			var activePlayer:Boolean = id == playerId;
-			var x:int = startInfo[playerIndex].x;
-			var y:int = startInfo[playerIndex].y;
-			var color:int = startInfo[playerIndex].color;
-			var walkAnimation:Class = startInfo[playerIndex].walkAnimation;
+
+			var x:int = levelData.startInfo[playerIndex].x;
+			var y:int = levelData.startInfo[playerIndex].y;
+			var color:int = levelData.startInfo[playerIndex].color;
+			var walkAnimation:Class = levelData.startInfo[playerIndex].walkAnimation;
 			
 			// Create the new player.
 			var player:Player;
@@ -191,8 +193,8 @@ package
 				player = new Player(x, y, id, color, walkAnimation);
 			}
 			players.add(player);
-			var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 50, 100, 100, player);
-			zone.makeGraphic(zone.width, zone.height, player.getColour());
+			var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 53, 100, 100, player);
+			zone.makeGraphic(zone.width, zone.height, player.getColour() - 0x55000000);
 			zones.add(zone);
 			
 			// If we have added every player, we are ready to start.
@@ -248,6 +250,10 @@ package
 			var winner:Player = getPlayer(m.getInt(0));
 			winner.incrementScore();
 			resetGame();
+			connection.send("confirm", "gameover");
+		}
+		
+		private function handleResetMessage(m:Message):void {
 			roundId++;
 		}
 		

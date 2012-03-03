@@ -32,6 +32,9 @@ package
 			add(ip);
 			startButton = new FlxButton(240, 40, "START", startSetup);
 			add(startButton);
+			/*var startButtonLabel:FlxText = new FlxText(280, 40, 80, "START");
+			startButtonLabel.setFormat(null, 12);
+			add(startButtonLabel);*/
 		}
 		
 		private function startSetup():void {
