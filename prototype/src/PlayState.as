@@ -86,7 +86,7 @@ package
 			
 			for each (var map:Object in levelData.maps) {
 				var layerMap:FlxTilemap = new FlxTilemap();
-				layerMap.loadMap(new map.layout, map.tilemap, 16, 16, FlxTilemap.OFF, 0, 1, 1);
+				layerMap.loadMap(new map.layout, map.texture, 16, 16, FlxTilemap.OFF, 0, 1, 1);
 				masterMap.add(layerMap);
 			}
 			add(masterMap);

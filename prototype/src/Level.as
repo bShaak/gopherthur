@@ -21,8 +21,8 @@ package
 		public static var levelData:Object = { startInfo: [ { x: FlxG.width / 10, y: 370, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
 															{ x: FlxG.width * 9 / 10, y: 370, color:0xffaa1111, walkAnimation: AnimateWalkRed } ], //player 2
 									
-									maps: [ { layout: BasicMap, tilemap: BasicTiles  } ],			 
-												 
+									maps: [ { layout: BasicMap, texture: BasicTiles  } ],	//layout: csv file 
+																							//texture: image file containing the tile textures
 									bg_color: 0xff66cdaa,
 									
 									boxes: [ { x:FlxG.width * 1 / 2 - 25, y:40 }, //initial box positions
@@ -71,7 +71,7 @@ package
 									startInfo: [ { x: 6*16, y: 24*16, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
 											     { x: 34*16, y: 24*16, color:0xffaa1111, walkAnimation: AnimateWalkRed } ], //player 2
 									
-									maps: [ { layout: SkyscraperTileMap, tilemap: SkyscraperTextures } ],			 
+									maps: [ { layout: SkyscraperTileMap, texture: SkyscraperTextures } ],			 
 											 
 									bg_color: 0xff8AA37B,
 									
