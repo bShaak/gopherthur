@@ -86,7 +86,7 @@ package
 			
 			for each (var map:Object in levelData.maps) {
 				var layerMap:FlxTilemap = new FlxTilemap();
-				layerMap.loadMap(new map.layout, map.tilemap, 16, 16, FlxTilemap.OFF, 0, 1, 1);
+				layerMap.loadMap(new map.layout, map.texture, 16, 16, FlxTilemap.OFF, 0, 1, 1);
 				masterMap.add(layerMap);
 			}
 			add(masterMap);
@@ -274,7 +274,7 @@ package
 							player.velocity.y = platform.maxVelocity.y * 0.7; // this fixes the elvator bug somehow (ras)
 						}
 						//Players get squished if stuck between moving platform and a wall
-						else if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) {
+						if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) {
 							respawnPlayer(player);
 						}
 					}
