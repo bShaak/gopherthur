@@ -75,11 +75,11 @@ package
 											 
 									bg_color: 0xff8AA37B,
 									
-									boxes: [ { x: 7*16, y: 3*16 }, //initial box positions
+									boxes: [ { x: 5*16, y: 3*16 }, //initial box positions
 											 { x: 13*16, y: 3*16 },
 											 { x: 20*16, y: 3*16 },
 											 { x: 26*16, y: 3*16 },
-											 { x: 32*16, y: 3*16 },],
+											 { x: 34*16, y: 3*16 },],
 											 
 									platforms: [ { start_x: 2*16, //lower left sweeper
 												   start_y: 15*16,
@@ -89,8 +89,8 @@ package
 												   offset: 0,
 												   width: 32,
 												   height: 6*16,
-												   maxVelocity_x: 120,
-												   maxVelocity_y: 100 },
+												   maxVelocity_x: 0,
+												   maxVelocity_y: 0 },
 												 { start_x: 38*16, //lower right sweeper
 												   start_y: 15*16,
 												   end_x: 24*16,
@@ -109,7 +109,7 @@ package
 												   offset: 0,
 												   width: 32,
 												   height: 32,
-												   maxVelocity_x: 60,
+												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 } ],   
 												 
 									 powerUps:  {

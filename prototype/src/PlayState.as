@@ -274,7 +274,7 @@ package
 							player.velocity.y = platform.maxVelocity.y * 0.7; // this fixes the elvator bug somehow (ras)
 						}
 						//Players get squished if stuck between moving platform and a wall
-						else if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) {
+						if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) {
 							respawnPlayer(player);
 						}
 					}
