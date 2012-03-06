@@ -78,7 +78,7 @@ package
 			printMes("Connected to player.io");
 				
 			//Set developmentsever (Comment out to connect to your server online)
-			//client.multiplayer.developmentServer = ip.text + ":8184";
+			client.multiplayer.developmentServer = ip.text + ":8184";
 				
 			getRoom();
 		}

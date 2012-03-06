@@ -137,6 +137,7 @@ package
 		}
 		
 		private function handleBoxPosMessage(m:Message):void {
+			/*
 			var box:Box = getBox(m.getInt(0));
 			var x:int = m.getInt(1);
 			var y:int = m.getInt(2);
@@ -146,6 +147,7 @@ package
 			box.y = y;
 			box.velocity.x = vx;
 			box.velocity.y = vy;
+			*/
 		}
 		
 		override protected function boxPickedup(player:Player, box:Box):void {
@@ -170,6 +172,22 @@ package
 			p.y = y;
 			p.velocity.x = vx;
 			p.velocity.y = vy;
+			
+			var boxMask:int = m.getInt(5);
+			var j:int = 6;
+			for (var i:int = 0; i < boxes.members.length; i++) {
+				var box:Box = boxes.members[i];
+				if (box != null && (boxMask & 1 << i)) {
+					x = m.getInt(j++);
+					y = m.getInt(j++);
+					vx = m.getInt(j++);
+					vy = m.getInt(j++);
+					box.x = x;
+					box.y = y;
+					box.velocity.x = vx;
+					box.velocity.y = vy;
+				}
+			}
 		}
 		
 		override protected function createClock() : Clock {
@@ -224,10 +242,17 @@ package
 		 */
 		private function sendInfo():void {
 			if (connection.connected) {
-				connection.send(MessageType.POS, currentPlayer.id, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y));
-				for each(var box:Box in boxes.members) {
-					connection.send(MessageType.BOX_POS, box.id, int(box.x), int(box.y), int(box.velocity.x), int(box.velocity.y));
+				var info:Array = [MessageType.POS, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y)];
+				for (var i:int = 0; i < boxes.members.length; i++) {
+					var box:Box = boxes.members[i];
+						if (box != null) {
+						info.push(int(box.x));
+						info.push(int(box.y));
+						info.push(int(box.velocity.x));
+						info.push(int(box.velocity.y));
+					}
 				}
+				connection.send.apply(connection, info);
 			}
 		}
 		

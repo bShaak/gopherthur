@@ -261,29 +261,66 @@ namespace BoxSpring {
                 case POS:
                     {
                         // Upon receiving a position message, update the game state and broadcast it.
-                        int id = message.GetInt(0);
-                        int x = message.GetInt(1);
-                        int y = message.GetInt(2);
-                        int vx = message.GetInt(3);
-                        int vy = message.GetInt(4);
+                        int x = message.GetInt(0);
+                        int y = message.GetInt(1);
+                        int vx = message.GetInt(2);
+                        int vy = message.GetInt(3);
 
-                        //Console.WriteLine(boxID + " " + boxX + " " + boxY);
+                        int avCount = 0;
+                        int boxMask = 0;
 
-                        /*player.x = x;
-                        player.y = y;
-                        player.vx = vx;
-                        player.vy = vy;*/
+                        // Count the boxes for which the message should be sent.
+                        for (int i = 0; i < boxCount; i++)
+                        {
+                            Box b = GetBox(i);
+
+                            if ((b.heldForPlayer && player == b.controller) ||
+                                (!b.heldForPlayer && player == masterController))
+                            {
+                                avCount++;
+                                boxMask = boxMask | 1 << i;
+                            }
+                        }
+                        object[] info = new object[6 + 4 * avCount];
+                        info[0] = player.Id;
+                        info[1] = x;
+                        info[2] = y;
+                        info[3] = vx;
+                        info[4] = vy;
+                        info[5] = boxMask;
+
+                        int j = 6;
+                        for (int i = 0; i < boxCount; i++)
+                        {
+                            Box b = GetBox(i);
+
+                            if ((b.heldForPlayer && player == b.controller) ||
+                                (!b.heldForPlayer && player == masterController))
+                            {
+                                uint os = 4 + 4 * checked((uint)i);
+                                x = message.GetInt(0 + os);
+                                y = message.GetInt(1 + os);
+                                vx = message.GetInt(2 + os);
+                                vy = message.GetInt(3 + os);
+
+                                info[j++] = x;
+                                info[j++] = y;
+                                info[j++] = vx;
+                                info[j++] = vy;
+
+                            }
+                        }
 
                         foreach (Player p in Players)
                         {
-                            if (p.Id != id)
-                                p.Send(POS, id, x, y, vx, vy);
+                            if (p != player)
+                                p.Send(POS, info);
                         }
-                        //Broadcast("pos", player.Id, x, y, vx, vy);
                         break;
                     }
                 case BOX_POS:
                     {
+                        /*
                         int id = message.GetInt(0);
                         int x = message.GetInt(1);
                         int y = message.GetInt(2);
@@ -301,6 +338,7 @@ namespace BoxSpring {
                                     p.Send(BOX_POS, id, x, y, vx, vy);
                             }
                         }
+                         */
                         break;
                     }
                 case BOX_PICKUP:
@@ -384,10 +422,6 @@ namespace BoxSpring {
                             b.messageId = -1;
                             b.heldForPlayer = false;
                             b.controller = null;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Confirmation failed due to newer message");
                         }
                         break;
                     }
