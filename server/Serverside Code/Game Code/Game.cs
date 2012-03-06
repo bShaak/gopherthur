@@ -23,9 +23,15 @@ namespace BoxSpring {
     public class Box {
         public Player holder;
 
+        // The player who locked the block.
         public Player controller;
+        // The last message received for the block.
         public int messageId;
+        // Is the block locked until a message is confirmed?
         public Boolean heldForPlayer = false;
+        // Is the position for the block held for the controller?
+        // If so, controller gets priority for position.
+        public Boolean positionHeld = false;
         public Box()
         {
         }
@@ -231,6 +237,21 @@ namespace BoxSpring {
             return null;
         }
 
+        public void timedUnlock(Box b, int message)
+        {
+            Timer t = null;
+            t = AddTimer(delegate {
+                t.Stop();
+                Console.WriteLine("Unlock");
+                if (message == b.messageId)
+                {
+                    Console.WriteLine("Triggered");
+                    b.positionHeld = false;
+                    b.controller = null;
+                }
+            }, 500);
+        }
+
 		/// <summary>
 		/// General message handler.
 		/// </summary>
@@ -274,8 +295,8 @@ namespace BoxSpring {
                         {
                             Box b = GetBox(i);
 
-                            if ((b.heldForPlayer && player == b.controller) ||
-                                (!b.heldForPlayer && player == masterController))
+                            if ((b.positionHeld && player == b.controller) ||
+                                (!b.positionHeld && player == masterController))
                             {
                                 avCount++;
                                 boxMask = boxMask | 1 << i;
@@ -294,8 +315,8 @@ namespace BoxSpring {
                         {
                             Box b = GetBox(i);
 
-                            if ((b.heldForPlayer && player == b.controller) ||
-                                (!b.heldForPlayer && player == masterController))
+                            if ((b.positionHeld && player == b.controller) ||
+                                (!b.positionHeld && player == masterController))
                             {
                                 uint os = 4 + 4 * checked((uint)i);
                                 x = message.GetInt(0 + os);
@@ -364,8 +385,10 @@ namespace BoxSpring {
 
                         b.holder = p;
                         b.heldForPlayer = true;
+                        b.positionHeld = true;
                         b.controller = p;
                         b.messageId = messageCount;
+                        timedUnlock(b, messageCount);
 
                         Console.WriteLine("Player " + playerId + " picks up " + boxId);
                         foreach (Player o in Players)
@@ -398,8 +421,10 @@ namespace BoxSpring {
 
                         b.holder = null;
                         b.heldForPlayer = true;
+                        b.positionHeld = true;
                         b.controller = p;
                         b.messageId = messageCount;
+                        timedUnlock(b, messageCount);
 
                         Console.WriteLine("Player " + playerId + " drops " + boxId);
                         foreach (Player o in Players)
@@ -421,7 +446,7 @@ namespace BoxSpring {
                             Console.WriteLine("Player " + player.Id + " sucessfully confirms for box " + boxId);
                             b.messageId = -1;
                             b.heldForPlayer = false;
-                            b.controller = null;
+                            //b.controller = null;
                         }
                         break;
                     }
@@ -436,6 +461,7 @@ namespace BoxSpring {
                             foreach (Box b in boxes)
                             {
                                 b.heldForPlayer = false;
+                                b.positionHeld = false;
                                 b.controller = null;
                             }
                             masterController = null;
@@ -460,8 +486,10 @@ namespace BoxSpring {
                         }
                         b.holder = null;
                         b.heldForPlayer = true;
+                        b.positionHeld = true;
                         b.messageId = messageCount;
                         b.controller = p;
+                        timedUnlock(b, messageCount);
 
                         break;
                     }
