@@ -65,6 +65,12 @@ package
 			player.dropBox();
 			if (!player.pickupBox(box)) {
 				trace("Error: Failed to pickup box from message");
+				if (box.holder != null) {
+					trace("Held by " + box.holder.id);
+				}
+				if (player.hasBox()) {
+					trace("Player holding " + player.boxHeld);
+				}
 			} else {
 				trace("box picked up", box.isAvailable());
 			}
@@ -113,14 +119,17 @@ package
 			}
 			box.lastMessage = messageId;
 			
-			if (player.boxHeld.id != box.id) {
-				trace("Error: Received reject pickup message for box not held");
-			} else {
-				player.dropBox();
+			if (player.hasBox()) {
+				if (player.boxHeld.id != box.id) {
+					trace("Error: Received reject pickup message for box not held");
+				} else {
+					player.dropBox();
+				}
 			}
 		}
 		
 		private function handleRejectDropMessage(m:Message):void {
+			trace("*****************Reject drop message*****************");
 			var player:Player = getPlayer(m.getInt(0));
 			var box:Box = getBox(m.getInt(1));
 			var messageId:int = m.getInt(2);
