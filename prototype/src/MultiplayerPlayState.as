@@ -32,18 +32,18 @@ package
 
 		override protected function afterCreate():void {
 			// Set up the message handlers and confirm that we are ready to add players.
-			connection.addMessageHandler("addPlayer", addPlayer);
-			connection.addMessageHandler("startGame", startGame);
-			connection.addMessageHandler("pos", handlePositionMessage);
-			connection.addMessageHandler("boxpickup", handleBoxPickupMessage);
-			connection.addMessageHandler("boxdrop", handleBoxDropMessage);
-			connection.addMessageHandler("rejectpickup", handleRejectPickupMessage);
-			connection.addMessageHandler("rejectdrop", handleRejectDropMessage);
-			connection.addMessageHandler("boxpos", handleBoxPosMessage);
-			connection.addMessageHandler("gameover", handleGameOverMessage);
-			connection.addMessageHandler("respawnplayer", handleRepawnPlayerMessage);
-			connection.addMessageHandler("reset", handleResetMessage);
-			connection.send("confirm", "readyToAddPlayers");
+			connection.addMessageHandler(MessageType.ADD_PLAYER, addPlayer);
+			connection.addMessageHandler(MessageType.START_GAME, startGame);
+			connection.addMessageHandler(MessageType.POS, handlePositionMessage);
+			connection.addMessageHandler(MessageType.BOX_PICKUP, handleBoxPickupMessage);
+			connection.addMessageHandler(MessageType.BOX_DROP, handleBoxDropMessage);
+			connection.addMessageHandler(MessageType.REJECT_PICKUP, handleRejectPickupMessage);
+			connection.addMessageHandler(MessageType.REJECT_DROP, handleRejectDropMessage);
+			connection.addMessageHandler(MessageType.BOX_POS, handleBoxPosMessage);
+			connection.addMessageHandler(MessageType.GAME_OVER, handleGameOverMessage);
+			connection.addMessageHandler(MessageType.RESPAWN_PLAYER, handleRepawnPlayerMessage);
+			connection.addMessageHandler(MessageType.RESET, handleResetMessage);
+			connection.send(MessageType.CONFIRM, MessageType.READY_TO_ADD_PLAYERS);
 		}
 		
 
@@ -69,7 +69,7 @@ package
 				trace("box picked up", box.isAvailable());
 			}
 			
-			connection.send("confirmboxmes", messageId, box.id);
+			connection.send(MessageType.CONFIRM_BOX_MES, messageId, box.id);
 		}
 		
 		private function handleBoxDropMessage(m:Message):void {
@@ -99,7 +99,7 @@ package
 				player.dropBox();
 			}
 			
-			connection.send("confirmboxmes", messageId, box.id);
+			connection.send(MessageType.CONFIRM_BOX_MES, messageId, box.id);
 		}
 
 		private function handleRejectPickupMessage(m:Message):void {
@@ -150,7 +150,7 @@ package
 		
 		override protected function boxPickedup(player:Player, box:Box):void {
 			super.boxPickedup(player, box);
-			connection.send("boxpickup", player.id, box.id);
+			connection.send(MessageType.BOX_PICKUP, player.id, box.id);
 		}
 
 					
@@ -206,7 +206,7 @@ package
 			
 			// If we have added every player, we are ready to start.
 			if (players.length == playerCount) {
-				connection.send("confirm", "readyToStart");
+				connection.send(MessageType.CONFIRM, MessageType.READY_TO_START);
 			}
 		}
 		
@@ -224,9 +224,9 @@ package
 		 */
 		private function sendInfo():void {
 			if (connection.connected) {
-				connection.send("pos", currentPlayer.id, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y));
+				connection.send(MessageType.POS, currentPlayer.id, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y));
 				for each(var box:Box in boxes.members) {
-					connection.send("boxpos", box.id, int(box.x), int(box.y), int(box.velocity.x), int(box.velocity.y));
+					connection.send(MessageType.BOX_POS, box.id, int(box.x), int(box.y), int(box.velocity.x), int(box.velocity.y));
 				}
 			}
 		}
@@ -245,7 +245,7 @@ package
 		override protected function endGame(winner:Player):void {
 			resetGame();
 			if (winner is ActivePlayer) {
-				connection.send("gameover", winner.id, roundId);
+				connection.send(MessageType.GAME_OVER, winner.id, roundId);
 			}
 		}
 		
@@ -257,7 +257,7 @@ package
 			var winner:Player = getPlayer(m.getInt(0));
 			winner.incrementScore();
 			resetGame();
-			connection.send("confirm", "gameover");
+			connection.send(MessageType.CONFIRM, MessageType.GAME_OVER);
 		}
 		
 		private function handleResetMessage(m:Message):void {
@@ -267,7 +267,7 @@ package
 		override protected function respawnPlayer(player:Player):void {
 			if (player is ActivePlayer) {
 				if (player.hasBox()) {
-					connection.send("respawnplayer", player.id, player.boxHeld.id);
+					connection.send(MessageType.RESPAWN_PLAYER, player.id, player.boxHeld.id);
 				}
 				super.respawnPlayer(player);
 			}
@@ -286,7 +286,7 @@ package
 			}
 			
 			super.respawnPlayer(player);
-			connection.send("confirmboxmes", messageCount, boxId);
+			connection.send(MessageType.CONFIRM_BOX_MES, messageCount, boxId);
 		}
 		
 		override protected function checkGameOver():void {
@@ -307,7 +307,7 @@ package
 			if (player.hasBox()) {
 				var boxId:int = player.boxHeld.id;
 				player.dropBox();
-				connection.send("boxdrop", player.id, boxId, false);
+				connection.send(MessageType.BOX_DROP, player.id, boxId, false);
 			}
 		}
 	}

@@ -78,7 +78,7 @@ package
 			printMes("Connected to player.io");
 				
 			//Set developmentsever (Comment out to connect to your server online)
-			client.multiplayer.developmentServer = ip.text + ":8184";
+			//client.multiplayer.developmentServer = ip.text + ":8184";
 				
 			getRoom();
 		}
@@ -92,8 +92,8 @@ package
 			printMes("Waiting for a second player . . .");
 			this.connection = connection;
 			connection.addDisconnectHandler(handleDisconnect);
-			connection.addMessageHandler("joined", registerId);
-			connection.addMessageHandler("setupGame", setupGame);
+			connection.addMessageHandler(MessageType.JOINED, registerId);
+			connection.addMessageHandler(MessageType.SETUP_GAME, setupGame);
 			
 		}
 		
@@ -104,7 +104,7 @@ package
 		private function registerId(m:Message):void {
 			playerId = m.getInt(0);
 			trace("Ready to start");
-			connection.send("confirm", "readyToSetup");
+			connection.send(MessageType.CONFIRM, MessageType.READY_TO_SETUP);
 		}
 		
 		/**

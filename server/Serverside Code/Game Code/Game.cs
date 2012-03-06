@@ -33,6 +33,26 @@ namespace BoxSpring {
 
 	[RoomType("BoxSpring")]
 	public class GameCode : Game<Player> {
+        private const String READY_TO_SETUP = "a";
+        private const String JOINED = "b";
+        private const String CONFIRM_BOX_MES = "c";
+        private const String BOX_DROP = "d";
+        private const String REJECT_DROP = "e";
+        private const String BOX_PICKUP = "f";
+        private const String REJECT_PICKUP = "g";
+        private const String BOX_POS = "h";
+        private const String POS = "i";
+        private const String CONFIRM = "j";
+        private const String ELAPSED = "k";
+        private const String START_GAME = "l";
+        private const String READY_TO_START = "m";
+        private const String ADD_PLAYER = "n";
+        private const String RESET = "o";
+        private const String READY_TO_ADD_PLAYERS = "p";
+        private const String SETUP_GAME = "q";
+        private const String GAME_OVER = "r";
+        private const String RESPAWN_PLAYER = "s";
+
         private int playerCount = 2; // Number of players in the game. Hardcoded for now.
         private int boxCount = 5; // Hardcoded for now. This will be fixed.
 
@@ -86,7 +106,7 @@ namespace BoxSpring {
 		public override void GameStarted() {
 			Console.WriteLine("Game is started");
             // Get all players to confirm that they have received their id and are ready to begin setup.
-            allConfirm("readyToSetup", new UponConfirm(SetupGame));
+            allConfirm(READY_TO_SETUP, new UponConfirm(SetupGame));
 		}
 
 		public override void GameClosed() {
@@ -96,7 +116,7 @@ namespace BoxSpring {
 		public override void UserJoined(Player player) {
             Console.WriteLine("Player " + player.Id + " joined the room");
             // Notify the new player of their id
-            player.Send("joined", player.Id);
+            player.Send(JOINED, player.Id);
 		}
 
         public override void UserLeft(Player player) {
@@ -133,7 +153,7 @@ namespace BoxSpring {
             }, 1000);
             Console.WriteLine("Starting setup");
 
-            Broadcast("setupGame", playerCount);
+            Broadcast(SETUP_GAME, playerCount);
 
             boxes = new Box[boxCount];
             for (int i = 0; i < boxCount; i++)
@@ -142,7 +162,7 @@ namespace BoxSpring {
             }
 
             // Confirm that all players are ready to start adding the other players to the level
-            allConfirm("readyToAddPlayers", new UponConfirm(AddPlayers));
+            allConfirm(READY_TO_ADD_PLAYERS, new UponConfirm(AddPlayers));
 
         }
 
@@ -154,7 +174,7 @@ namespace BoxSpring {
                 masterController = p;
                 break;
             }
-            Broadcast("reset");
+            Broadcast(RESET);
         }
 
         /// <summary>
@@ -166,12 +186,12 @@ namespace BoxSpring {
             foreach (Player p in Players)
             {
                 Console.WriteLine("Broadcasting add player " + p.Id);
-                Broadcast("addPlayer", p.Id, i);
+                Broadcast(ADD_PLAYER, p.Id, i);
                 i++;
             }
             
             // Confirm that every player has added every other player and start the game.
-            allConfirm("readyToStart", new UponConfirm(StartGame));
+            allConfirm(READY_TO_START, new UponConfirm(StartGame));
         }
 
         /// <summary>
@@ -183,10 +203,10 @@ namespace BoxSpring {
             AddTimer(delegate
             {
                 // Send the elapsed time in milliseconds.
-                Broadcast("elapsed", (int) ((DateTime.Now.Ticks - startTime) / 10000));
+                Broadcast(ELAPSED, (int) ((DateTime.Now.Ticks - startTime) / 10000));
             }, 100);
 
-            Broadcast("startGame");
+            Broadcast(START_GAME);
         }
 
         private void AddTimer(Action action)
@@ -222,7 +242,7 @@ namespace BoxSpring {
 
             switch (message.Type)
             {
-                case "confirm":
+                case CONFIRM:
                     {
                         // TODO: Add error handling for invalid message being confirmed.
                         // Possibly make this solution more robust (ensure that each player can only confirm once).
@@ -238,7 +258,7 @@ namespace BoxSpring {
                         }
                         break;
                     }
-                case "pos":
+                case POS:
                     {
                         // Upon receiving a position message, update the game state and broadcast it.
                         int id = message.GetInt(0);
@@ -257,12 +277,12 @@ namespace BoxSpring {
                         foreach (Player p in Players)
                         {
                             if (p.Id != id)
-                                p.Send("pos", id, x, y, vx, vy);
+                                p.Send(POS, id, x, y, vx, vy);
                         }
                         //Broadcast("pos", player.Id, x, y, vx, vy);
                         break;
                     }
-                case "boxpos":
+                case BOX_POS:
                     {
                         int id = message.GetInt(0);
                         int x = message.GetInt(1);
@@ -278,12 +298,12 @@ namespace BoxSpring {
                             foreach (Player p in Players)
                             {
                                 if (p != player)
-                                    p.Send("boxpos", id, x, y, vx, vy);
+                                    p.Send(BOX_POS, id, x, y, vx, vy);
                             }
                         }
                         break;
                     }
-                case "boxpickup":
+                case BOX_PICKUP:
                     {
                         int playerId = message.GetInt(0);
                         int boxId = message.GetInt(1);
@@ -294,7 +314,7 @@ namespace BoxSpring {
                         if (b.heldForPlayer && b.controller != p)
                         {
                             Console.WriteLine("Pickup action for box ignored");
-                            p.Send("rejectpickup", playerId, boxId, messageCount);
+                            p.Send(REJECT_PICKUP, playerId, boxId, messageCount);
                             return;
                         }
 
@@ -312,11 +332,11 @@ namespace BoxSpring {
                         Console.WriteLine("Player " + playerId + " picks up " + boxId);
                         foreach (Player o in Players)
                         {
-                            o.Send("boxpickup", playerId, boxId, messageCount);
+                            o.Send(BOX_PICKUP, playerId, boxId, messageCount);
                         }
                         break;
                     }
-                case "boxdrop":
+                case BOX_DROP:
                     {
                         int playerId = message.GetInt(0);
                         int boxId = message.GetInt(1);
@@ -328,7 +348,7 @@ namespace BoxSpring {
                         if (b.heldForPlayer && b.controller != p)
                         {
                             Console.WriteLine("Pickup action for box ignored. player: " + playerId + "box " + boxId);
-                            p.Send("rejectdrop", playerId, boxId, messageCount);
+                            p.Send(REJECT_DROP, playerId, boxId, messageCount);
                             return;
                         }
 
@@ -346,12 +366,12 @@ namespace BoxSpring {
                         Console.WriteLine("Player " + playerId + " drops " + boxId);
                         foreach (Player o in Players)
                         {
-                            o.Send("boxdrop", playerId, boxId, messageCount, shouldThrow);
+                            o.Send(BOX_DROP, playerId, boxId, messageCount, shouldThrow);
                         }
                         break;
                     }
 
-                case "confirmboxmes":
+                case CONFIRM_BOX_MES:
                     {
                         int messageId = message.GetInt(0);
                         int boxId = message.GetInt(1);
@@ -371,7 +391,7 @@ namespace BoxSpring {
                         }
                         break;
                     }
-                case "gameover":
+                case GAME_OVER:
                     {
                         int winner = message.GetInt(0);
                         int round = message.GetInt(1);
@@ -385,12 +405,12 @@ namespace BoxSpring {
                                 b.controller = null;
                             }
                             masterController = null;
-                            Broadcast("gameover", winner);
-                            allConfirm("gameover", new UponConfirm(RestartGame));
+                            Broadcast(GAME_OVER, winner);
+                            allConfirm(GAME_OVER, new UponConfirm(RestartGame));
                         }
                         break;
                     }
-                case "respawnplayer":
+                case RESPAWN_PLAYER:
                     {
                         int id = message.GetInt(0);
                         int boxId = message.GetInt(1);
@@ -401,7 +421,7 @@ namespace BoxSpring {
                         {
                             if (o != p)
                             {
-                                o.Send("respawnplayer", id, boxId, messageCount);
+                                o.Send(RESPAWN_PLAYER, id, boxId, messageCount);
                             }
                         }
                         b.holder = null;

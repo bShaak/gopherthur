@@ -18,7 +18,7 @@ package
 		public function Clock(connection:Connection) 
 		{
 			if (connection != null) {
-				connection.addMessageHandler("elapsed", handleElapsedMessage);
+				connection.addMessageHandler(MessageType.ELAPSED, handleElapsedMessage);
 			}
 		}
 		

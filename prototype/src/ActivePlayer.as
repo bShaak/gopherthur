@@ -75,7 +75,7 @@ package
 					var boxId:int = boxHeld.id;
 					throwBox();
 					if (connection != null) {
-						connection.send("boxdrop", id, boxId, true);
+						connection.send(MessageType.BOX_DROP, id, boxId, true);
 					}
 				}
 			}
