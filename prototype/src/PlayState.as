@@ -21,7 +21,7 @@ package
 		public var boxes:FlxGroup;
 		public var powerUps:FlxGroup;
 		public var platforms:FlxGroup;
-		public var masterMap:FlxGroup;
+		public static var masterMap:FlxGroup;
 		public var zones:FlxGroup;
 		public var scoreboard:FlxText;
 		public var roundTime:FlxText;
@@ -70,6 +70,7 @@ package
 			//create the goal boxes
 			boxes = new FlxGroup();
 
+			boxes.add(new Box(20, 300, 0));
 			var index:int = 0 ;
 			for each(var boxinfo:Object in levelData.boxes) {
 				boxes.add(new Box(boxinfo.x, boxinfo.y, index));
@@ -271,7 +272,7 @@ package
 						//Elevator collision detection is non-standard: if a sprite is standing on top of the elevator
 						//then give it a downward velocity to keep it glued to the elevator.
 						if (platform.maxVelocity.y != 0) {
-							player.velocity.y = platform.maxVelocity.y * 0.7; // this fixes the elvator bug somehow (ras)
+							player.velocity.y = platform.maxVelocity.y; 
 						}
 						//Players get squished if stuck between moving platform and a wall
 						if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) {

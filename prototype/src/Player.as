@@ -169,7 +169,7 @@ package
 			return score;
 		}
 
-		protected function positionBox():void 
+		public function positionBox():void // ras: protected
 		{
 			//update held box position
 			if (isHoldingBox) {

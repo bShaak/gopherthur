@@ -37,10 +37,30 @@ package
 			super.update();
 			this.acceleration.x = 0; //keep player from sliding if no button is currently pressed
 			
+					
+			
 			//movement
 			if (controlScheme.left()) {
-				this.acceleration.x = -this.maxVelocity.x * 8;
-				this.facing = FlxObject.LEFT;
+				if (this.boxHeld) {// && FlxG.collide(player.boxHeld, masterMap)) {
+					var boxX:Number;
+					var boxY:Number;
+					
+					if (this.facing == FlxObject.LEFT)
+						boxX = this.getMidpoint().x - this.width;
+					else
+						boxX = this.getMidpoint().x + this.width/2;
+				
+					boxY = this.getMidpoint().y - this.height;
+				
+					if (!this.boxHeld.overlapsAt(boxX - 4, boxY, PlayState.masterMap)) {
+						this.acceleration.x = -this.maxVelocity.x * 8;
+						this.facing = FlxObject.LEFT;
+					}
+				}
+				else {
+					this.acceleration.x = -this.maxVelocity.x * 8;
+					this.facing = FlxObject.LEFT;
+				}
 			}
 			else if (controlScheme.right()) {
 				this.acceleration.x = this.maxVelocity.x * 8;
@@ -79,8 +99,6 @@ package
 					}
 				}
 			}
-			
-			positionBox();
 		}
 	}
 }

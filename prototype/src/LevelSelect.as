@@ -51,8 +51,8 @@ package
 			
 			//img = new ImgButton(imageClass, 40, 30, "basic");
 			// gonna make a new button class to show levels, that is real nice
-			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "GO", play);
-			add(playButton);
+			//playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "GO", play);
+			//add(playButton);
 			
 			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 60, "MAIN MENU", gotoMenu);
 			add(playButton);
@@ -68,14 +68,19 @@ package
 		
 		public function chooseBasic():void {
 			levelSelected = Level.levelData;
+			play();
 		}
 		
 		public function chooseSkyscraper():void {
 			levelSelected = Level.skyscraper;
+			play();
 		}
 		
 		public function play():void
 		{
+			if (!levelSelected)
+				return;
+				
 			if(pID == -1){
 				// collect
 				if (gameMode == 0) {
