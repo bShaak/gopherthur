@@ -264,12 +264,14 @@ package
 					box.reset(box.getSpawn().x, box.getSpawn().y);
 			}
 		}
+		
 		private function handlePlatformCollisions():void 
 		{
 			for each (var platform:Platform in platforms.members) {
 				for each (var player:Player in players.members) {
 					//handle one-way platforms first
 					if (platform.isOneWay()) {
+						//Players should only collide with the top edge of the platform, and only from above.
 						if (player.isAbove(platform)) { 
 							if (FlxG.collide(platform, player)) {
 								player.velocity.y = platform.maxVelocity.y;
