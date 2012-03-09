@@ -20,7 +20,42 @@ package
 										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
 										  //make it easier to read and update. e.g. something with width=2*TW is two tiles wide.
 		
-		public function Level() { }
+		/*
+		 * startInfo: contains information about initial sprite positions
+		 * 		- x: x-coordinate of start position of player
+		 * 		- y: y-coordinate of start position of player
+		 * 		- color: color of player
+		 * 		- walkAnimation: animation of player
+		 * 
+		 * maps: the layout of the level as well as the tile textures that go with each map 
+		 * 		- layout: a csv file containing a tilemap of the level
+		 * 		- texture: tile texture that goes with the layout
+		 * 
+		 * bg_color: background color of the level
+		 * 
+		 * boxes: start positions of the boxes in the level
+		 *  	- x: x-coordinate of the start position
+		 * 		- y: y-coordinate of the start position
+		 * 	
+		 * platforms: moving platform information
+		 *		- start_x: x-coord of the start position
+		 * 		- start_y: y-coord of the start position
+		 * 		- end_x: x-coord of the end point of the platform
+		 * 		- end_y: y-coord of the end point of the platform
+		 * 		- circuitTime: time in milliseconds for a complete circuit of the path (back and forth)
+		 * 		- offset: number between -1 and 1, representing where in the path the platform should start
+		 * 		- width: width of the platform in pixels
+		 * 		- height of playtform in pixels
+		 * 		- maxVelocity_x: maximum velocity of x
+		 * 		- maxVelocity_y: maximum veclocity of y
+		 * 		- oneWay: true or defaults to false if value not present. If true, platform is a one-way platform
+		 *		
+		 * powerUps: list of powerups in the level
+		 *		speedBoosts: positions of speedboosts in the level
+		 * 			- x: x-coordinate of speedboost position
+		 * 			- y: y-coordinate of speedboost position
+		 *
+		*/		
 		
 		public static var levelData:Object = { startInfo: [ { x: FlxG.width / 10, y: 370, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
 															{ x: FlxG.width * 9 / 10, y: 370, color:0xffaa1111, walkAnimation: AnimateWalkRed } ], //player 2
