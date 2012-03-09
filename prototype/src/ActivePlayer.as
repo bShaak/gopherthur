@@ -47,9 +47,7 @@ package
 				this.facing = FlxObject.RIGHT;
 			}
 			
-			//jumping -- handle in three steps, for variable jump height
-			//NOTE i only have it set up for player 1 right now, to compare
-			//with original jumping.
+			//jumping -- handle in steps, for variable jump height
 			if (controlScheme.jump() && this.isTouching(FlxObject.FLOOR)){
 				this.velocity.y = -this.maxVelocity.y / 3;
 				FlxG.play(Jump);
@@ -63,7 +61,7 @@ package
 			if (!controlScheme.jump()) {
 				jumpKeyHeld = false;
 			}
-
+			
 			//box management
 			if (controlScheme.drop()) {
 				if (!isHoldingBox) {

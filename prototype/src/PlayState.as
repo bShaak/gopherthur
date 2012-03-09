@@ -31,6 +31,7 @@ package
 		protected var mode:int;
 		public static const BOX_COLLECT:int = 0;
 		public static const TIMED:int = 1;
+		
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
 		protected var MAX_SCORE:int = 1; //define a score at which the game ends
 		
@@ -103,10 +104,11 @@ package
 														platforminfo.offset, // offset
 														platforminfo.width, // width
 														platforminfo.height, // height
-														clock);
+														clock,
+														platforminfo.oneWay);
 				
-				newPlatform.maxVelocity.x = platforminfo.maxVelocity_x;
-				newPlatform.maxVelocity.y = platforminfo.maxVelocity_y;
+				//newPlatform.maxVelocity.x = platforminfo.maxVelocity_x;
+				//newPlatform.maxVelocity.y = platforminfo.maxVelocity_y;
 				platforms.add(newPlatform);
 			}
 			add(platforms);
@@ -124,7 +126,7 @@ package
 			
 			handlePowerUpTriggering();
 			handleBoxCollisions();
-			handleElevatorCollisions();
+			handlePlatformCollisions();
 			handlePlayerCollisions();
 			
 			respawnPlayers();
@@ -262,26 +264,34 @@ package
 					box.reset(box.getSpawn().x, box.getSpawn().y);
 			}
 		}
-		
-		private function handleElevatorCollisions():void 
+		private function handlePlatformCollisions():void 
 		{
 			for each (var platform:Platform in platforms.members) {
 				for each (var player:Player in players.members) {
-					if (FlxG.collide(platform, player)) {
-						//Elevator collision detection is non-standard: if a sprite is standing on top of the elevator
-						//then give it a downward velocity to keep it glued to the elevator.
-						if (platform.maxVelocity.y != 0) {
-							player.velocity.y = platform.maxVelocity.y * 0.7; // this fixes the elvator bug somehow (ras)
+					//handle one-way platforms first
+					if (platform.isOneWay()) {
+						if (player.isAbove(platform)) { 
+							if (FlxG.collide(platform, player)) {
+								player.velocity.y = platform.maxVelocity.y;
+							}
+						}
+					}
+					else if (FlxG.collide(platform, player)) {
+						//If a player collides with an elevator (platform with y velocity), give the player
+						//the platform's max y velocity for two reasons: (1) keeps the player glued to the top
+						//surface, and (2) keeps the player from sticking to the bottom of an elevator on it's down cycle.
+						if (player.isAbove(platform) || player.isBelow(platform)) {
+							player.velocity.y = platform.maxVelocity.y;
 						}
 						//Players get squished if stuck between moving platform and a wall
-						if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) {
+						if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) { //TODO: make this more robust. right now the player must be jumping...
 							respawnPlayer(player);
 						}
 					}
 				}
 				for each (var box:Box in boxes.members) {
-					if (platform.maxVelocity.y != 0) {
-						if (FlxG.collide(platform, box) && box.isTouching(FlxObject.FLOOR))
+					if (FlxG.collide(box, platform)) {
+						if (box.isAbove(platform))
 							box.velocity.y = platform.maxVelocity.y;
 					}
 				}
@@ -311,7 +321,7 @@ package
 			}
 			
 			FlxG.collide(masterMap, players);
-			FlxG.collide(platforms, players);
+			//FlxG.collide(platforms, players);
 		}
 		
 		protected function dropBoxesOnCollision(player:Player):void 

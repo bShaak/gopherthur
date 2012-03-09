@@ -16,6 +16,10 @@ package
 		[Embed(source = "levels/mapCSV_Skyscraper_Map1.csv", mimeType = "application/octet-stream")] public static var SkyscraperTileMap:Class;
 		[Embed(source = "levels/skyscraper_textures.png")] public static var SkyscraperTextures:Class;
 		
+		private static const TW:int = 16; //Tile widths. Basically when you set up anything in the level, you want to align it to the grid, which is 
+										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
+										  //make it easier to read and update. e.g. something with width=2*TW is two tiles wide.
+		
 		public function Level() { }
 		
 		public static var levelData:Object = { startInfo: [ { x: FlxG.width / 10, y: 370, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -40,7 +44,8 @@ package
 												   width: 80,
 												   height: 16,
 												   maxVelocity_x: 120,
-												   maxVelocity_y: 100},
+												   maxVelocity_y: 100,
+												   oneWay: true},
 												 { start_x: 100, //platform 1
 												   start_y: 225,
 												   end_x: FlxG.width / 2 - 120,
@@ -68,54 +73,51 @@ package
 									 }
 		}
 		public static var skyscraper:Object = { 
-									startInfo: [ { x: 6*16, y: 24*16, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
-											     { x: 34*16, y: 24*16, color:0xffaa1111, walkAnimation: AnimateWalkRed } ], //player 2
+									startInfo: [ { x: 6*TW, y: 24*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
+											     { x: 34*TW, y: 24*TW, color:0xffaa1111, walkAnimation: AnimateWalkRed } ], //player 2
 									
 									maps: [ { layout: SkyscraperTileMap, texture: SkyscraperTextures } ],			 
 											 
 									bg_color: 0xff8AA37B,
 									
-									boxes: [ { x: 5*16, y: 3*16 }, //initial box positions
-											 { x: 13*16, y: 3*16 },
-											 { x: 20*16, y: 3*16 },
-											 { x: 26*16, y: 3*16 },
-											 { x: 34*16, y: 3*16 },],
+									boxes: [ { x: 5*TW, y: 3*TW }, //initial box positions
+											 { x: 13*TW, y: 3*TW },
+											 { x: 20*TW, y: 3*TW },
+											 { x: 26*TW, y: 3*TW },
+											 { x: 34*TW, y: 3*TW },],
 											 
-									platforms: [ { start_x: 2*16, //lower left sweeper
-												   start_y: 15*16,
-												   end_x: 16*16,
-												   end_y: 15*16,
+									platforms: [ { start_x: 2*TW, //lower left sweeper
+												   start_y: 15*TW,
+												   end_x: 16*TW,
+												   end_y: 15*TW,
 												   circuitTime: 2500,
 												   offset: 0,
-												   width: 32,
-												   height: 6*16,
+												   width: 2*TW,
+												   height: 6*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 },
-												 { start_x: 38*16, //lower right sweeper
-												   start_y: 15*16,
-												   end_x: 24*16,
-												   end_y: 15*16,
+												 { start_x: 38*TW, //lower right sweeper
+												   start_y: 15*TW,
+												   end_x: 24*TW,
+												   end_y: 15*TW,
 												   circuitTime: 2500,
 												   offset: 0,
-												   width: 32,
-												   height: 6*16,
+												   width: 2*TW,
+												   height: 6*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0},
 												{  start_x: 0, //upper sweeper
-												   start_y: 7*16,
+												   start_y: 7*TW,
 												   end_x: FlxG.width,
-												   end_y: 7*16,
+												   end_y: 7*TW,
 												   circuitTime: 3000,
 												   offset: 0,
-												   width: 32,
-												   height: 32,
+												   width: 2*TW,
+												   height: 2*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 } ],   
 												 
-									 powerUps:  {
-												//speedBoosts: [ { x: 40, y: 340 },
-															   //{ x: FlxG.width - 50, y: 340 } ] 
-									 }
+									 powerUps:  {}
 		}
 	}
 
