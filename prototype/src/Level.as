@@ -46,8 +46,6 @@ package
 		 * 		- offset: number between -1 and 1, representing where in the path the platform should start
 		 * 		- width: width of the platform in pixels
 		 * 		- height of playtform in pixels
-		 * 		- maxVelocity_x: maximum velocity of x
-		 * 		- maxVelocity_y: maximum veclocity of y
 		 * 		- oneWay: true or defaults to false if value not present. If true, platform is a one-way platform
 		 *		
 		 * powerUps: list of powerups in the level
@@ -70,37 +68,31 @@ package
 											 { x:FlxG.width * 1 / 2 + 5, y:10 },
 											 { x:FlxG.width * 1 / 2 + 15, y:40 } ],
 		
-									platforms: [ { start_x: FlxG.width / 2, //elevator
-												   start_y: FlxG.height - 160,
-												   end_x: FlxG.width / 2,
-												   end_y: 250,
-												   circuitTime: 2500,
+											 platforms: [ { start_x: 17*TW, //elevator
+												   start_y: 20*TW,
+												   end_x: 17*TW,
+												   end_y: 14*TW,
+												   circuitTime: 3000,
 												   offset: 0,
-												   width: 80,
-												   height: 16,
-												   maxVelocity_x: 120,
-												   maxVelocity_y: 100,
+												   width: 6*TW,
+												   height: 1*TW,
 												   oneWay: true},
-												 { start_x: 100, //platform 1
-												   start_y: 225,
-												   end_x: FlxG.width / 2 - 120,
-												   end_y: 225,
-												   circuitTime: 2500,
+												 { start_x: 4*TW, //platform 1
+												   start_y: 13*TW,
+												   end_x: 12*TW,
+												   end_y: 13*TW,
+												   circuitTime: 3000,
 												   offset: 0,
-												   width: 80,
-												   height: 16,
-												   maxVelocity_x: 60,
-												   maxVelocity_y: 0 },
-												 { start_x: FlxG.width / 2 + 120, //platform 2
-												   start_y: 225,
-												   end_x: FlxG.width - 100,
-												   end_y: 225,
-												   circuitTime: 2500,
+												   width: 4*TW,
+												   height: 1*TW},
+												 { start_x: 24*TW, //platform 2
+												   start_y: 13*TW,
+												   end_x: 32*TW,
+												   end_y: 13*TW,
+												   circuitTime: 3000,
 												   offset: 1,
-												   width: 80,
-												   height: 16,
-												   maxVelocity_x: 60,
-												   maxVelocity_y: 0 } ],
+												   width: 4*TW,
+												   height: 1*TW} ],
 												   
 									 powerUps:  {
 												speedBoosts: [ { x: 40, y: 340 },
@@ -115,26 +107,26 @@ package
 											 
 									bg_color: 0xff8AA37B,
 									
-									boxes: [ { x: 5*TW, y: 3*TW }, //initial box positions
+									boxes: [ { x: 5*TW,  y: 3*TW }, //initial box positions
 											 { x: 13*TW, y: 3*TW },
 											 { x: 20*TW, y: 3*TW },
 											 { x: 26*TW, y: 3*TW },
 											 { x: 34*TW, y: 3*TW },],
 											 
-									platforms: [ { start_x: 2*TW, //lower left sweeper
-												   start_y: 15*TW,
-												   end_x: 16*TW,
-												   end_y: 15*TW,
+									platforms: [ { start_x: 1*TW, //mid left sweeper
+												   start_y: 12*TW,
+												   end_x: 15*TW,
+												   end_y: 12*TW,
 												   circuitTime: 2500,
 												   offset: 0,
 												   width: 2*TW,
 												   height: 6*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 },
-												 { start_x: 38*TW, //lower right sweeper
-												   start_y: 15*TW,
-												   end_x: 24*TW,
-												   end_y: 15*TW,
+												 { start_x: 37*TW, //mid right sweeper
+												   start_y: 12*TW,
+												   end_x: 23*TW,
+												   end_y: 12*TW,
 												   circuitTime: 2500,
 												   offset: 0,
 												   width: 2*TW,
@@ -142,9 +134,9 @@ package
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0},
 												{  start_x: 0, //upper sweeper
-												   start_y: 7*TW,
-												   end_x: FlxG.width,
-												   end_y: 7*TW,
+												   start_y: 6*TW,
+												   end_x: 39*TW,
+												   end_y: 6*TW,
 												   circuitTime: 3000,
 												   offset: 0,
 												   width: 2*TW,

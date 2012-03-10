@@ -29,8 +29,26 @@ package
 		
 		public function isAbove(s:FlxSprite):Boolean {
 			if (this.y - TOLERANCE <= s.y &&
-			    this.x + TOLERANCE <= s.x + s.width&&
+			    this.x + TOLERANCE <= s.x + s.width &&
 				this.x + this.width - TOLERANCE >= s.x)
+				return true;
+			
+			return false;
+		}
+		
+		public function isLeftOf(s:FlxSprite):Boolean {
+			if (this.x + this.width - TOLERANCE <= s.x &&
+			    this.y + TOLERANCE <= s.y + s.height &&
+				this.y + this.height - TOLERANCE >= s.y)
+				return true;
+			
+			return false;
+		}
+		
+		public function isRightOf(s:FlxSprite):Boolean {
+			if (this.x + TOLERANCE >= s.x + s.width &&
+			    this.y + TOLERANCE <= s.y + s.height &&
+				this.y + this.height - TOLERANCE >= s.y)
 				return true;
 			
 			return false;

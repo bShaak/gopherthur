@@ -39,9 +39,8 @@ package
 			
 			this.loadGraphic(MetalTexture, false, false, plat_width, plat_height);
 			
-			// note, width and height are not set properly until after makeGraphic
-			this.pathStart = new FlxPoint(start.x - width / 2, start.y - height / 2);
-			this.pathEnd = new FlxPoint(end.x - width / 2, end.y - height / 2 );
+			this.pathStart = start;
+			this.pathEnd = end;
 			
 			//calculate max y velocity for helping keep sprites glued to platforms when they shift from up to down trajectories.
 			this.maxVelocity.y = Math.abs((this.pathEnd.y - this.pathStart.y) / (circuitTime / 1000) * 2); //the 2 is because we want the time of half a cycle
