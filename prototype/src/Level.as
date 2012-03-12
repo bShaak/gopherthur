@@ -33,6 +33,10 @@ package
 		 * 
 		 * bg_color: background color of the level
 		 * 
+		 * rabbit_box: position of the box for rabbit mode
+		 * 		- x: x-coord of start position
+		 * 		- y: y-coord of start position
+		 * 
 		 * boxes: start positions of the boxes in the level
 		 *  	- x: x-coordinate of the start position
 		 * 		- y: y-coordinate of the start position
@@ -62,7 +66,7 @@ package
 																							//texture: image file containing the tile textures
 									bg_color: 0xff66cdaa,
 									
-									//rabbit_box: { x:FlxG.width * 1 / 2 - 5, y:10*TW },
+									rabbit_box: { x:FlxG.width * 1 / 2 - 5, y:5*TW },
 									
 									boxes: [ { x:FlxG.width * 1 / 2 - 25, y:40 }, //initial box positions
 											 { x:FlxG.width * 1 / 2 - 15, y: 10 },

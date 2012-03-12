@@ -72,7 +72,6 @@ package
 			players = new FlxGroup();
 			createPlayers();
 			
-			
 			zones = new FlxGroup();
 			if (mode != RABBIT) { createZones(); }	//don't create zones if mode is rabbit
 			add(zones);
@@ -98,7 +97,6 @@ package
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
-
 			var index:int = 0 ;
 			if (mode == RABBIT) { 
 				var x:int;
@@ -106,7 +104,7 @@ package
 				if (!levelData.rabbit_box) {
 					trace ("Undefined rabbit box position values. Using default rabbit box but you may want to specify your own");
 					x = FlxG.width * 1 / 2 - 5;
-					y = 10 * 16;
+					y = 3 * 16;
 				}
 				else {
 					x  = levelData.rabbit_box.x; 
