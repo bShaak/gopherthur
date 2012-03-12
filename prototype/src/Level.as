@@ -64,6 +64,8 @@ package
 																							//texture: image file containing the tile textures
 									bg_color: 0xff66cdaa,
 									
+									//rabbit_box: { x:FlxG.width * 1 / 2 - 5, y:10*TW },
+									
 									boxes: [ { x:FlxG.width * 1 / 2 - 25, y:40 }, //initial box positions
 											 { x:FlxG.width * 1 / 2 - 15, y: 10 },
 											 { x:FlxG.width * 1 / 2 - 5, y:40 },
