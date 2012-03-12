@@ -9,7 +9,7 @@ package
 	import org.flixel.system.FlxAnim;
 	import playerio.*;
 	
-	public class Player extends FlxSprite
+	public class Player extends SBSprite
 	{	
 		public var id:int;
 		protected var score:int;

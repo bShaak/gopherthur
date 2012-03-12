@@ -7,6 +7,7 @@ package
 	
 	import org.flixel.*;
 	import playerio.Connection;
+	import flash.utils.Dictionary;
 	import flash.events.*;
 	
 	public class PlayState extends FlxState {
@@ -24,13 +25,21 @@ package
 		public var masterMap:FlxGroup;
 		public var zones:FlxGroup;
 		public var scoreboard:FlxText;
-		public var roundTime:FlxText;
+		public var roundTime:FlxText;	//visible countdown for a timed game
 		protected var running:Boolean = false;
 		protected var clock:Clock;
-		protected var timer:Clock;
+		protected var timer:Clock;	//timer for a timed game
+		
 		protected var mode:int;
 		public static const BOX_COLLECT:int = 0;
 		public static const TIMED:int = 1;
+		public static const RABBIT:int = 2;
+		
+		protected var rabbitInfo:Dictionary;
+		
+		protected var rabbitBox:Box;	//the rabbit box - player's must fight for this box
+		
+		public var RABBIT_TIMELIMIT:int = 60000;
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
 		protected var MAX_SCORE:int = 3; //define a score at which the game ends
 		
@@ -39,7 +48,6 @@ package
 		[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
 		
 		public function PlayState(data:Object, goal:int)
-
 		{
 			levelData = data;
 			mode = goal;
@@ -62,20 +70,56 @@ package
 			add(scoreboard);
 			
 			players = new FlxGroup();
-			zones = new FlxGroup();
 			createPlayers();
+			
+			zones = new FlxGroup();
+			if (mode != RABBIT) { createZones(); }	//don't create zones if mode is rabbit
 			add(zones);
-			add(players);
+			add(players);	
+			
+			if (mode == RABBIT) {
+				rabbitInfo = new Dictionary();
+				
+				var player1clock:Clock = createClock();
+				var player1timer:FlxText = new FlxText( 25, 25, FlxG.width, "0:00"); //text indicating how much time the player1 must hold the rabbit
+				player1timer.setFormat(null, 14, 0xFFFFFFFF, "left");
+				rabbitInfo[players.members[0]] = { clock: player1clock, countdownTime: player1timer };
+				
+				var player2clock:Clock = createClock();
+				var player2timer:FlxText = new FlxText( -25, 25, FlxG.width, "0:00"); //text for player2
+				player2timer.setFormat(null, 14, 0xFFFFFFFF, "right");
+				rabbitInfo[players.members[1]] = { clock: player2clock, countdownTime: player2timer };
+								
+				add(player1timer);
+				add(player2timer);
+				add(rabbitBox);
+			}
 			
 			//create the goal boxes
 			boxes = new FlxGroup();
-
 			var index:int = 0 ;
-			for each(var boxinfo:Object in levelData.boxes) {
-				boxes.add(new Box(boxinfo.x, boxinfo.y, index));
+			if (mode == RABBIT) { 
+				var x:int;
+				var y:int;
+				if (!levelData.rabbit_box) {
+					trace ("Undefined rabbit box position values. Using default rabbit box but you may want to specify your own");
+					x = FlxG.width * 1 / 2 - 5;
+					y = 3 * 16;
+				}
+				else {
+					x  = levelData.rabbit_box.x; 
+					y  = levelData.rabbit_box.y;
+				}
+				rabbitBox = new Box(x, y, index);
+				boxes.add(rabbitBox);
 				index++;
 			}
-
+			else {
+				for each(var boxinfo:Object in levelData.boxes) {
+					boxes.add(new Box(boxinfo.x, boxinfo.y, index));
+					index++;
+				}
+			}
 			add(boxes);
 			
 			powerUps = new FlxGroup();
@@ -103,28 +147,27 @@ package
 														platforminfo.offset, // offset
 														platforminfo.width, // width
 														platforminfo.height, // height
-														clock);
-				
-				newPlatform.maxVelocity.x = platforminfo.maxVelocity_x;
-				newPlatform.maxVelocity.y = platforminfo.maxVelocity_y;
+														clock,
+														platforminfo.oneWay);
 				platforms.add(newPlatform);
 			}
 			add(platforms);
 			
-			FlxG.playMusic(Music);
+			//FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
 		override public function update():void {
 			if (!running) {
 				return;
-			}			
+			}
+			
 			super.update();
 			clock.addTime(FlxG.elapsed);
 			
 			handlePowerUpTriggering();
 			handleBoxCollisions();
-			handleElevatorCollisions();
+			handlePlatformCollisions();
 			handlePlayerCollisions();
 			
 			respawnPlayers();
@@ -197,6 +240,16 @@ package
 						}
 					}
 					break;	
+				
+				case RABBIT:
+					updateRabbitTimers();
+					
+					for each (player in players.members) {
+						if (rabbitInfo[player].clock.elapsed > RABBIT_TIMELIMIT) {
+							return player;
+						}
+					}
+					break;
 					
 				default:
 					trace ("Invalid game mode was inputted");
@@ -263,25 +316,41 @@ package
 			}
 		}
 		
-		private function handleElevatorCollisions():void 
+		private function handlePlatformCollisions():void 
 		{
 			for each (var platform:Platform in platforms.members) {
 				for each (var player:Player in players.members) {
-					if (FlxG.collide(platform, player)) {
-						//Elevator collision detection is non-standard: if a sprite is standing on top of the elevator
-						//then give it a downward velocity to keep it glued to the elevator.
-						if (platform.maxVelocity.y != 0) {
-							player.velocity.y = platform.maxVelocity.y * 0.7; // this fixes the elvator bug somehow (ras)
+					//handle one-way platforms first
+					if (platform.isOneWay()) {
+						//Players should only collide with the top edge of the platform, and only from above.
+						if (player.isAbove(platform)) { 
+							if (FlxG.collide(platform, player)) {
+								player.velocity.y = platform.maxVelocity.y;
+							}
 						}
-						//Players get squished if stuck between moving platform and a wall
-						if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) {
+					}
+					else if (FlxG.collide(platform, player)) {
+						//If a player collides with an elevator (platform with y velocity), give the player
+						//the platform's max y velocity for two reasons: (1) keeps the player glued to the top
+						//surface, and (2) keeps the player from sticking to the bottom of an elevator on it's down cycle.
+						if (player.isAbove(platform) || player.isBelow(platform)) {
+							player.velocity.y = platform.maxVelocity.y;
+						}
+						//Players get squished if stuck between moving platform and any wall
+						if (FlxG.collide(player, masterMap) 
+							&&
+							((player.isAbove(platform) && player.isTouching(FlxObject.CEILING)) ||
+							 (player.isBelow(platform) && player.isTouching(FlxObject.FLOOR)) ||
+							 (player.isLeftOf(platform) && player.isTouching(FlxObject.LEFT)) ||
+							 (player.isRightOf(platform) && player.isTouching(FlxObject.RIGHT)))) {
 							respawnPlayer(player);
+							trace("squish");
 						}
 					}
 				}
 				for each (var box:Box in boxes.members) {
-					if (platform.maxVelocity.y != 0) {
-						if (FlxG.collide(platform, box) && box.isTouching(FlxObject.FLOOR))
+					if (FlxG.collide(box, platform)) {
+						if (box.isAbove(platform))
 							box.velocity.y = platform.maxVelocity.y;
 					}
 				}
@@ -311,7 +380,6 @@ package
 			}
 			
 			FlxG.collide(masterMap, players);
-			FlxG.collide(platforms, players);
 		}
 		
 		protected function dropBoxesOnCollision(player:Player):void 
@@ -327,14 +395,16 @@ package
 			//add two players for now
 			players.add(new ActivePlayer(levelData.startInfo[0].x, levelData.startInfo[0].y, 1, levelData.startInfo[0].color, null, wasdControls, levelData.startInfo[0].walkAnimation));
 			players.add(new ActivePlayer(levelData.startInfo[1].x, levelData.startInfo[1].y, 2, levelData.startInfo[1].color, null, arrowControls, levelData.startInfo[1].walkAnimation));
-			
-			//each player has a home zone that they're trying to fill up with blocks,
-			//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
+		}
+		
+		//each player has a home zone that they're trying to fill up with blocks,
+		//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
+		protected function createZones():void {
 			for each (var player:Player in players.members) {
-				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 53, 100, 100, player);
+				var zone:Zone = new Zone(player.getSpawn().x - 48, player.getSpawn().y - 48, 96, 96, player); //dimensions multiples of 16
 				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0x55000000); 
 				zones.add(zone);
-			}
+			}			
 		}
 
 		/**
@@ -361,18 +431,46 @@ package
 			return numBoxes;
 		}
 		
+		/*
+		 * Update the timer for timed mode
+		 */
 		protected function updateTimer():void {
 			timer.addTime(FlxG.elapsed);
 			if (timer.elapsed > TIMELIMIT) {
 				roundTime.text = "Overtime!";
-			} else {
-				var numberOfMinsLeft:int = (TIMELIMIT / 60000) - (timer.elapsed / 60000);
-				var numberOfSecondsLeft:int = 60 - (timer.elapsed / 1000) % 60;
-				var secondsLeft:String;
-				
-				numberOfSecondsLeft < 10 ? secondsLeft = "0" + numberOfSecondsLeft.toString() : secondsLeft = numberOfSecondsLeft.toString();			 
-				roundTime.text = numberOfMinsLeft + ":" + secondsLeft;
+			} else {		 
+				roundTime.text = getCountdownString(TIMELIMIT, timer.elapsed);
 			}
+		}
+		
+		/*
+		 * Update the player's timers for rabbit mode
+		 */ 
+		protected function updateRabbitTimers():void {
+			for each (var player:Player in players.members) {
+				var timer:Clock = rabbitInfo[player].clock;
+				if (player.boxHeld != null) {
+					if (player.boxHeld.id == rabbitBox.id) {
+						timer.addTime(FlxG.elapsed);
+					}
+				}			 
+				rabbitInfo[player].countdownTime.text = getCountdownString(RABBIT_TIMELIMIT, timer.elapsed);
+			}
+		}
+		
+		/*
+		 * Get the time remaining
+		 * @param timelimit: the time limit of the countdown
+		 * @param timeElapsed: the total time passed for the countdown
+		 * @return time remaining as a string in the format "min:seconds"
+		 */
+		protected function getCountdownString(timelimit:int, timeElapsed:int) : String{
+			var numberOfMinsLeft:int = (timelimit / 60000) - (timeElapsed / 60000);
+			var numberOfSecondsLeft:int = (60 - (timeElapsed / 1000)%60) % 60;
+			var secondsLeft:String;
+				
+			numberOfSecondsLeft < 10 ? secondsLeft = "0" + numberOfSecondsLeft.toString() : secondsLeft = numberOfSecondsLeft.toString();
+			return numberOfMinsLeft + ":" + secondsLeft
 		}
 		
 		/**

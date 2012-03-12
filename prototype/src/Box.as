@@ -7,7 +7,7 @@ package
 	
 	import org.flixel.*;
 	
-	public class Box extends FlxSprite
+	public class Box extends SBSprite
 	{		
 		private var inFlight:Boolean; //Thrown boxes are "in flight" until they slow down. They can not be picked up.
 									  //This is required for players to hit one another with boxes, rather than
@@ -25,10 +25,10 @@ package
 			
 			spawn = new FlxPoint(x, y);
 			
-			this.maxVelocity.x = 400;
-			this.maxVelocity.y = 400;
-			this.acceleration.y = 400;
-			this.drag.x = 400;
+			this.maxVelocity.x = 480;
+			this.maxVelocity.y = 480;
+			this.acceleration.y = 720;
+			this.drag.x = 480;
 			this.width = 12;
 			this.height = 18;
 			this.isHeld = false;

@@ -100,14 +100,7 @@ package
 		public function play():void
 		{
 			if(pID == -1){
-				// collect
-				if (gameMode == 0) {
-					FlxG.switchState(new PlayState(levelSelected, PlayState.BOX_COLLECT));
-				}
-				// Timed
-				else if (gameMode == 1) {
-					FlxG.switchState( new PlayState(levelSelected, PlayState.TIMED));
-				}
+					FlxG.switchState(new PlayState(levelSelected, gameMode));
 			}
 			else {
 				// collect
