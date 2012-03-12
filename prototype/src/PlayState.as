@@ -151,21 +151,19 @@ package
 														platforminfo.height, // height
 														clock,
 														platforminfo.oneWay);
-				
-				//newPlatform.maxVelocity.x = platforminfo.maxVelocity_x;
-				//newPlatform.maxVelocity.y = platforminfo.maxVelocity_y;
 				platforms.add(newPlatform);
 			}
 			add(platforms);
 			
-			FlxG.playMusic(Music);
+			//FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
 		override public function update():void {
 			if (!running) {
 				return;
-			}			
+			}
+			
 			super.update();
 			clock.addTime(FlxG.elapsed);
 			
@@ -340,9 +338,15 @@ package
 						if (player.isAbove(platform) || player.isBelow(platform)) {
 							player.velocity.y = platform.maxVelocity.y;
 						}
-						//Players get squished if stuck between moving platform and a wall
-						if (FlxG.collide(player, masterMap) && !player.isTouching(FlxObject.FLOOR)) { //TODO: make this more robust. right now the player must be jumping...
+						//Players get squished if stuck between moving platform and any wall
+						if (FlxG.collide(player, masterMap) 
+							&&
+							((player.isAbove(platform) && player.isTouching(FlxObject.CEILING)) ||
+							 (player.isBelow(platform) && player.isTouching(FlxObject.FLOOR)) ||
+							 (player.isLeftOf(platform) && player.isTouching(FlxObject.LEFT)) ||
+							 (player.isRightOf(platform) && player.isTouching(FlxObject.RIGHT)))) {
 							respawnPlayer(player);
+							trace("squish");
 						}
 					}
 				}
@@ -378,7 +382,6 @@ package
 			}
 			
 			FlxG.collide(masterMap, players);
-			//FlxG.collide(platforms, players);
 		}
 		
 		protected function dropBoxesOnCollision(player:Player):void 
@@ -400,7 +403,7 @@ package
 		//so add a zone centered on the player's spawn location (assumes players spawn in mid air)
 		protected function createZones():void {
 			for each (var player:Player in players.members) {
-				var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 53, 100, 100, player);
+				var zone:Zone = new Zone(player.getSpawn().x - 48, player.getSpawn().y - 48, 96, 96, player); //dimensions multiples of 16
 				zone.makeGraphic(zone.width, zone.height, player.getColour() - 0x55000000); 
 				zones.add(zone);
 			}			
