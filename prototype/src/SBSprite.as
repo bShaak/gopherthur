@@ -17,7 +17,7 @@ package
 			super(x,y);
 		}
 		
-		//returns ture if s is directly above this, within tolerance on all dimensions
+		//returns ture if s is directly below this, within tolerance on all dimensions
 		public function isBelow(s:FlxSprite):Boolean {
 			if (this.y + TOLERANCE >= s.y + s.height &&
 			    this.x + TOLERANCE  <= s.x + s.width &&

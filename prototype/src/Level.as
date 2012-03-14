@@ -88,32 +88,32 @@ package
 											 { x:FlxG.width * 1 / 2 + 5, y:10 },
 											 { x:FlxG.width * 1 / 2 + 15, y:40 } ],
 		
-											 platforms: [ { start_x: 17*TW, //elevator
-												   start_y: 20*TW,
-												   end_x: 17*TW,
-												   end_y: 14*TW,
-												   circuitTime: 3000,
-												   offset: 0,
-												   width: 6*TW,
-												   height: 1*TW,
-												   oneWay: true},
-												 { start_x: 4*TW, //platform 1
-												   start_y: 13*TW,
-												   end_x: 12*TW,
-												   end_y: 13*TW,
-												   circuitTime: 3000,
-												   offset: 0,
-												   width: 4*TW,
-												   height: 1*TW},
-												 { start_x: 24*TW, //platform 2
-												   start_y: 13*TW,
-												   end_x: 32*TW,
-												   end_y: 13*TW,
-												   circuitTime: 3000,
-												   offset: 1,
-												   width: 4*TW,
-												   height: 1 * TW } ],
-											circlePlatforms: [],
+									platforms: [ { start_x: 17*TW, //elevator
+										   start_y: 20*TW,
+										   end_x: 17*TW,
+										   end_y: 14*TW,
+										   circuitTime: 3000,
+										   offset: 0,
+										   width: 6*TW,
+										   height: 1*TW,
+										   oneWay: true},
+										 { start_x: 4*TW, //platform 1
+										   start_y: 13*TW,
+										   end_x: 12*TW,
+										   end_y: 13*TW,
+										   circuitTime: 3000,
+										   offset: 0,
+										   width: 4*TW,
+										   height: 1*TW},
+										 { start_x: 24*TW, //platform 2
+										   start_y: 13*TW,
+										   end_x: 32*TW,
+										   end_y: 13*TW,
+										   circuitTime: 3000,
+										   offset: 1,
+										   width: 4*TW,
+										   height: 1 * TW } ],
+									circlePlatforms: [],
 												   
 									 powerUps:  {
 												speedBoosts: [ { x: 40, y: 340, respawnTime: 30000 },
@@ -168,51 +168,73 @@ package
 									 powerUps:  {}
 		}
 		public static var volcano:Object = { 
-									startInfo: [ { x: 5*TW, y: 3*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
-											     { x: 35*TW, y: 3*TW, color:0xff1111aa, walkAnimation: AnimateWalkBlue } ], //player 2
-									
-									maps: [ { layout: VolcanoTileMap, texture: SkyscraperTextures } ],			 
-											 
-									bg_color: 0xff993333,
-									
-									boxes: [ { x: 17*TW, y: 22*TW }, //initial box positions
-											 { x: 18*TW, y: 22*TW },
-											 { x: 19*TW, y: 22*TW },
-											 { x: 20*TW, y: 22*TW },
-											 { x: 21*TW, y: 22*TW },],
-											 
-									platforms: [],/*[ { start_x: 1*TW, //mid left sweeper
-												   start_y: 12*TW,
-												   end_x: 15*TW,
-												   end_y: 12*TW,
-												   circuitTime: 2500,
-												   offset: 0,
-												   width: 2*TW,
-												   height: 6*TW,
-												   maxVelocity_x: 0,
-												   maxVelocity_y: 0 },
-												 { start_x: 37*TW, //mid right sweeper
-												   start_y: 12*TW,
-												   end_x: 23*TW,
-												   end_y: 12*TW,
-												   circuitTime: 2500,
-												   offset: 0,
-												   width: 2*TW,
-												   height: 6*TW,
-												   maxVelocity_x: 0,
-												   maxVelocity_y: 0},
-												{  start_x: 0, //upper sweeper
-												   start_y: 6*TW,
-												   end_x: 39*TW,
-												   end_y: 6*TW,
-												   circuitTime: 3000,
-												   offset: 0,
-												   width: 2*TW,
-												   height: 2*TW,
-												   maxVelocity_x: 0,
-												   maxVelocity_y: 0 } ],*/   
-												 
-									 powerUps:  {}
+			startInfo: [ { x: 5*TW, y: 3*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
+						 { x: 35*TW, y: 3*TW, color:0xff1111aa, walkAnimation: AnimateWalkBlue } ], //player 2
+			
+			maps: [ { layout: VolcanoTileMap, texture: SkyscraperTextures } ],			 
+					 
+			bg_color: 0xffCD8C95,
+			
+			boxes: [ { x: 18*TW, y: 24*TW }, //initial box positions
+					 { x: 19*TW, y: 24*TW },
+					 { x: 20*TW, y: 24*TW },
+					 { x: 21*TW, y: 24*TW },
+					 { x: 22*TW, y: 24*TW },],
+					 
+			platforms: [ { start_x: 9*TW, //left elevator
+						   start_y: 10*TW,
+						   end_x: 9*TW,
+						   end_y: 18*TW,
+						   circuitTime: 5000,
+						   offset: 0,
+						   width: 4*TW,
+						   height: 1*TW },
+						 { start_x: 27*TW, //right elevator
+						   start_y: 10*TW,
+						   end_x: 27*TW,
+						   end_y: 18*TW,
+						   circuitTime: 5000,
+						   offset: 0,
+						   width: 4*TW,
+						   height: 1*TW },
+						{  start_x: 17*TW, //bottom one-way plat
+						   start_y: 22*TW,
+						   end_x: 17*TW,
+						   end_y: 22*TW,
+						   circuitTime: 1000,
+						   offset: 0,
+						   width: 6*TW,
+						   height: 1*TW,
+						   oneWay: true },
+						{  start_x: 13*TW, //left mid one-way plat
+						   start_y: 18*TW,
+						   end_x: 13*TW,
+						   end_y: 18*TW,
+						   circuitTime: 1000,
+						   offset: 0,
+						   width: 6*TW,
+						   height: 1*TW,
+						   oneWay: true },
+						{  start_x: 21*TW, //right mid one-way plat
+						   start_y: 18*TW,
+						   end_x: 21*TW,
+						   end_y: 18*TW,
+						   circuitTime: 1000,
+						   offset: 0,
+						   width: 6*TW,
+						   height: 1*TW,
+						   oneWay: true}],   
+			lava: [ { x: 0*TW, 
+					  y: 28*TW,
+					  start_x: 0*TW,
+					  start_y: 10*TW,
+					  end_x: 0*TW,
+					  end_y: 28*TW,
+					  circuitTime: 6000,
+					  downTime: 12000,
+					  warningTime: 2000,
+					  offset: 0 } ],
+			powerUps: []
 		}
 	}
 
