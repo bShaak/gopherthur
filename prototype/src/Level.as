@@ -52,6 +52,16 @@ package
 		 * 		- height of playtform in pixels
 		 * 		- oneWay: true or defaults to false if value not present. If true, platform is a one-way platform
 		 *		
+		 * circlePlatforms: circular moving platform information
+		 * 		-x: The x-coord of centre of the circle
+		 * 		-y: The y-coord of centre of the circle.
+		 * 		-radius: The radius of the circle.
+		 * 		-circuitTime: The time for one rotation.
+		 * 		-offset: The position in the circle originially (between 0 and 2pi)
+		 * 		-width: The width of the platform.
+		 * 		-height: The height of the platform.
+		 * 		-oneWay: See platforms.
+		 * 
 		 * powerUps: list of powerups in the level
 		 *		speedBoosts: positions of speedboosts in the level
 		 * 			- x: x-coordinate of speedboost position
@@ -98,7 +108,8 @@ package
 												   circuitTime: 3000,
 												   offset: 1,
 												   width: 4*TW,
-												   height: 1*TW} ],
+												   height: 1 * TW } ],
+											circlePlatforms: [],
 												   
 									 powerUps:  {
 												speedBoosts: [ { x: 40, y: 340 },
@@ -149,7 +160,7 @@ package
 												   height: 2*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 } ],   
-												 
+									 circlePlatforms: [],			 
 									 powerUps:  {}
 		}
 	}
