@@ -9,12 +9,15 @@ package
 	{		
 		[Embed(source = "sprites/hop_right_16x24_green.png")] protected static const AnimateWalkGreen:Class;
 		[Embed(source = "sprites/hop_right_16x24_red.png")] protected static const AnimateWalkRed:Class;
+		[Embed(source = "sprites/hop_right_16x24_blue.png")] protected static const AnimateWalkBlue:Class;
 		
 		[Embed(source = "levels/mapCSV_Basic_Map1.csv", mimeType = "application/octet-stream")] public static var BasicMap:Class;
 		[Embed(source = "levels/Basic.png")] public static var BasicTiles:Class;
 		
 		[Embed(source = "levels/mapCSV_Skyscraper_Map1.csv", mimeType = "application/octet-stream")] public static var SkyscraperTileMap:Class;
 		[Embed(source = "levels/skyscraper_textures.png")] public static var SkyscraperTextures:Class;
+		
+		[Embed(source = "levels/mapCSV_Volcano_Map1.csv", mimeType = "application/octet-stream")] public static var VolcanoTileMap:Class;
 		
 		private static const TW:int = 16; //Tile widths. Basically when you set up anything in the level, you want to align it to the grid, which is 
 										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
@@ -143,6 +146,53 @@ package
 												   height: 2*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 } ],   
+												 
+									 powerUps:  {}
+		}
+		public static var volcano:Object = { 
+									startInfo: [ { x: 5*TW, y: 3*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
+											     { x: 35*TW, y: 3*TW, color:0xff1111aa, walkAnimation: AnimateWalkBlue } ], //player 2
+									
+									maps: [ { layout: VolcanoTileMap, texture: SkyscraperTextures } ],			 
+											 
+									bg_color: 0xff993333,
+									
+									boxes: [ { x: 17*TW, y: 22*TW }, //initial box positions
+											 { x: 18*TW, y: 22*TW },
+											 { x: 19*TW, y: 22*TW },
+											 { x: 20*TW, y: 22*TW },
+											 { x: 21*TW, y: 22*TW },],
+											 
+									platforms: [],/*[ { start_x: 1*TW, //mid left sweeper
+												   start_y: 12*TW,
+												   end_x: 15*TW,
+												   end_y: 12*TW,
+												   circuitTime: 2500,
+												   offset: 0,
+												   width: 2*TW,
+												   height: 6*TW,
+												   maxVelocity_x: 0,
+												   maxVelocity_y: 0 },
+												 { start_x: 37*TW, //mid right sweeper
+												   start_y: 12*TW,
+												   end_x: 23*TW,
+												   end_y: 12*TW,
+												   circuitTime: 2500,
+												   offset: 0,
+												   width: 2*TW,
+												   height: 6*TW,
+												   maxVelocity_x: 0,
+												   maxVelocity_y: 0},
+												{  start_x: 0, //upper sweeper
+												   start_y: 6*TW,
+												   end_x: 39*TW,
+												   end_y: 6*TW,
+												   circuitTime: 3000,
+												   offset: 0,
+												   width: 2*TW,
+												   height: 2*TW,
+												   maxVelocity_x: 0,
+												   maxVelocity_y: 0 } ],*/   
 												 
 									 powerUps:  {}
 		}

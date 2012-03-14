@@ -49,6 +49,9 @@ package
 			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 400, "SKYSCRAPER", chooseSkyscraper);
 			add(playButton);
 			
+			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 380, "VOLCANO", chooseVolcano);
+			add(playButton);
+			
 			//img = new ImgButton(imageClass, 40, 30, "basic");
 			// gonna make a new button class to show levels, that is real nice
 			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "GO", play);
@@ -72,6 +75,10 @@ package
 		
 		public function chooseSkyscraper():void {
 			levelSelected = Level.skyscraper;
+		}
+		
+		public function chooseVolcano():void {
+			levelSelected = Level.volcano;
 		}
 		
 		public function play():void

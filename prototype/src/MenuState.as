@@ -19,8 +19,6 @@ package
 			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0xFF0080C0);
 			add(backgroundColor);
 			
-			
-			
 			var mainBox:FlxSprite = new FlxSprite(220, 70, MainBox);
 			mainBox.loadGraphic(MainBox, false, false, 215, 238);
 			add(mainBox);
