@@ -66,6 +66,7 @@ package
 		 *		speedBoosts: positions of speedboosts in the level
 		 * 			- x: x-coordinate of speedboost position
 		 * 			- y: y-coordinate of speedboost position
+		 * 			- respawnTime: The time taken to respawn (-1 for non-respawning)
 		 *
 		*/		
 		
@@ -112,8 +113,8 @@ package
 											circlePlatforms: [],
 												   
 									 powerUps:  {
-												speedBoosts: [ { x: 40, y: 340 },
-															   { x: FlxG.width - 50, y: 340 } ] 
+												speedBoosts: [ { x: 40, y: 340, respawnTime: 30000 },
+															   { x: FlxG.width - 50, y: 340, respawnTime: 30000 } ] 
 									 }
 		}
 		public static var skyscraper:Object = { 

@@ -485,7 +485,7 @@ package
 		protected function createPowerUps():void {
 			var index:int = 0;
 			for each (var speedBoost:Object in levelData.powerUps.speedBoosts) {
-				powerUps.add(new SpeedBoost(speedBoost.x, speedBoost.y, index, clock));
+				powerUps.add(new SpeedBoost(speedBoost.x, speedBoost.y, index, speedBoost.respawnTime, clock));
 			}	
 		}
 		
@@ -495,9 +495,9 @@ package
 		protected function handlePowerUpTriggering():void {
 			for each (var player:Player in players.members) {
 				for each (var powerUp:PowerUp in powerUps.members) {
-					if (FlxG.collide(player, powerUp)) {
+					if (!powerUp.used && FlxG.collide(player, powerUp)) {
 						triggerPowerUp(powerUp, player);
-						powerUps.remove(powerUp);
+						//powerUps.remove(powerUp);
 					}
 				}
 			}
