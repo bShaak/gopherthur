@@ -171,16 +171,49 @@ package
 
 		public function positionBox():void // ras: protected
 		{
+			if (!isHoldingBox) 
+				return;
+				
+			var boxX:Number;
+			var boxY:Number;
+			var numPixels:int = 4;
+			
+			/*if (this.boxHeld.overlaps(PlayState.masterMap)) {
+				//trace("Here");
+				//while (this.boxHeld.overlapsAt(PlayState.masterMap)
+				
+				switch (this.boxHeld.wasTouching) {
+					case FlxObject.LEFT:
+						trace("Left");
+						this.x += numPixels;
+						break;
+					case FlxObject.RIGHT:
+						trace("Right");
+						this.x -= numPixels;
+						break;
+					case FlxObject.UP:
+						trace("Up");
+						this.y += numPixels;
+						break;
+				}
+			}*/
+		
 			//update held box position
-			if (isHoldingBox) {
-				if (this.facing == FlxObject.LEFT)
+			//if (isHoldingBox) {
+				if (this.facing == FlxObject.LEFT) {
+					if (this.boxHeld.overlaps(PlayState.masterMap) && !this.isTouching(FlxObject.UP)) 
+						this.x += numPixels;
 					boxHeld.x = this.getMidpoint().x - this.width;
-				else
+				}
+				else {
+					if (this.boxHeld.overlaps(PlayState.masterMap) && !this.isTouching(FlxObject.UP)) 
+						this.x -= numPixels;
 					boxHeld.x = this.getMidpoint().x + this.width/2;
+				}
 				
 				boxHeld.y = this.getMidpoint().y - this.height;
 				
-			}
+			//}
 		}
 	}
 }
