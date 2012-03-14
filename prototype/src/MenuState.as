@@ -31,9 +31,15 @@ package
 			mode.setFormat (null, 14, 0xFFFFFFFF, "center");
 			add(mode);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 140, null, goToBoxCollectPlayState); 
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 180, null, goToBoxCollectPlayState); 
 			add(playButton);
-			buttonLabel = new FlxText(FlxG.width / 2 - 50, FlxG.height - 132, 100, "PLAY");
+			buttonLabel = new FlxText(FlxG.width / 2 - 50, FlxG.height - 172, 100, "CLASSIC");
+			buttonLabel.setFormat(null, 16, 0x333333, "center");
+			add(buttonLabel);
+			
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 140, null, goToRabbitPlayState); 
+			add(playButton);
+			buttonLabel = new FlxText(FlxG.width / 2 - 50, FlxG.height - 132, 100, "RABBIT");
 			buttonLabel.setFormat(null, 16, 0x333333, "center");
 			add(buttonLabel);
 			
@@ -74,7 +80,12 @@ package
 			FlxG.switchState( new LevelSelect(PlayState.BOX_COLLECT, null, -1, -1));
 			//FlxG.switchState(new PlayState(Level.levelData, PlayState.BOX_COLLECT));
 			//FlxG.switchState(new PlayState(Level.skyscraper, PlayState.BOX_COLLECT));
-		}  
+		} 
+		
+		public function goToRabbitPlayState():void
+		{
+			FlxG.switchState( new LevelSelect(PlayState.RABBIT, null, -1, -1));
+		}
 		
 		public function goToConnectionState():void
 		{
