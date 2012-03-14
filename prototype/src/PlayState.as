@@ -141,7 +141,7 @@ package
 			platforms = new FlxGroup();
 
 			for each(var platforminfo:Object in levelData.platforms) {
-				var newPlatform:Platform = new Platform(new FlxPoint(platforminfo.start_x, platforminfo.start_y), // start
+				var newPlatform:Platform = new BackForthPlatform(new FlxPoint(platforminfo.start_x, platforminfo.start_y), // start
 														new FlxPoint(platforminfo.end_x, platforminfo.end_y), // end
 														platforminfo.circuitTime, // circuitTime
 														platforminfo.offset, // offset
@@ -151,6 +151,12 @@ package
 														platforminfo.oneWay);
 				platforms.add(newPlatform);
 			}
+			
+			for each(var info:Object in levelData.circlePlatforms) {
+				platforms.add(new CirclePlatform(new FlxPoint(info.x, info.y), info.radius, info.circuitTime,
+					info.offset, info.width, info.height, clock, info.oneWay));
+			}
+			
 			add(platforms);
 			
 			//FlxG.playMusic(Music);
@@ -479,7 +485,7 @@ package
 		protected function createPowerUps():void {
 			var index:int = 0;
 			for each (var speedBoost:Object in levelData.powerUps.speedBoosts) {
-				powerUps.add(new SpeedBoost(speedBoost.x, speedBoost.y, index, clock));
+				powerUps.add(new SpeedBoost(speedBoost.x, speedBoost.y, index, speedBoost.respawnTime, clock));
 			}	
 		}
 		
@@ -489,9 +495,9 @@ package
 		protected function handlePowerUpTriggering():void {
 			for each (var player:Player in players.members) {
 				for each (var powerUp:PowerUp in powerUps.members) {
-					if (FlxG.collide(player, powerUp)) {
+					if (!powerUp.used && FlxG.collide(player, powerUp)) {
 						triggerPowerUp(powerUp, player);
-						powerUps.remove(powerUp);
+						//powerUps.remove(powerUp);
 					}
 				}
 			}

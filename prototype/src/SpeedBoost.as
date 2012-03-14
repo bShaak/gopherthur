@@ -8,14 +8,11 @@ package
 	{
 		private const SPEED_FACTOR:Number = 1.7;
 		
-		private var clock:Clock;
 		private var player:Player;
 		
-		public function SpeedBoost(x:int, y:int, id:int, clock:Clock) 
+		public function SpeedBoost(x:int, y:int, id:int, respawnTime:int, clock:Clock) 
 		{
-			super(x, y, id, 0xff00aaaa);
-			this.clock = clock;
-			immovable = false;
+			super(x, y, id, respawnTime, 0xff00aaaa, clock);
 		}
 	
 		override public function trigger(player:Player, game:PlayState):void {
