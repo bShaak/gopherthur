@@ -24,6 +24,7 @@ package
 		public var platforms:FlxGroup;
 		public var masterMap:FlxGroup;
 		public var zones:FlxGroup;
+		public var lava:FlxGroup; //maybe you'll want more than one lava pit?
 		public var scoreboard:FlxText;
 		public var roundTime:FlxText;	//visible countdown for a timed game
 		protected var running:Boolean = false;
@@ -75,7 +76,21 @@ package
 			zones = new FlxGroup();
 			if (mode != RABBIT) { createZones(); }	//don't create zones if mode is rabbit
 			add(zones);
-			add(players);	
+			add(players);
+			
+			lava = new FlxGroup();
+			for each(var lavaInfo:Object in levelData.lava) {
+				var lavaPit:Lava = new Lava(lavaInfo.x, lavaInfo.y,
+											new FlxPoint(lavaInfo.start_x, lavaInfo.start_y),
+											new FlxPoint(lavaInfo.end_x, lavaInfo.end_y),
+											lavaInfo.circuitTime,
+											lavaInfo.downTime,
+											lavaInfo.warningTime,
+											lavaInfo.offset,
+											clock);
+				lava.add(lavaPit);
+			}
+			add(lava);
 			
 			if (mode == RABBIT) {
 				rabbitInfo = new Dictionary();
@@ -135,13 +150,9 @@ package
 			}
 			add(masterMap);
 			
-			//add the moving platforms 
-			//TODO: all this platform code needs to be cleaned up.
-			//First step: move the path creation to an addPath() function
 			platforms = new FlxGroup();
-
 			for each(var platforminfo:Object in levelData.platforms) {
-				var newPlatform:Platform = new Platform(new FlxPoint(platforminfo.start_x, platforminfo.start_y), // start
+				var newPlatform:Platform = new BackForthPlatform(new FlxPoint(platforminfo.start_x, platforminfo.start_y), // start
 														new FlxPoint(platforminfo.end_x, platforminfo.end_y), // end
 														platforminfo.circuitTime, // circuitTime
 														platforminfo.offset, // offset
@@ -151,6 +162,12 @@ package
 														platforminfo.oneWay);
 				platforms.add(newPlatform);
 			}
+			
+			for each(var info:Object in levelData.circlePlatforms) {
+				platforms.add(new CirclePlatform(new FlxPoint(info.x, info.y), info.radius, info.circuitTime,
+					info.offset, info.width, info.height, clock, info.oneWay));
+			}
+			
 			add(platforms);
 			
 			//FlxG.playMusic(Music);
@@ -166,9 +183,10 @@ package
 			clock.addTime(FlxG.elapsed);
 			
 			handlePowerUpTriggering();
-			handleBoxCollisions();
 			handlePlatformCollisions();
+			handleBoxCollisions();
 			handlePlayerCollisions();
+			handleLavaCollisions();
 			
 			respawnPlayers();
 			respawnBoxes();
@@ -304,7 +322,8 @@ package
 				player.dropBox();
 				box.reset(box.getSpawn().x, box.getSpawn().y);
 			}
-			
+			player.velocity.x = 0;
+			player.velocity.y = 0;
 			player.reset(player.getSpawn().x, player.getSpawn().y);
 		}
 		
@@ -352,6 +371,7 @@ package
 					if (FlxG.collide(box, platform)) {
 						if (box.isAbove(platform))
 							box.velocity.y = platform.maxVelocity.y;
+							trace(platform.maxVelocity.y);
 					}
 				}
 			}
@@ -382,6 +402,18 @@ package
 			FlxG.collide(masterMap, players);
 		}
 		
+		private function handleLavaCollisions():void {
+			for each (var player:Player in players.members) {
+				if (FlxG.overlap(player, lava)) {
+					//TODO: lava death animation
+					// We don't want the box to respawn, so have to drop it here manually rather than
+					// just calling respawnPlayer
+					player.dropBox();
+					respawnPlayer(player);
+				}
+			}
+		}
+		
 		protected function dropBoxesOnCollision(player:Player):void 
 		{
 			player.dropBox();
@@ -406,7 +438,7 @@ package
 				zones.add(zone);
 			}			
 		}
-
+		
 		/**
 		 * Run any logic necessary after the create function is called.
 		 */
@@ -479,7 +511,7 @@ package
 		protected function createPowerUps():void {
 			var index:int = 0;
 			for each (var speedBoost:Object in levelData.powerUps.speedBoosts) {
-				powerUps.add(new SpeedBoost(speedBoost.x, speedBoost.y, index, clock));
+				powerUps.add(new SpeedBoost(speedBoost.x, speedBoost.y, index, speedBoost.respawnTime, clock));
 			}	
 		}
 		
@@ -489,9 +521,9 @@ package
 		protected function handlePowerUpTriggering():void {
 			for each (var player:Player in players.members) {
 				for each (var powerUp:PowerUp in powerUps.members) {
-					if (FlxG.collide(player, powerUp)) {
+					if (!powerUp.used && FlxG.collide(player, powerUp)) {
 						triggerPowerUp(powerUp, player);
-						powerUps.remove(powerUp);
+						//powerUps.remove(powerUp);
 					}
 				}
 			}

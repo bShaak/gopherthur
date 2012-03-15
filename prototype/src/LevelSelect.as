@@ -68,6 +68,9 @@ package
 			mainBox.addEventListener(MouseEvent.MOUSE_DOWN, chooseSkyscraper);
 			add(mainBox);*/
 			
+			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 380, "VOLCANO", chooseVolcano);
+			add(playButton);
+			
 			//img = new ImgButton(imageClass, 40, 30, "basic");
 			// gonna make a new button class to show levels, that is real nice
 			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "GO", play);
@@ -96,6 +99,10 @@ package
 			levelSelected = Level.skyscraper;
 			cleanHighlights();
 			images.members[1].loadGraphic(skyHighlight);
+		}
+		
+		public function chooseVolcano():void {
+			levelSelected = Level.volcano;
 		}
 		
 		public function play():void
