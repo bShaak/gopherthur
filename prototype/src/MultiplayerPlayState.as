@@ -325,14 +325,14 @@ package
 		
 		override protected function checkGameOver():void {
 			//for right now, just do nothing because this crashes the game in multiplayer
-			/*
+			
 			for each (var player:Player in players.members) {
 					if ( player.getScore() >= MAX_SCORE ) {
-						
-						FlxG.switchState( new GameOverState(mode, connection, playerId, playerCount));
+						connection.disconnect();
+						FlxG.switchState( new GameOverState(levelData, mode, null, 1, -1));
 					}
 				}
-			*/
+			
 			
 		}
 		

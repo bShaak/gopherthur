@@ -41,7 +41,7 @@ package
 		
 		public var RABBIT_TIMELIMIT:int = 60000;
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
-		protected var MAX_SCORE:int = 3; //define a score at which the game ends
+		protected var MAX_SCORE:int = 1; //define a score at which the game ends
 		
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
@@ -547,12 +547,13 @@ package
 		}
 		
 		protected function checkGameOver():void {
-		
+			var index:int = 1;
 			for each (var player:Player in players.members) {
 				if ( player.getScore() >= MAX_SCORE ) {
 					FlxG.pauseSounds();
-					FlxG.switchState( new GameOverState(levelData, mode, null, -1, -1));
+					FlxG.switchState( new GameOverState(levelData, mode, null, -1, index));
 				}
+				index++;
 			}
 			
 		}
