@@ -93,7 +93,7 @@ package
 			levelSelected = Level.levelData;
 			cleanHighlights();
 			images.members[0].loadGraphic(basicHighlight);
-			play(); //ras
+			//play(); //ras
 		}
 		
 		public function chooseSkyscraper():void {
