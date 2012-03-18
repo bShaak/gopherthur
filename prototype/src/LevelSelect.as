@@ -35,7 +35,7 @@ package
 			connect = connection;
 			pID = playerId;
 			pCount = playerCount;
-			levelSelected = null;
+			levelSelected = null; //set to basic map
 			
 		}
 		
@@ -81,6 +81,7 @@ package
 			
 			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 40, "EXIT", exitGame);
 			add(playButton);
+			chooseBasic();
 		}
 
 		override public function update():void
