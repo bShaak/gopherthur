@@ -9,6 +9,7 @@ package
 	{		
 		[Embed(source = "sprites/hop_right_16x24_green.png")] protected static const AnimateWalkGreen:Class;
 		[Embed(source = "sprites/hop_right_16x24_red.png")] protected static const AnimateWalkRed:Class;
+		[Embed(source = "sprites/hop_right_16x24_blue.png")] protected static const AnimateWalkBlue:Class;
 		
 		[Embed(source = "levels/mapCSV_Basic_Map1.csv", mimeType = "application/octet-stream")] public static var BasicMap:Class;
 		[Embed(source = "levels/Basic.png")] public static var BasicTiles:Class;
@@ -16,7 +17,61 @@ package
 		[Embed(source = "levels/mapCSV_Skyscraper_Map1.csv", mimeType = "application/octet-stream")] public static var SkyscraperTileMap:Class;
 		[Embed(source = "levels/skyscraper_textures.png")] public static var SkyscraperTextures:Class;
 		
-		public function Level() { }
+		[Embed(source = "levels/mapCSV_Volcano_Map1.csv", mimeType = "application/octet-stream")] public static var VolcanoTileMap:Class;
+		
+		private static const TW:int = 16; //Tile widths. Basically when you set up anything in the level, you want to align it to the grid, which is 
+										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
+										  //make it easier to read and update. e.g. something with width=2*TW is two tiles wide.
+		
+		/*
+		 * startInfo: contains information about initial sprite positions
+		 * 		- x: x-coordinate of start position of player
+		 * 		- y: y-coordinate of start position of player
+		 * 		- color: color of player
+		 * 		- walkAnimation: animation of player
+		 * 
+		 * maps: the layout of the level as well as the tile textures that go with each map 
+		 * 		- layout: a csv file containing a tilemap of the level
+		 * 		- texture: tile texture that goes with the layout
+		 * 
+		 * bg_color: background color of the level
+		 * 
+		 * rabbit_box: position of the box for rabbit mode
+		 * 		- x: x-coord of start position
+		 * 		- y: y-coord of start position
+		 * 
+		 * boxes: start positions of the boxes in the level
+		 *  	- x: x-coordinate of the start position
+		 * 		- y: y-coordinate of the start position
+		 * 	
+		 * platforms: moving platform information
+		 *		- start_x: x-coord of the start position
+		 * 		- start_y: y-coord of the start position
+		 * 		- end_x: x-coord of the end point of the platform
+		 * 		- end_y: y-coord of the end point of the platform
+		 * 		- circuitTime: time in milliseconds for a complete circuit of the path (back and forth)
+		 * 		- offset: number between -1 and 1, representing where in the path the platform should start
+		 * 		- width: width of the platform in pixels
+		 * 		- height of playtform in pixels
+		 * 		- oneWay: true or defaults to false if value not present. If true, platform is a one-way platform
+		 *		
+		 * circlePlatforms: circular moving platform information
+		 * 		-x: The x-coord of centre of the circle
+		 * 		-y: The y-coord of centre of the circle.
+		 * 		-radius: The radius of the circle.
+		 * 		-circuitTime: The time for one rotation.
+		 * 		-offset: The position in the circle originially (between 0 and 2pi)
+		 * 		-width: The width of the platform.
+		 * 		-height: The height of the platform.
+		 * 		-oneWay: See platforms.
+		 * 
+		 * powerUps: list of powerups in the level
+		 *		speedBoosts: positions of speedboosts in the level
+		 * 			- x: x-coordinate of speedboost position
+		 * 			- y: y-coordinate of speedboost position
+		 * 			- respawnTime: The time taken to respawn (-1 for non-respawning)
+		 *
+		*/		
 		
 		public static var levelData:Object = { startInfo: [ { x: FlxG.width / 10, y: 370, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
 															{ x: FlxG.width * 9 / 10, y: 370, color:0xffaa1111, walkAnimation: AnimateWalkRed } ], //player 2
@@ -25,97 +80,161 @@ package
 																							//texture: image file containing the tile textures
 									bg_color: 0xff66cdaa,
 									
+									rabbit_box: { x:FlxG.width * 1 / 2 - 5, y:5*TW },
+									
 									boxes: [ { x:FlxG.width * 1 / 2 - 25, y:40 }, //initial box positions
 											 { x:FlxG.width * 1 / 2 - 15, y: 10 },
 											 { x:FlxG.width * 1 / 2 - 5, y:40 },
 											 { x:FlxG.width * 1 / 2 + 5, y:10 },
 											 { x:FlxG.width * 1 / 2 + 15, y:40 } ],
 		
-									platforms: [ { start_x: FlxG.width / 2, //elevator
-												   start_y: FlxG.height - 160,
-												   end_x: FlxG.width / 2,
-												   end_y: 250,
-												   circuitTime: 2500,
-												   offset: 0,
-												   width: 80,
-												   height: 16,
-												   maxVelocity_x: 120,
-												   maxVelocity_y: 100},
-												 { start_x: 100, //platform 1
-												   start_y: 225,
-												   end_x: FlxG.width / 2 - 120,
-												   end_y: 225,
-												   circuitTime: 2500,
-												   offset: 0,
-												   width: 80,
-												   height: 16,
-												   maxVelocity_x: 60,
-												   maxVelocity_y: 0 },
-												 { start_x: FlxG.width / 2 + 120, //platform 2
-												   start_y: 225,
-												   end_x: FlxG.width - 100,
-												   end_y: 225,
-												   circuitTime: 2500,
-												   offset: 1,
-												   width: 80,
-												   height: 16,
-												   maxVelocity_x: 60,
-												   maxVelocity_y: 0 } ],
+									platforms: [ { start_x: 17*TW, //elevator
+										   start_y: 20*TW,
+										   end_x: 17*TW,
+										   end_y: 14*TW,
+										   circuitTime: 3000,
+										   offset: 0,
+										   width: 6*TW,
+										   height: 1*TW,
+										   oneWay: true},
+										 { start_x: 4*TW, //platform 1
+										   start_y: 13*TW,
+										   end_x: 12*TW,
+										   end_y: 13*TW,
+										   circuitTime: 3000,
+										   offset: 0,
+										   width: 4*TW,
+										   height: 1*TW},
+										 { start_x: 24*TW, //platform 2
+										   start_y: 13*TW,
+										   end_x: 32*TW,
+										   end_y: 13*TW,
+										   circuitTime: 3000,
+										   offset: 1,
+										   width: 4*TW,
+										   height: 1 * TW } ],
+									circlePlatforms: [],
 												   
 									 powerUps:  {
-												speedBoosts: [ { x: 40, y: 340 },
-															   { x: FlxG.width - 50, y: 340 } ] 
+												speedBoosts: [ { x: 40, y: 340, respawnTime: 30000 },
+															   { x: FlxG.width - 50, y: 340, respawnTime: 30000 } ] 
 									 }
 		}
 		public static var skyscraper:Object = { 
-									startInfo: [ { x: 6*16, y: 24*16, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
-											     { x: 34*16, y: 24*16, color:0xffaa1111, walkAnimation: AnimateWalkRed } ], //player 2
+									startInfo: [ { x: 6*TW, y: 24*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
+											     { x: 34*TW, y: 24*TW, color:0xffaa1111, walkAnimation: AnimateWalkRed } ], //player 2
 									
 									maps: [ { layout: SkyscraperTileMap, texture: SkyscraperTextures } ],			 
 											 
 									bg_color: 0xff8AA37B,
 									
-									boxes: [ { x: 5*16, y: 3*16 }, //initial box positions
-											 { x: 13*16, y: 3*16 },
-											 { x: 20*16, y: 3*16 },
-											 { x: 26*16, y: 3*16 },
-											 { x: 34*16, y: 3*16 },],
+									boxes: [ { x: 5*TW,  y: 3*TW }, //initial box positions
+											 { x: 13*TW, y: 3*TW },
+											 { x: 20*TW, y: 3*TW },
+											 { x: 26*TW, y: 3*TW },
+											 { x: 34*TW, y: 3*TW },],
 											 
-									platforms: [ { start_x: 2*16, //lower left sweeper
-												   start_y: 15*16,
-												   end_x: 16*16,
-												   end_y: 15*16,
+									platforms: [ { start_x: 1*TW, //mid left sweeper
+												   start_y: 12*TW,
+												   end_x: 15*TW,
+												   end_y: 12*TW,
 												   circuitTime: 2500,
 												   offset: 0,
-												   width: 32,
-												   height: 6*16,
+												   width: 2*TW,
+												   height: 6*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 },
-												 { start_x: 38*16, //lower right sweeper
-												   start_y: 15*16,
-												   end_x: 24*16,
-												   end_y: 15*16,
+												 { start_x: 37*TW, //mid right sweeper
+												   start_y: 12*TW,
+												   end_x: 23*TW,
+												   end_y: 12*TW,
 												   circuitTime: 2500,
 												   offset: 0,
-												   width: 32,
-												   height: 6*16,
+												   width: 2*TW,
+												   height: 6*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0},
 												{  start_x: 0, //upper sweeper
-												   start_y: 7*16,
-												   end_x: FlxG.width,
-												   end_y: 7*16,
+												   start_y: 6*TW,
+												   end_x: 39*TW,
+												   end_y: 6*TW,
 												   circuitTime: 3000,
 												   offset: 0,
-												   width: 32,
-												   height: 32,
+												   width: 2*TW,
+												   height: 2*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 } ],   
-												 
-									 powerUps:  {
-												//speedBoosts: [ { x: 40, y: 340 },
-															   //{ x: FlxG.width - 50, y: 340 } ] 
-									 }
+									 circlePlatforms: [],			 
+									 powerUps:  {}
+		}
+		public static var volcano:Object = { 
+			startInfo: [ { x: 5*TW, y: 3*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
+						 { x: 35*TW, y: 3*TW, color:0xff1111aa, walkAnimation: AnimateWalkBlue } ], //player 2
+			
+			maps: [ { layout: VolcanoTileMap, texture: SkyscraperTextures } ],			 
+					 
+			bg_color: 0xffCD8C95,
+			
+			boxes: [ { x: 18*TW, y: 24*TW }, //initial box positions
+					 { x: 19*TW, y: 24*TW },
+					 { x: 20*TW, y: 24*TW },
+					 { x: 21*TW, y: 24*TW },
+					 { x: 22*TW, y: 24*TW },],
+					 
+			platforms: [ { start_x: 9*TW, //left elevator
+						   start_y: 10*TW,
+						   end_x: 9*TW,
+						   end_y: 18*TW,
+						   circuitTime: 5000,
+						   offset: 0,
+						   width: 4*TW,
+						   height: 1*TW },
+						 { start_x: 27*TW, //right elevator
+						   start_y: 10*TW,
+						   end_x: 27*TW,
+						   end_y: 18*TW,
+						   circuitTime: 5000,
+						   offset: 0,
+						   width: 4*TW,
+						   height: 1*TW },
+						{  start_x: 17*TW, //bottom one-way plat
+						   start_y: 22*TW,
+						   end_x: 17*TW,
+						   end_y: 22*TW,
+						   circuitTime: 1000,
+						   offset: 0,
+						   width: 6*TW,
+						   height: 1*TW,
+						   oneWay: true },
+						{  start_x: 13*TW, //left mid one-way plat
+						   start_y: 18*TW,
+						   end_x: 13*TW,
+						   end_y: 18*TW,
+						   circuitTime: 1000,
+						   offset: 0,
+						   width: 6*TW,
+						   height: 1*TW,
+						   oneWay: true },
+						{  start_x: 21*TW, //right mid one-way plat
+						   start_y: 18*TW,
+						   end_x: 21*TW,
+						   end_y: 18*TW,
+						   circuitTime: 1000,
+						   offset: 0,
+						   width: 6*TW,
+						   height: 1*TW,
+						   oneWay: true}],   
+			lava: [ { x: 0*TW, 
+					  y: 28*TW,
+					  start_x: 0*TW,
+					  start_y: 10*TW,
+					  end_x: 0*TW,
+					  end_y: 28*TW,
+					  circuitTime: 6000,
+					  downTime: 12000,
+					  warningTime: 2000,
+					  offset: 0 } ],
+			powerUps: []
 		}
 	}
 

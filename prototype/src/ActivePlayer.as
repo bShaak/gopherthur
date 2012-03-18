@@ -25,7 +25,6 @@ package
 			super(x, y, id, color, walkAnimation);
 			this.connection = connection;
 			this.controlScheme = controlScheme;
-			activePlayer = true;  //ras
 			
 			jumpKeyHeld = false;
 			jumpTimer = 0;
@@ -37,39 +36,26 @@ package
 			super.update();
 			this.acceleration.x = 0; //keep player from sliding if no button is currently pressed
 			
-					
+			if ((isShoved || isSliding) && Math.abs(velocity.x) > MAX_SPEED)
+				return;
+			else if (isSliding && Math.abs(velocity.x) <= MAX_SPEED)
+				stopSliding();
+			else if (isShoved && Math.abs(velocity.x) <= MAX_SPEED) {
+				isShoved = false;
+				maxVelocity.x = MAX_SPEED;
+			}
 			
 			//movement
 			if (controlScheme.left()) {
-				if (this.boxHeld) {// && FlxG.collide(player.boxHeld, masterMap)) {
-					var boxX:Number;
-					var boxY:Number;
-					
-					if (this.facing == FlxObject.LEFT)
-						boxX = this.getMidpoint().x - this.width;
-					else
-						boxX = this.getMidpoint().x + this.width/2;
-				
-					boxY = this.getMidpoint().y - this.height;
-				
-					if (!this.boxHeld.overlapsAt(boxX - 4, boxY, PlayState.masterMap)) {
-						this.acceleration.x = -this.maxVelocity.x * 8;
-						this.facing = FlxObject.LEFT;
-					}
-				}
-				else {
-					this.acceleration.x = -this.maxVelocity.x * 8;
-					this.facing = FlxObject.LEFT;
-				}
+				this.acceleration.x = -this.maxVelocity.x * 8;
+				this.facing = FlxObject.LEFT;
 			}
 			else if (controlScheme.right()) {
 				this.acceleration.x = this.maxVelocity.x * 8;
 				this.facing = FlxObject.RIGHT;
 			}
 			
-			//jumping -- handle in three steps, for variable jump height
-			//NOTE i only have it set up for player 1 right now, to compare
-			//with original jumping.
+			//jumping -- handle in steps, for variable jump height
 			if (controlScheme.jump() && this.isTouching(FlxObject.FLOOR)){
 				this.velocity.y = -this.maxVelocity.y / 3;
 				FlxG.play(Jump);
@@ -83,12 +69,14 @@ package
 			if (!controlScheme.jump()) {
 				jumpKeyHeld = false;
 			}
-
+			
 			//box management
 			if (controlScheme.drop()) {
 				if (!isHoldingBox) {
 					//pick up box in front of player... eventually? maybe we want to
 					//keep it so you automatically pick up boxes you run into
+					startSliding();	
+					//velocity.x = -260;
 				}
 				else { //throw box
 					FlxG.play(Throw);

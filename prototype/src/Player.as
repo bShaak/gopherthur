@@ -9,7 +9,7 @@ package
 	import org.flixel.system.FlxAnim;
 	import playerio.*;
 	
-	public class Player extends FlxSprite
+	public class Player extends SBSprite
 	{	
 		public var id:int;
 		protected var score:int;
@@ -19,7 +19,13 @@ package
 		protected var colour:int;
 		protected var throwStrength:FlxPoint;
 		
-		protected var activePlayer:Boolean; //ras
+		protected var shoveStrength:int; //ras
+		protected var isSliding:Boolean; //ras
+		public var isShoved:Boolean; //ras
+		protected const MAX_SPEED:int = 160;  //ras
+		//protected const MAX_SLIDING_SPEED:int = 500; //ras
+		protected const SHOVE_STRENGTH:Array = [400, 500, 600]; //ras 
+		protected var numBoxesInZone:int = 0; //ras
 		
 		public static const IDLE_THRESH:Number = 20; //player will appear idle if below this speed
 
@@ -35,14 +41,17 @@ package
 			
 			score = 0;
 			
-			this.maxVelocity.x = 160;
+			this.maxVelocity.x = MAX_SPEED;
 			this.maxVelocity.y = 480;
 			this.acceleration.y = 720;
 			this.drag.x = this.maxVelocity.x * 8;
 			this.width = 16;
 			this.height = 24;
 			this.isHoldingBox = false;
+			this.isSliding = false; //ras
+			this.isShoved = false;
 			this.throwStrength = new FlxPoint(400, -50); //the velocity the box will have when thrown
+			this.shoveStrength = SHOVE_STRENGTH[0]; //ras
 			this.id = id;
 
 			// TODO: Handle this better
@@ -161,6 +170,37 @@ package
 			box.velocity.x = 0;
 		}
 		
+		public function setNumBoxesInZone(num:int):void {
+			if (num > 2) {
+				trace("Player:setShoveStrength(): idx needs to be less than 3");
+				return;
+			}
+			numBoxesInZone = num;
+			//shoveStrength = SHOVE_STRENGTH[numBoxesInZone];
+		}
+		
+		/*public function setShoveStrength(idx:int):void {
+			if (idx > 2) {
+				trace("Player:setShoveStrength(): idx needs to be less than 3");
+				return;
+			}
+			shoveStrength = SHOVE_STRENGTH[idx];
+		}*/
+		
+		/*public function getShoveStrength():int {
+			return shoveStrength;
+		}*/
+		
+		public function getShoved(player:Player):void {
+			this.maxVelocity.x = player.shoveStrength;
+			this.isShoved = true;
+			
+			var dir:int = 1;
+			if (this.x < player.x)
+				dir = -1;
+			this.velocity.x = player.SHOVE_STRENGTH[player.numBoxesInZone]*dir;
+		}
+		
 		public function incrementScore():void {
 			score++;
 		}
@@ -169,6 +209,32 @@ package
 			return score;
 		}
 
+		public function isPlayerSliding():Boolean {
+			return isSliding;
+		}
+		
+		protected function startSliding():void {
+			//trace("START SLIDE");
+			isSliding = true;
+			maxVelocity.x = SHOVE_STRENGTH[numBoxesInZone];
+			if (this.facing == FlxObject.LEFT) {
+				//trace("Left");
+				velocity.x = -SHOVE_STRENGTH[numBoxesInZone];
+			}
+			else {
+				//trace("Right");
+				velocity.x = SHOVE_STRENGTH[numBoxesInZone];
+			}
+				
+			//trace(velocity.x);
+		}
+		
+		protected function stopSliding():void {
+			//trace("STOP SLIDE");
+			 isSliding = false;
+			 maxVelocity.x = MAX_SPEED;
+		}
+		
 		public function positionBox():void // ras: protected
 		{
 			if (!isHoldingBox) 
@@ -176,7 +242,7 @@ package
 				
 			var boxX:Number;
 			var boxY:Number;
-			var numPixels:int = 4;
+			var numPixels:int = 2;
 			
 			/*if (this.boxHeld.overlaps(PlayState.masterMap)) {
 				//trace("Here");
@@ -198,22 +264,22 @@ package
 				}
 			}*/
 		
+							
+			
 			//update held box position
-			//if (isHoldingBox) {
-				if (this.facing == FlxObject.LEFT) {
-					if (this.boxHeld.overlaps(PlayState.masterMap) && !this.isTouching(FlxObject.UP)) 
-						this.x += numPixels;
-					boxHeld.x = this.getMidpoint().x - this.width;
-				}
-				else {
-					if (this.boxHeld.overlaps(PlayState.masterMap) && !this.isTouching(FlxObject.UP)) 
-						this.x -= numPixels;
-					boxHeld.x = this.getMidpoint().x + this.width/2;
-				}
+			if (this.facing == FlxObject.LEFT) {
+				//if (this.boxHeld.overlaps(PlayState.masterMap) && !boxHeld.isTouching(FlxObject.UP)) 
+					//this.x += numPixels;
+				boxHeld.x = this.getMidpoint().x - this.width;
+			}
+			else if (this.facing == FlxObject.RIGHT) {
+				//if (this.boxHeld.overlaps(PlayState.masterMap) && !boxHeld.isTouching(FlxObject.UP)) 
+					//this.x -= numPixels;
+				boxHeld.x = this.getMidpoint().x + this.width/2;
+			}
 				
-				boxHeld.y = this.getMidpoint().y - this.height;
+			boxHeld.y = this.getMidpoint().y - this.height;
 				
-			//}
 		}
 	}
 }
