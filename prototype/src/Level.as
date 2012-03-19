@@ -64,12 +64,6 @@ package
 		 * 		-width: The width of the platform.
 		 * 		-height: The height of the platform.
 		 * 		-oneWay: See platforms.
-		 * 
-		 * powerUps: list of powerups in the level
-		 *		speedBoosts: positions of speedboosts in the level
-		 * 			- x: x-coordinate of speedboost position
-		 * 			- y: y-coordinate of speedboost position
-		 * 			- respawnTime: The time taken to respawn (-1 for non-respawning)
 		 *
 		*/		
 		
@@ -113,12 +107,7 @@ package
 										   offset: 1,
 										   width: 4*TW,
 										   height: 1 * TW } ],
-									circlePlatforms: [],
-												   
-									 powerUps:  {
-												speedBoosts: [ { x: 40, y: 340, respawnTime: 30000 },
-															   { x: FlxG.width - 50, y: 340, respawnTime: 30000 } ] 
-									 }
+									circlePlatforms: []
 		}
 		public static var skyscraper:Object = { 
 									startInfo: [ { x: 6*TW, y: 24*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -164,8 +153,7 @@ package
 												   height: 2*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 } ],   
-									 circlePlatforms: [],			 
-									 powerUps:  {}
+									 circlePlatforms: []		 
 		}
 		public static var volcano:Object = { 
 			startInfo: [ { x: 5*TW, y: 3*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -233,8 +221,7 @@ package
 					  circuitTime: 6000,
 					  downTime: 12000,
 					  warningTime: 2000,
-					  offset: 0 } ],
-			powerUps: []
+					  offset: 0 } ]
 		}
 	}
 
