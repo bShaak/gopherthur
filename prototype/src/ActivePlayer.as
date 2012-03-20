@@ -11,7 +11,7 @@ package
 	
 	public class ActivePlayer extends Player 
 	{
-		private var intervalID:int; //ras
+		//private var intervalID:int; //ras
 		
 		//these will move to Player eventually, when the controls go there
 		protected var jumpKeyHeld:Boolean;		
@@ -30,18 +30,16 @@ package
 			jumpTimer = 0;
 		}
 	
-		
-		
 		override public function update():void {
 			super.update();
 			this.acceleration.x = 0; //keep player from sliding if no button is currently pressed
 			
-			if ((isShoved || isSliding) && Math.abs(velocity.x) > MAX_SPEED)
+			if ((shoved || charging) && Math.abs(velocity.x) > MAX_SPEED)
 				return;
-			else if (isSliding && Math.abs(velocity.x) <= MAX_SPEED)
-				stopSliding();
-			else if (isShoved && Math.abs(velocity.x) <= MAX_SPEED) {
-				isShoved = false;
+			else if (charging && Math.abs(velocity.x) <= MAX_SPEED)
+				stopCharging();
+			else if (shoved && Math.abs(velocity.x) <= MAX_SPEED) {
+				shoved = false;
 				maxVelocity.x = MAX_SPEED;
 			}
 			
@@ -75,7 +73,7 @@ package
 				if (!isHoldingBox) {
 					//pick up box in front of player... eventually? maybe we want to
 					//keep it so you automatically pick up boxes you run into
-					startSliding();	
+					startCharging();	
 					//velocity.x = -260;
 				}
 				else { //throw box

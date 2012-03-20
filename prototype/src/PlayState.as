@@ -67,10 +67,6 @@ package
 				add(roundTime);
 			}
 			
-			scoreboard = new FlxText(0, FlxG.height - 25, FlxG.width, "SpringBox");
-			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
-			add(scoreboard);
-			
 			players = new FlxGroup();
 			createPlayers();
 			
@@ -114,7 +110,7 @@ package
 			//create the goal boxes
 			boxes = new FlxGroup();
 
-			boxes.add(new Box(20, 300, 0));
+			boxes.add(new Box(20, 310, 0));
 			var index:int = 0 ;
 			if (mode == RABBIT) { 
 				var x:int;
@@ -152,6 +148,10 @@ package
 				masterMap.add(layerMap);
 			}
 			add(masterMap);
+			
+			scoreboard = new FlxText(0, FlxG.height - 25, FlxG.width, "SpringBox");
+			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
+			add(scoreboard);
 			
 			platforms = new FlxGroup();
 			for each(var platforminfo:Object in levelData.platforms) {
@@ -192,7 +192,6 @@ package
 			handleLavaCollisions();
 			
 			respawnPlayers();
-			respawnBoxes();
 			
 			var winner:Player = checkForWinner();
 			if (winner != null) {
@@ -286,7 +285,7 @@ package
 					for each (var player:Player in players.members) {
 						if (FlxG.collide(player, box)) {
 							// This may not be the best solution. Currently, a player can only determine if *they* have picked up a box, not another player.
-							if (player is ActivePlayer) {
+							if (player is ActivePlayer && !player.isShoved()) {
 								if (player.pickupBox(box)) {
 									boxPickedup(player, box);
 								}
@@ -325,14 +324,6 @@ package
 			player.velocity.x = 0;
 			player.velocity.y = 0;
 			player.reset(player.getSpawn().x, player.getSpawn().y);
-		}
-		
-		private function respawnBoxes():void 
-		{
-			for each (var box:Box in boxes.members) {
-				if (box.y > FlxG.height)
-					box.reset(box.getSpawn().x, box.getSpawn().y);
-			}
 		}
 		
 		private function handlePlatformCollisions():void 
@@ -377,21 +368,15 @@ package
 			}
 		}
 		
-		
-		
 		private function handlePlayerCollisions():void 
 		{
 			//player collisions (bumping one another) -> consider all player pairs
 			for each (var player:Player in players.members) {
 				for each (var player2:Player in players.members) {
-					if (FlxG.overlap(player, player2, shovePlayer)) //!player.isShoved && !player2.isShoved && 
+					if (!player.isShoved() && !player2.isShoved())
 					{
-						//trace("***HERE");
-						//player.velocity.x = 200;
-						//player2.velocity.x = -200;
+						FlxG.overlap(player, player2, shovePlayer);
 					}
-					//if (FlxG.collide(player, player2, shovePlayer)) {
-					//}
 				}
 			}
 			
@@ -400,10 +385,10 @@ package
 		
 		private function shovePlayer(player:Player, player2:Player):void 
 		{
-			if (player.isShoved || player2.isShoved)
+			if (player.isShoved() || player2.isShoved())
 				return;
-			trace("B4: " + player.velocity.x + " " + player2.velocity.x);
-			if (player.isPlayerSliding() || player2.isPlayerSliding()) {
+			//trace("B4: " + player.velocity.x + " " + player2.velocity.x);
+			if (player.isCharging() || player2.isCharging()) {
 				if (Math.abs(player.velocity.x) > Math.abs(player2.velocity.x)) {
 					dropBoxesOnCollision(player2);
 					player2.getShoved(player);
@@ -429,7 +414,7 @@ package
 				player.velocity.x = dir * player.maxVelocity.x;
 				player2.velocity.x = -dir * player2.maxVelocity.x;
 			}
-			trace("After: " + player.velocity.x + " " + player2.velocity.x);
+			//trace("After: " + player.velocity.x + " " + player2.velocity.x);
 		}
 		
 		private function handleLavaCollisions():void {

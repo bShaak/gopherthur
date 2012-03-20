@@ -19,11 +19,9 @@ package
 		protected var colour:int;
 		protected var throwStrength:FlxPoint;
 		
-		protected var shoveStrength:int; //ras
-		protected var isSliding:Boolean; //ras
-		public var isShoved:Boolean; //ras
+		protected var charging:Boolean; //ras
+		protected var shoved:Boolean; //ras
 		protected const MAX_SPEED:int = 160;  //ras
-		//protected const MAX_SLIDING_SPEED:int = 500; //ras
 		protected const SHOVE_STRENGTH:Array = [400, 500, 600]; //ras 
 		protected var numBoxesInZone:int = 0; //ras
 		
@@ -48,10 +46,9 @@ package
 			this.width = 16;
 			this.height = 24;
 			this.isHoldingBox = false;
-			this.isSliding = false; //ras
-			this.isShoved = false;
+			this.charging = false; //ras
+			this.shoved = false;
 			this.throwStrength = new FlxPoint(400, -50); //the velocity the box will have when thrown
-			this.shoveStrength = SHOVE_STRENGTH[0]; //ras
 			this.id = id;
 
 			// TODO: Handle this better
@@ -133,6 +130,7 @@ package
 			if (!isHoldingBox)
 				return false;
 				
+			this.boxHeld.y -= this.boxHeld.height; // ras
 			this.isHoldingBox = false;
 			this.boxHeld.drop();
 			this.boxHeld = null;
@@ -176,24 +174,11 @@ package
 				return;
 			}
 			numBoxesInZone = num;
-			//shoveStrength = SHOVE_STRENGTH[numBoxesInZone];
 		}
 		
-		/*public function setShoveStrength(idx:int):void {
-			if (idx > 2) {
-				trace("Player:setShoveStrength(): idx needs to be less than 3");
-				return;
-			}
-			shoveStrength = SHOVE_STRENGTH[idx];
-		}*/
-		
-		/*public function getShoveStrength():int {
-			return shoveStrength;
-		}*/
-		
 		public function getShoved(player:Player):void {
-			this.maxVelocity.x = player.shoveStrength;
-			this.isShoved = true;
+			this.maxVelocity.x = player.SHOVE_STRENGTH[player.numBoxesInZone];
+			this.shoved = true;
 			
 			var dir:int = 1;
 			if (this.x < player.x)
@@ -209,13 +194,17 @@ package
 			return score;
 		}
 
-		public function isPlayerSliding():Boolean {
-			return isSliding;
+		public function isCharging():Boolean {
+			return charging;
 		}
 		
-		protected function startSliding():void {
+		public function isShoved():Boolean {
+			return shoved;
+		}
+		
+		protected function startCharging():void {
 			//trace("START SLIDE");
-			isSliding = true;
+			charging = true;
 			maxVelocity.x = SHOVE_STRENGTH[numBoxesInZone];
 			if (this.facing == FlxObject.LEFT) {
 				//trace("Left");
@@ -229,9 +218,9 @@ package
 			//trace(velocity.x);
 		}
 		
-		protected function stopSliding():void {
+		protected function stopCharging():void {
 			//trace("STOP SLIDE");
-			 isSliding = false;
+			 charging = false;
 			 maxVelocity.x = MAX_SPEED;
 		}
 		
