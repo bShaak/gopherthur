@@ -137,8 +137,8 @@ package
 			add(boxes);
 			
 			powerUps = new FlxGroup();
-			createPowerUps();
-			add(powerUps);
+			//createPowerUps();
+			//add(powerUps);
 			
 			masterMap = new FlxGroup();
 			
