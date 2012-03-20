@@ -74,9 +74,6 @@ package
 			players = new FlxGroup();
 			createPlayers();
 			
-			singleAnimations = new FlxGroup();
-			add(singleAnimations);
-			
 			zones = new FlxGroup();
 			if (mode != RABBIT) { createZones(); }	//don't create zones if mode is rabbit
 			add(zones);
@@ -179,6 +176,9 @@ package
 			}
 			
 			add(platforms);
+			
+			singleAnimations = new FlxGroup();
+			add(singleAnimations);
 			
 			//FlxG.playMusic(Music);
 			this.afterCreate();
