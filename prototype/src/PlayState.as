@@ -19,6 +19,7 @@ package
 		public var levelData:Object;
 		//Group together objects
 		public var players:FlxGroup;
+		public var singleAnimations:FlxGroup; //holds death animations, and any other one-off animated sprites
 		public var boxes:FlxGroup;
 		public var powerUps:FlxGroup;
 		public var platforms:FlxGroup;
@@ -49,6 +50,9 @@ package
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
 		[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
 		
+		//player death animation
+		[Embed(source = "/sprites/death_animation_128x96.png")] private var PlayerDeathAnimation:Class;
+		
 		public function PlayState(data:Object, goal:int)
 		{
 			levelData = data;
@@ -69,6 +73,9 @@ package
 			
 			players = new FlxGroup();
 			createPlayers();
+			
+			singleAnimations = new FlxGroup();
+			add(singleAnimations);
 			
 			zones = new FlxGroup();
 			if (mode != RABBIT) { createZones(); }	//don't create zones if mode is rabbit
@@ -190,8 +197,9 @@ package
 			handleBoxCollisions();
 			handlePlayerCollisions();
 			handleLavaCollisions();
+			handleSingleAnimations();
 			
-			respawnPlayers();
+			respawnDeadPlayers();
 			
 			var winner:Player = checkForWinner();
 			if (winner != null) {
@@ -306,13 +314,24 @@ package
 			FlxG.collide(boxes, boxes);
 		}
 		
-		private function respawnPlayers():void 
+		private function respawnDeadPlayers():void 
 		{
 			for each (var player:Player in players.members) {
 				if (player.y > FlxG.height) {
-					respawnPlayer(player);
+					killAndRespawnPlayer(player);
 				}
 			}
+		}
+		
+		protected function killAndRespawnPlayer(player:Player):void {
+			player.visible = false;
+			var deathAnim:FlxSprite = new FlxSprite(player.x-64, player.y-48);
+			deathAnim.loadGraphic(PlayerDeathAnimation, true, false, 128, 96);
+			deathAnim.addAnimation("exploding_death", [0, 1, 2, 3, 4, 5, 6, 7], 24, false);
+			deathAnim.play("exploding_death");
+			singleAnimations.add(deathAnim);
+			
+			respawnPlayer(player);
 		}
 		
 		protected function respawnPlayer(player:Player):void {
@@ -324,6 +343,15 @@ package
 			player.velocity.x = 0;
 			player.velocity.y = 0;
 			player.reset(player.getSpawn().x, player.getSpawn().y);
+			player.visible = true;
+		}
+		
+		//kill all animations once they're done (so like death animations cycle through once, then disappear
+		protected function handleSingleAnimations():void {
+			for each (var anim:FlxSprite in singleAnimations.members) {
+				if (anim.finished)
+					anim.kill();
+			}
 		}
 		
 		private function handlePlatformCollisions():void 
@@ -353,7 +381,7 @@ package
 							 (player.isBelow(platform) && player.isTouching(FlxObject.FLOOR)) ||
 							 (player.isLeftOf(platform) && player.isTouching(FlxObject.LEFT)) ||
 							 (player.isRightOf(platform) && player.isTouching(FlxObject.RIGHT)))) {
-							respawnPlayer(player);
+							killAndRespawnPlayer(player);
 							trace("squish");
 						}
 					}
@@ -424,7 +452,7 @@ package
 					// We don't want the box to respawn, so have to drop it here manually rather than
 					// just calling respawnPlayer
 					player.dropBox();
-					respawnPlayer(player);
+					killAndRespawnPlayer(player);
 				}
 			}
 		}
