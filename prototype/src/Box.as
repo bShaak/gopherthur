@@ -10,7 +10,11 @@ package
 	import flash.events.*;
 	
 	public class Box extends SBSprite
-	{		
+	{	
+		[Embed(source = "/sprites/juicebox.png")] private var JuiceBoxImage:Class;
+		public static const JUICEBOX_STRAW_WIDTH:int = 4; // The extra width (in pixels) that the straw has on the actual collision size.
+		public static const JUICEBOX_STRAW_HEIGHT:int = 4;
+		
 		private var inFlight:Boolean; //Thrown boxes are "in flight" until they slow down. They can not be picked up.
 									  //This is required for players to hit one another with boxes, rather than
 									  //just play catch with the box.
@@ -32,8 +36,8 @@ package
 			this.maxVelocity.y = 480;
 			this.acceleration.y = 720;
 			this.drag.x = 480;
-			this.width = 12;
-			this.height = 18;
+			//this.width = 12;
+			//this.height = 18;
 			this.isHeld = false;
 			this.inFlight = false;
 			
@@ -41,7 +45,11 @@ package
 			this.timer = null;
 			
 			//set appearance
-			this.makeGraphic(width, height, 0xffffd700);
+			this.loadGraphic(JuiceBoxImage, false, true);//, 16, 22);
+			this.width = 12; //set width/height after, because they're smaller than the graphic
+			this.height = 18;
+			this.setDirection(FlxObject.RIGHT);
+			//this.offset = new FlxPoint(4, 4);
 		}
 		
 		public function getSpawn():FlxPoint {
@@ -95,6 +103,10 @@ package
 					timer.start();
 				}				
 			}
+			if (this.velocity.x > 0)
+				this.setDirection(FlxObject.RIGHT);
+			else if (this.velocity.x < 0)
+				this.setDirection(FlxObject.LEFT);
 		}
 		
 		/**
@@ -135,6 +147,16 @@ package
 			timer = null;
 		}
 		
+		public function setDirection(dir:uint):void {
+			this.facing = dir;
+			
+			// Update the graphic offset, which depends on the direction (because we don't want to collide with the part
+			// of the graphic that is the juice box's straw)
+			if (dir == FlxObject.LEFT)
+				this.offset = new FlxPoint(0, JUICEBOX_STRAW_HEIGHT);
+			else if (dir == FlxObject.RIGHT)
+				this.offset = new FlxPoint(JUICEBOX_STRAW_WIDTH, JUICEBOX_STRAW_HEIGHT);
+		}
 	}
 
 }

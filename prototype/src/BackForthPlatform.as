@@ -10,6 +10,7 @@ package
 	public class BackForthPlatform extends Platform
 	{
 		[Embed(source = "/textures/metal.png")] private var MetalTexture:Class;
+		[Embed(source = "/textures/oneway_platform.png")] private var OnewayPlatformTexture:Class;
 		
 		private var clock:Clock;
 		private var pathStart:FlxPoint;
@@ -34,9 +35,14 @@ package
 			this.clock = clock;
 			this.immovable = true; //objects on top won't weigh it down
 			this.initialPosition = initialPosition;
-			oneWay ? this.oneWay=true : this.oneWay=false;			
-			
-			this.loadGraphic(MetalTexture, false, false, plat_width, plat_height);
+			if (oneWay) {
+				this.oneWay = true;
+				this.loadGraphic(OnewayPlatformTexture, false, false, plat_width, plat_height);
+			}
+			else {
+				this.oneWay = false;
+				this.loadGraphic(MetalTexture, false, false, plat_width, plat_height);
+			}
 			
 			this.pathStart = start;
 			this.pathEnd = end;

@@ -79,20 +79,6 @@ package
 			add(zones);
 			add(players);
 			
-			lava = new FlxGroup();
-			for each(var lavaInfo:Object in levelData.lava) {
-				var lavaPit:Lava = new Lava(lavaInfo.x, lavaInfo.y,
-											new FlxPoint(lavaInfo.start_x, lavaInfo.start_y),
-											new FlxPoint(lavaInfo.end_x, lavaInfo.end_y),
-											lavaInfo.circuitTime,
-											lavaInfo.downTime,
-											lavaInfo.warningTime,
-											lavaInfo.offset,
-											clock);
-				lava.add(lavaPit);
-			}
-			add(lava);
-			
 			if (mode == RABBIT) {
 				rabbitInfo = new Dictionary();
 				
@@ -114,7 +100,6 @@ package
 			//create the goal boxes
 			boxes = new FlxGroup();
 
-			boxes.add(new Box(20, 310, 0));
 			var index:int = 0 ;
 			if (mode == RABBIT) { 
 				var x:int;
@@ -179,6 +164,20 @@ package
 			
 			singleAnimations = new FlxGroup();
 			add(singleAnimations);
+			
+			lava = new FlxGroup();
+			for each(var lavaInfo:Object in levelData.lava) {
+				var lavaPit:Lava = new Lava(lavaInfo.x, lavaInfo.y,
+											new FlxPoint(lavaInfo.start_x, lavaInfo.start_y),
+											new FlxPoint(lavaInfo.end_x, lavaInfo.end_y),
+											lavaInfo.circuitTime,
+											lavaInfo.downTime,
+											lavaInfo.warningTime,
+											lavaInfo.offset,
+											clock);
+				lava.add(lavaPit);
+			}
+			add(lava);
 			
 			//FlxG.playMusic(Music);
 			this.afterCreate();
@@ -338,7 +337,7 @@ package
 			if (player.hasBox()) {
 				var box:Box = player.boxHeld;
 				player.dropBox();
-				box.reset(box.getSpawn().x, box.getSpawn().y);
+				//box.reset(box.getSpawn().x, box.getSpawn().y); // Do we really want this? Taking it out for now. Can't remember if it had a good reason.
 			}
 			player.velocity.x = 0;
 			player.velocity.y = 0;

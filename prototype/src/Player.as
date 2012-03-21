@@ -75,11 +75,16 @@ package
 			//update the sprite's appearance based on their movement.
 			//We tie animations to movement rather than key input due to multiplayer restraints.
 			
-			if (this.velocity.x < 0)
+			if (this.velocity.x < 0) {
 				this.facing = FlxObject.LEFT;
-			else if (this.velocity.x > 0)
+				if (this.hasBox())
+					this.boxHeld.setDirection(FlxObject.LEFT);
+			}
+			else if (this.velocity.x > 0) {
 				this.facing = FlxObject.RIGHT;
-			
+				if (this.hasBox())
+					this.boxHeld.setDirection(FlxObject.RIGHT);
+			}
 			if (this.isTouching(FlxObject.FLOOR)) {
 				if (Math.abs(this.velocity.x) > IDLE_THRESH) {
 					this.play("walk_right");
@@ -259,7 +264,7 @@ package
 			if (this.facing == FlxObject.LEFT) {
 				//if (this.boxHeld.overlaps(PlayState.masterMap) && !boxHeld.isTouching(FlxObject.UP)) 
 					//this.x += numPixels;
-				boxHeld.x = this.getMidpoint().x - this.width;
+				boxHeld.x = this.getMidpoint().x - this.width - Box.JUICEBOX_STRAW_WIDTH;
 			}
 			else if (this.facing == FlxObject.RIGHT) {
 				//if (this.boxHeld.overlaps(PlayState.masterMap) && !boxHeld.isTouching(FlxObject.UP)) 
