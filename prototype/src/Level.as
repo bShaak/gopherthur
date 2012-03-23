@@ -59,12 +59,27 @@ package
 		 * 		-x: The x-coord of centre of the circle
 		 * 		-y: The y-coord of centre of the circle.
 		 * 		-radius: The radius of the circle.
-		 * 		-circuitTime: The time for one rotation.
-		 * 		-offset: The position in the circle originially (between 0 and 2pi)
+		 * 		-rotateTime: The time for one rotation.
+		 * 		-reverse: True if the platform should rotate in the reverse direction.
+		 * 		-initialRotation: The position in the circle originially (between 0 and 2pi)
 		 * 		-width: The width of the platform.
 		 * 		-height: The height of the platform.
 		 * 		-oneWay: See platforms.
 		 *
+		 * superPlatform: spining and moving platform information
+		 * 		-startMiddleX: The initial x position of the centre of rotation.
+		 * 		-startMiddleY: The initial y position of the centre of rotation.
+		 *		-endMiddleX: The final x position of the centre of rotation.
+		 * 		-endMiddleY: The final y position of the centre of rotation.
+		 *		-radius: The radius of rotation.
+		 *		-circuitTime: The time taken for the middle to make a circuit.
+		 *		-rotateTime: The time taken for a rotation.
+		 *		-initialPosition: A number between -1 and 1 representing the position of the centre in the circuit.
+		 *		-initialRotation: A number between 0 and 2pi representing the initial rotation.
+		 *		-reverse: True if the rotation should be reversed.
+		 *		-width: The width of the platform.
+		 *		-height: The height of the platform.
+		 *		-oneWay: See platforms.
 		*/		
 		
 		public static var levelData:Object = { startInfo: [ { x: FlxG.width / 10, y: 370, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -107,7 +122,8 @@ package
 										   offset: 1,
 										   width: 4*TW,
 										   height: 1 * TW } ],
-									circlePlatforms: []
+									circlePlatforms: [],
+									superPlatforms: []
 		}
 		public static var skyscraper:Object = { 
 									startInfo: [ { x: 6*TW, y: 24*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -153,7 +169,8 @@ package
 												   height: 2*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 } ],   
-									 circlePlatforms: []		 
+									 circlePlatforms: [],	
+									 superPlatforms: []
 		}
 		public static var volcano:Object = { 
 			startInfo: [ { x: 5*TW, y: 3*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -221,7 +238,9 @@ package
 					  circuitTime: 6000,
 					  downTime: 12000,
 					  warningTime: 2000,
-					  offset: 0 } ]
+					  offset: 0 } ],
+			circlePlatforms: [],
+			superPlatforms: []
 		}
 	}
 
