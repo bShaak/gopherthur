@@ -61,7 +61,13 @@ package
 		
 		override public function create():void {
 			FlxG.bgColor = levelData.bg_color;
-						
+			
+			if (levelData.background) {
+				var bg:FlxSprite = new FlxSprite();
+				bg.loadGraphic(levelData.background);
+				add(bg);
+			}
+			
 			clock = createClock();
 			
 			if (mode == TIMED) {

@@ -13,11 +13,14 @@ package
 		
 		[Embed(source = "levels/mapCSV_Basic_Map1.csv", mimeType = "application/octet-stream")] public static var BasicMap:Class;
 		[Embed(source = "levels/Basic.png")] public static var BasicTiles:Class;
+		[Embed(source = "levels/backgrounds/forest_bg.png")] public static var ForestBG:Class;
 		
 		[Embed(source = "levels/mapCSV_Skyscraper_Map1.csv", mimeType = "application/octet-stream")] public static var SkyscraperTileMap:Class;
 		[Embed(source = "levels/skyscraper_textures.png")] public static var SkyscraperTextures:Class;
+		[Embed(source = "levels/backgrounds/skyscraper_bg.png")] public static var SkyscraperBG:Class;
 		
 		[Embed(source = "levels/mapCSV_Volcano_Map1.csv", mimeType = "application/octet-stream")] public static var VolcanoTileMap:Class;
+		[Embed(source = "levels/backgrounds/volcano_bg.png")] public static var VolcanoBG:Class;
 		
 		private static const TW:int = 16; //Tile widths. Basically when you set up anything in the level, you want to align it to the grid, which is 
 										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
@@ -89,6 +92,8 @@ package
 																							//texture: image file containing the tile textures
 									bg_color: 0xff66cdaa,
 									
+									background: ForestBG,
+									
 									rabbit_box: { x:FlxG.width * 1 / 2 - 5, y:5*TW },
 									
 									boxes: [ { x:FlxG.width * 1 / 2 - 25, y:40 }, //initial box positions
@@ -132,6 +137,8 @@ package
 									maps: [ { layout: SkyscraperTileMap, texture: SkyscraperTextures } ],			 
 											 
 									bg_color: 0xff8AA37B,
+									
+									background: SkyscraperBG,
 									
 									boxes: [ { x: 5*TW,  y: 3*TW }, //initial box positions
 											 { x: 13*TW, y: 3*TW },
@@ -179,6 +186,8 @@ package
 			maps: [ { layout: VolcanoTileMap, texture: SkyscraperTextures } ],			 
 					 
 			bg_color: 0xffCD8C95,
+			
+			background: VolcanoBG,
 			
 			boxes: [ { x: 18*TW, y: 24*TW }, //initial box positions
 					 { x: 19*TW, y: 24*TW },
