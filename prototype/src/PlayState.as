@@ -150,6 +150,7 @@ package
 			add(scoreboard);
 			
 			platforms = new FlxGroup();
+			
 			for each(var platforminfo:Object in levelData.platforms) {
 				var newPlatform:Platform = new BackForthPlatform(new FlxPoint(platforminfo.start_x, platforminfo.start_y), // start
 														new FlxPoint(platforminfo.end_x, platforminfo.end_y), // end
@@ -163,10 +164,27 @@ package
 			}
 			
 			for each(var info:Object in levelData.circlePlatforms) {
-				platforms.add(new CirclePlatform(new FlxPoint(info.x, info.y), info.radius, info.circuitTime,
-					info.offset, info.width, info.height, clock, info.oneWay));
+				platforms.add(new CirclePlatform(new FlxPoint(info.x, info.y), info.radius, info.rotateTime,
+					info.initialRotation, info.reverse, info.width, info.height, clock, info.oneWay));
 			}
 			
+			for each(info in levelData.superPlatforms) {
+				var p:SuperPlatform = new SuperPlatform(new FlxPoint(info.startMiddleX, info.startMiddleY),
+												new FlxPoint(info.endMiddleX, info.endMiddleY),
+												info.radius,
+												info.circuitTime,
+												info.rotateTime,
+												info.initialPosition,
+												info.initialRotation,
+												info.reverse,
+												info.width,
+												info.height,
+												clock,
+												info.oneWay);
+				platforms.add(p);
+				add(p.string);
+				add(p.track);
+			}
 			add(platforms);
 			
 			singleAnimations = new FlxGroup();
