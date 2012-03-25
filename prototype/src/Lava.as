@@ -24,6 +24,9 @@ package
 		private var downStartTime:Number;
 		private var isInDownTime:Boolean;
 		private var prevTimeInCircuit:Number;
+		private var rumbleOn:Boolean;
+		
+		[Embed(source = "../mp3/earth_rumble.mp3")] private var Rumble:Class;
 		
 		public function Lava(x:int, y:int, start:FlxPoint, end:FlxPoint, circuitTime:Number,
 							 downTime:Number, warningTime:Number, initialPosition:Number, clock:Clock) {
@@ -40,6 +43,7 @@ package
 			this.clock = clock;
 			this.initialPosition = initialPosition;
 			this.makeGraphic(FlxG.width, FlxG.height, 0x99CC0000);
+			rumbleOn = false;
 		}
 		
 		override public function update():void {
@@ -47,11 +51,20 @@ package
 			// up and down, tracing it's path.
 			if (isInDownTime) {
 				var elapsedDownTime:Number = clock.elapsed - downStartTime;
+				
 				if (elapsedDownTime >= downTimeWaitPeriod) {
 					isInDownTime = false;
+					if (rumbleOn) {
+					rumbleOn = false;
 				}
-				else if (downTimeWaitPeriod - elapsedDownTime <= warningTime)
-					FlxG.shake(0.002, circuitTime/1000);
+				}
+				else if (downTimeWaitPeriod - elapsedDownTime <= warningTime){
+					if (!rumbleOn) {
+						FlxG.play(Rumble);
+						rumbleOn = true;
+					}
+					FlxG.shake(0.002, circuitTime / 1000);
+				}
 				return;
 			}
 			

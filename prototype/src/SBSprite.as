@@ -28,9 +28,9 @@ package
 		}
 		
 		public function isAbove(s:FlxSprite):Boolean {
-			if (this.y - TOLERANCE <= s.y &&
-			    this.x + TOLERANCE <= s.x + s.width &&
-				this.x + this.width - TOLERANCE >= s.x)
+			if (this.y + this.height - TOLERANCE <= s.y &&
+			    this.x <= s.x + s.width &&
+				this.x + this.width >= s.x)
 				return true;
 			
 			return false;

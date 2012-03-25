@@ -23,7 +23,7 @@ package
 		public var boxes:FlxGroup;
 		public var powerUps:FlxGroup;
 		public var platforms:FlxGroup;
-		public static var layerMap:FlxTilemap
+		public static var layerMap:FlxTilemap;
 		public static var masterMap:FlxGroup;
 		public var zones:FlxGroup;
 		public var lava:FlxGroup; //maybe you'll want more than one lava pit?
@@ -49,6 +49,7 @@ package
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
 		[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
+		[Embed(source = "../mp3/splatter.mp3")] private var splatter:Class;
 		
 		//player death animation
 		[Embed(source = "/sprites/death_animation_128x96.png")] private var PlayerDeathAnimation:Class;
@@ -61,7 +62,13 @@ package
 		
 		override public function create():void {
 			FlxG.bgColor = levelData.bg_color;
-						
+			
+			if (levelData.background) {
+				var bg:FlxSprite = new FlxSprite();
+				bg.loadGraphic(levelData.background);
+				add(bg);
+			}
+			
 			clock = createClock();
 			
 			if (mode == TIMED) {
@@ -143,6 +150,7 @@ package
 			add(scoreboard);
 			
 			platforms = new FlxGroup();
+			
 			for each(var platforminfo:Object in levelData.platforms) {
 				var newPlatform:Platform = new BackForthPlatform(new FlxPoint(platforminfo.start_x, platforminfo.start_y), // start
 														new FlxPoint(platforminfo.end_x, platforminfo.end_y), // end
@@ -156,10 +164,27 @@ package
 			}
 			
 			for each(var info:Object in levelData.circlePlatforms) {
-				platforms.add(new CirclePlatform(new FlxPoint(info.x, info.y), info.radius, info.circuitTime,
-					info.offset, info.width, info.height, clock, info.oneWay));
+				platforms.add(new CirclePlatform(new FlxPoint(info.x, info.y), info.radius, info.rotateTime,
+					info.initialRotation, info.reverse, info.width, info.height, clock, info.oneWay));
 			}
 			
+			for each(info in levelData.superPlatforms) {
+				var p:SuperPlatform = new SuperPlatform(new FlxPoint(info.startMiddleX, info.startMiddleY),
+												new FlxPoint(info.endMiddleX, info.endMiddleY),
+												info.radius,
+												info.circuitTime,
+												info.rotateTime,
+												info.initialPosition,
+												info.initialRotation,
+												info.reverse,
+												info.width,
+												info.height,
+												clock,
+												info.oneWay);
+				platforms.add(p);
+				add(p.string);
+				add(p.track);
+			}
 			add(platforms);
 			
 			singleAnimations = new FlxGroup();
@@ -179,7 +204,7 @@ package
 			}
 			add(lava);
 			
-			//FlxG.playMusic(Music);
+			FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
@@ -326,6 +351,7 @@ package
 			player.visible = false;
 			var deathAnim:FlxSprite = new FlxSprite(player.x-64, player.y-48);
 			deathAnim.loadGraphic(PlayerDeathAnimation, true, false, 128, 96);
+			FlxG.play(splatter);
 			deathAnim.addAnimation("exploding_death", [0, 1, 2, 3, 4, 5, 6, 7], 24, false);
 			deathAnim.play("exploding_death");
 			singleAnimations.add(deathAnim);

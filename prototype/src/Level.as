@@ -13,11 +13,14 @@ package
 		
 		[Embed(source = "levels/mapCSV_Basic_Map1.csv", mimeType = "application/octet-stream")] public static var BasicMap:Class;
 		[Embed(source = "levels/Basic.png")] public static var BasicTiles:Class;
+		[Embed(source = "levels/backgrounds/forest_bg.png")] public static var ForestBG:Class;
 		
 		[Embed(source = "levels/mapCSV_Skyscraper_Map1.csv", mimeType = "application/octet-stream")] public static var SkyscraperTileMap:Class;
 		[Embed(source = "levels/skyscraper_textures.png")] public static var SkyscraperTextures:Class;
+		[Embed(source = "levels/backgrounds/skyscraper_bg.png")] public static var SkyscraperBG:Class;
 		
 		[Embed(source = "levels/mapCSV_Volcano_Map1.csv", mimeType = "application/octet-stream")] public static var VolcanoTileMap:Class;
+		[Embed(source = "levels/backgrounds/volcano_bg.png")] public static var VolcanoBG:Class;
 		
 		private static const TW:int = 16; //Tile widths. Basically when you set up anything in the level, you want to align it to the grid, which is 
 										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
@@ -59,12 +62,27 @@ package
 		 * 		-x: The x-coord of centre of the circle
 		 * 		-y: The y-coord of centre of the circle.
 		 * 		-radius: The radius of the circle.
-		 * 		-circuitTime: The time for one rotation.
-		 * 		-offset: The position in the circle originially (between 0 and 2pi)
+		 * 		-rotateTime: The time for one rotation.
+		 * 		-reverse: True if the platform should rotate in the reverse direction.
+		 * 		-initialRotation: The position in the circle originially (between 0 and 2pi)
 		 * 		-width: The width of the platform.
 		 * 		-height: The height of the platform.
 		 * 		-oneWay: See platforms.
 		 *
+		 * superPlatform: spining and moving platform information
+		 * 		-startMiddleX: The initial x position of the centre of rotation.
+		 * 		-startMiddleY: The initial y position of the centre of rotation.
+		 *		-endMiddleX: The final x position of the centre of rotation.
+		 * 		-endMiddleY: The final y position of the centre of rotation.
+		 *		-radius: The radius of rotation.
+		 *		-circuitTime: The time taken for the middle to make a circuit.
+		 *		-rotateTime: The time taken for a rotation.
+		 *		-initialPosition: A number between -1 and 1 representing the position of the centre in the circuit.
+		 *		-initialRotation: A number between 0 and 2pi representing the initial rotation.
+		 *		-reverse: True if the rotation should be reversed.
+		 *		-width: The width of the platform.
+		 *		-height: The height of the platform.
+		 *		-oneWay: See platforms.
 		*/		
 		
 		public static var levelData:Object = { startInfo: [ { x: FlxG.width / 10, y: 370, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -73,6 +91,8 @@ package
 									maps: [ { layout: BasicMap, texture: BasicTiles  } ],	//layout: csv file 
 																							//texture: image file containing the tile textures
 									bg_color: 0xff66cdaa,
+									
+									background: ForestBG,
 									
 									rabbit_box: { x:FlxG.width * 1 / 2 - 5, y:5*TW },
 									
@@ -107,7 +127,8 @@ package
 										   offset: 1,
 										   width: 4*TW,
 										   height: 1 * TW } ],
-									circlePlatforms: []
+									circlePlatforms: [],
+									superPlatforms: []
 		}
 		public static var skyscraper:Object = { 
 									startInfo: [ { x: 6*TW, y: 24*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -116,6 +137,8 @@ package
 									maps: [ { layout: SkyscraperTileMap, texture: SkyscraperTextures } ],			 
 											 
 									bg_color: 0xff8AA37B,
+									
+									background: SkyscraperBG,
 									
 									boxes: [ { x: 5*TW,  y: 3*TW }, //initial box positions
 											 { x: 13*TW, y: 3*TW },
@@ -153,7 +176,8 @@ package
 												   height: 2*TW,
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 } ],   
-									 circlePlatforms: []		 
+									 circlePlatforms: [],	
+									 superPlatforms: []
 		}
 		public static var volcano:Object = { 
 			startInfo: [ { x: 5*TW, y: 3*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -162,6 +186,8 @@ package
 			maps: [ { layout: VolcanoTileMap, texture: SkyscraperTextures } ],			 
 					 
 			bg_color: 0xffCD8C95,
+			
+			background: VolcanoBG,
 			
 			boxes: [ { x: 18*TW, y: 24*TW }, //initial box positions
 					 { x: 19*TW, y: 24*TW },
@@ -221,7 +247,9 @@ package
 					  circuitTime: 6000,
 					  downTime: 12000,
 					  warningTime: 2000,
-					  offset: 0 } ]
+					  offset: 0 } ],
+			circlePlatforms: [],
+			superPlatforms: []
 		}
 	}
 
