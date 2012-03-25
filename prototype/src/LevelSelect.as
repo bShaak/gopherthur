@@ -82,6 +82,7 @@ package
 			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 40, "EXIT", exitGame);
 			add(playButton);
 			chooseBasic();
+			play(); //ras
 		}
 
 		override public function update():void
@@ -93,7 +94,6 @@ package
 			levelSelected = Level.levelData;
 			cleanHighlights();
 			images.members[0].loadGraphic(basicHighlight);
-			//play(); //ras
 		}
 		
 		public function chooseSkyscraper():void {

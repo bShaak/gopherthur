@@ -15,6 +15,8 @@ package
 		
 		override public function create():void
 		{
+			//goToConnectionState(); //ras
+			//goToBoxCollectPlayState();
 			backgroundColor = new FlxSprite(0,0);
 			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0xFF0080C0);
 			add(backgroundColor);

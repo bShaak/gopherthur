@@ -40,6 +40,7 @@ package
 			var startButtonLabel:FlxText = new FlxText(284, 44, 80, "START");
 			startButtonLabel.setFormat(null, 15, 0x000000, "center");
 			add(startButtonLabel);
+			startSetup(); //ras
 		}
 		
 		private function startSetup():void {
@@ -78,7 +79,7 @@ package
 			printMes("Connected to player.io");
 				
 			//Set developmentsever (Comment out to connect to your server online)
-			client.multiplayer.developmentServer = ip.text + ":8184";
+			//client.multiplayer.developmentServer = ip.text + ":8184";
 				
 			getRoom();
 		}

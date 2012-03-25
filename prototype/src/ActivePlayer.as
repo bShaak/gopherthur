@@ -11,8 +11,6 @@ package
 	
 	public class ActivePlayer extends Player 
 	{
-		//private var intervalID:int; //ras
-		
 		//these will move to Player eventually, when the controls go there
 		protected var jumpKeyHeld:Boolean;		
 		protected var jumpTimer:Number;

@@ -416,6 +416,7 @@ package
 				return;
 			//trace("B4: " + player.velocity.x + " " + player2.velocity.x);
 			if (player.isCharging() || player2.isCharging()) {
+				FlxG.play(Push);
 				if (Math.abs(player.velocity.x) > Math.abs(player2.velocity.x)) {
 					dropBoxesOnCollision(player2);
 					player2.getShoved(player);
