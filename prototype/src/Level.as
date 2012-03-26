@@ -22,6 +22,8 @@ package
 		[Embed(source = "levels/mapCSV_Volcano_Map1.csv", mimeType = "application/octet-stream")] public static var VolcanoTileMap:Class;
 		[Embed(source = "levels/backgrounds/volcano_bg.png")] public static var VolcanoBG:Class;
 		
+		[Embed(source = "levels/mapCSV_PowerPlant_Map1.csv", mimeType = "application/octet-stream")] public static var PowerPlantTileMap:Class;
+		
 		private static const TW:int = 16; //Tile widths. Basically when you set up anything in the level, you want to align it to the grid, which is 
 										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
 										  //make it easier to read and update. e.g. something with width=2*TW is two tiles wide.
@@ -250,6 +252,121 @@ package
 					  offset: 0 } ],
 			circlePlatforms: [],
 			superPlatforms: []
+		}
+		
+		public static var powerplant:Object = { 
+			startInfo: [ { x: 3*TW, y: 3*TW, color:0xffaa1111, walkAnimation: AnimateWalkRed }, //player 1
+						 { x: 37*TW, y: 3*TW, color:0xff1111aa, walkAnimation: AnimateWalkBlue } ], //player 2
+			
+			maps: [ { layout: PowerPlantTileMap, texture: SkyscraperTextures } ],			 
+					 
+			bg_color: 0xffCD8C95,
+			
+			boxes: [ { x: 18*TW, y: 24*TW }, //initial box positions
+					 { x: 19*TW, y: 24*TW },
+					 { x: 20*TW, y: 24*TW },
+					 { x: 21*TW, y: 24*TW },
+					 { x: 22*TW, y: 24*TW },],
+					 
+			platforms: [],
+			
+			acid: [ { x: 0*TW, 			//left acid
+					  y: 7 * TW,
+					  width: 6 * TW,
+					  height: 23 * TW},
+					  { x: 34*TW, 		//right acid
+					  y: 7 * TW, 
+					  width: 6 * TW,
+					  height: 23 * TW } ],
+					  
+					  /* superPlatform: spining and moving platform information
+		 * 		-startMiddleX: The initial x position of the centre of rotation.
+		 * 		-startMiddleY: The initial y position of the centre of rotation.
+		 *		-endMiddleX: The final x position of the centre of rotation.
+		 * 		-endMiddleY: The final y position of the centre of rotation.
+		 *		-radius: The radius of rotation.
+		 *		-circuitTime: The time taken for the middle to make a circuit.
+		 *		-rotateTime: The time taken for a rotation.
+		 *		-initialPosition: A number between -1 and 1 representing the position of the centre in the circuit.
+		 *		-initialRotation: A number between 0 and 2pi representing the initial rotation.
+		 *		-reverse: True if the rotation should be reversed.
+		 *		-width: The width of the platform.
+		 *		-height: The height of the platform.
+		 *		-oneWay: See platforms.
+		 */
+					  superPlatforms: [ { startMiddleX: 9 * TW,
+					  startMiddleY: 10 * TW,
+					  endMiddleX: 9 * TW,
+					  endMiddleY: 25 * TW,
+					  radius: 5 * 16,
+					  circuitTime: 12000,
+					  rotateTime: 8000,
+					  initialPosition: -1,
+					  initialRotation: 0,
+					  reverse: true,
+					  width: 3 * TW, 
+					  height: 1 * TW },
+					  /*{ startMiddleX: 10 * TW,
+					  startMiddleY: 10 * TW,
+					  endMiddleX: 10 * TW,
+					  endMiddleY: 26 * TW,
+					  radius: 5 * 16,
+					  circuitTime: 12000,
+					  rotateTime: 6000,
+					  initialPosition: -1,
+					  initialRotation: Math.PI/2,
+					  reverse: false,
+					  width: 3 * TW, 
+					  height: 1 * TW },*/
+					  { startMiddleX: 9 * TW,
+					  startMiddleY: 10 * TW,
+					  endMiddleX: 9 * TW,
+					  endMiddleY: 25 * TW,
+					  radius: 5 * 16,
+					  circuitTime: 12000,
+					  rotateTime: 8000,
+					  initialPosition: -1,
+					  initialRotation: Math.PI,
+					  reverse: true,
+					  width: 3 * TW, 
+					  height: 1 * TW },
+					  /*{ startMiddleX: 10 * TW,
+					  startMiddleY: 10 * TW,
+					  endMiddleX: 10 * TW,
+					  endMiddleY: 26 * TW,
+					  radius: 5 * 16,
+					  circuitTime: 12000,
+					  rotateTime: 6000,
+					  initialPosition: -1,
+					  initialRotation: Math.PI*3/2,
+					  reverse: false,
+					  width: 3 * TW, 
+					  height: 1 * TW }*/
+					  { startMiddleX: 31 * TW,
+					  startMiddleY: 10 * TW,
+					  endMiddleX: 31 * TW,
+					  endMiddleY: 25 * TW,
+					  radius: 5 * 16,
+					  circuitTime: 12000,
+					  rotateTime: 8000,
+					  initialPosition: -1,
+					  initialRotation: 0,
+					  reverse: false,
+					  width: 3 * TW, 
+					  height: 1 * TW },
+					  { startMiddleX: 31 * TW,
+					  startMiddleY: 10 * TW,
+					  endMiddleX: 31 * TW,
+					  endMiddleY: 25 * TW,
+					  radius: 5 * 16,
+					  circuitTime: 12000,
+					  rotateTime: 8000,
+					  initialPosition: -1,
+					  initialRotation: Math.PI,
+					  reverse: false,
+					  width: 3 * TW, 
+					  height: 1 * TW }
+					  ]
 		}
 	}
 

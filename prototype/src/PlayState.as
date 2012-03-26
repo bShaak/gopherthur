@@ -27,6 +27,7 @@ package
 		public static var masterMap:FlxGroup;
 		public var zones:FlxGroup;
 		public var lava:FlxGroup; //maybe you'll want more than one lava pit?
+		public var acid:FlxGroup;
 		public var scoreboard:FlxText;
 		public var roundTime:FlxText;	//visible countdown for a timed game
 		protected var running:Boolean = false;
@@ -180,6 +181,7 @@ package
 				platforms.add(p);
 				add(p.string);
 				add(p.track);
+				trace ("making super platform: " + info.startMiddleX );
 			}
 			add(platforms);
 			
@@ -200,6 +202,13 @@ package
 			}
 			add(lava);
 			
+			acid = new FlxGroup();
+			for each (var acidInfo:Object in levelData.acid) {
+				var acidPool:Acid = new Acid(acidInfo.x, acidInfo.y, acidInfo.width, acidInfo.height);
+				acid.add(acidPool);
+			}
+			add(acid);
+
 			scoreboard = new FlxText(0, FlxG.height - 25, FlxG.width, "SpringBox");
 			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(scoreboard);
@@ -221,6 +230,7 @@ package
 			handleBoxCollisions();
 			handlePlayerCollisions();
 			handleLavaCollisions();
+			handleAcidCollisions();
 			handleSingleAnimations();
 			
 			respawnDeadPlayers();
@@ -477,6 +487,15 @@ package
 					//TODO: lava death animation
 					// We don't want the box to respawn, so have to drop it here manually rather than
 					// just calling respawnPlayer
+					player.dropBox();
+					killAndRespawnPlayer(player);
+				}
+			}
+		}
+		
+		private function handleAcidCollisions():void {
+			for each (var player:Player in players.members) {
+				if (FlxG.overlap(player, acid)) {
 					player.dropBox();
 					killAndRespawnPlayer(player);
 				}
