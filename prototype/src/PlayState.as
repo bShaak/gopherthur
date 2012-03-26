@@ -145,10 +145,6 @@ package
 			}
 			add(masterMap);
 			
-			scoreboard = new FlxText(0, FlxG.height - 25, FlxG.width, "SpringBox");
-			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
-			add(scoreboard);
-			
 			platforms = new FlxGroup();
 			
 			for each(var platforminfo:Object in levelData.platforms) {
@@ -203,6 +199,10 @@ package
 				lava.add(lavaPit);
 			}
 			add(lava);
+			
+			scoreboard = new FlxText(0, FlxG.height - 25, FlxG.width, "SpringBox");
+			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
+			add(scoreboard);
 			
 			FlxG.playMusic(Music);
 			this.afterCreate();

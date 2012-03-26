@@ -86,7 +86,7 @@ package
 			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 40, "EXIT", exitGame);
 			add(playButton);
 			chooseBasic();
-			play(); //ras
+			//play(); //ras
 		}
 
 		override public function update():void
