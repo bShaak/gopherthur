@@ -27,6 +27,8 @@ package
 		[Embed (source = "sprites/skyscraper.png")] protected var skyscraper:Class;
 		[Embed (source = "sprites/skyscraper_highlight.png")] protected var skyHighlight:Class;
 		[Embed (source = "sprites/basic_highlight.png")] protected var basicHighlight:Class;
+		[Embed (source = "sprites/Volcano.png")] protected var volcano:Class;
+		[Embed (source = "sprites/Volcano_highlight.png")] protected var volcanoHighlight:Class;
 		//private var img:ImgButton;
  
 		public function LevelSelect(mode:int, connection:Connection, playerId:int, playerCount:int)
@@ -50,7 +52,7 @@ package
 			title.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(title);
 			
-			playButton = new FlxButton(FlxG.width / 2 - 300, FlxG.height - 420, "", chooseBasic);
+			playButton = new FlxButton(FlxG.width / 2 - 320, FlxG.height - 420, "", chooseBasic);
 			playButton.loadGraphic(basic);
 			add(playButton);
 			images.add(playButton);
@@ -59,7 +61,7 @@ package
 			mainBox.addEventListener(MouseEvent.MOUSE_DOWN, chooseBasic);
 			add(mainBox);*/
 			
-			playButton = new FlxButton(FlxG.width / 2 + 100, FlxG.height - 420, "", chooseSkyscraper);
+			playButton = new FlxButton(FlxG.width / 2 - 103, FlxG.height - 420, "", chooseSkyscraper);
 			playButton.loadGraphic(skyscraper);
 			add(playButton);
 			images.add(playButton);
@@ -68,10 +70,12 @@ package
 			mainBox.addEventListener(MouseEvent.MOUSE_DOWN, chooseSkyscraper);
 			add(mainBox);*/
 			
-			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 380, "VOLCANO", chooseVolcano);
+			playButton = new FlxButton(FlxG.width / 2 + 115, FlxG.height - 420, "VOLCANO", chooseVolcano);
+			playButton.loadGraphic(volcano);
 			add(playButton);
+			images.add(playButton);
 			
-			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 420, "POWERPLANT", choosePowerplant);
+			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 240, "POWERPLANT", choosePowerplant);
 			add(playButton);
 			
 			//img = new ImgButton(imageClass, 40, 30, "basic");
@@ -107,6 +111,8 @@ package
 		
 		public function chooseVolcano():void {
 			levelSelected = Level.volcano;
+			cleanHighlights();
+			images.members[2].loadGraphic(volcanoHighlight);
 		}
 		
 		public function choosePowerplant():void {
@@ -149,6 +155,9 @@ package
 						break;
 					case 1:
 						imageButton.loadGraphic(skyscraper);
+						break;
+					case 2:
+						imageButton.loadGraphic(volcano);
 						break;
 					default:
 						trace("error selecting level");
