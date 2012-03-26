@@ -71,6 +71,9 @@ package
 			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 380, "VOLCANO", chooseVolcano);
 			add(playButton);
 			
+			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 420, "POWERPLANT", choosePowerplant);
+			add(playButton);
+			
 			//img = new ImgButton(imageClass, 40, 30, "basic");
 			// gonna make a new button class to show levels, that is real nice
 			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "GO", play);
@@ -104,6 +107,10 @@ package
 		
 		public function chooseVolcano():void {
 			levelSelected = Level.volcano;
+		}
+		
+		public function choosePowerplant():void {
+			levelSelected = Level.powerplant;
 		}
 		
 		public function play():void
