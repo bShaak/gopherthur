@@ -55,6 +55,14 @@ package
 		//player death animation
 		[Embed(source = "/sprites/death_animation_128x96.png")] private var PlayerDeathAnimation:Class;
 		
+		
+		//MIN JI'S PAUSE CODE START
+		FlxG.paused = false;
+		
+		private var pauseButton:FlxButton;
+		//MIN JI'S PAUSE CODE END
+		
+		
 		public function PlayState(data:Object, goal:int)
 		{
 			levelData = data;
@@ -213,6 +221,11 @@ package
 			}
 			add(acid);
 			
+			
+			pauseButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 60, "BACK TO MENU", pauseAndMenu);
+			add(pauseButton);
+			
+			
 			FlxG.playMusic(Music);
 			this.afterCreate();
 		}
@@ -222,18 +235,41 @@ package
 				return;
 			}
 			
-			super.update();
-			clock.addTime(FlxG.elapsed);
+			players.active = true;
+			platforms.active = true;
+			pauseButton.visible = false;
 			
-			handlePowerUpTriggering();
-			handlePlatformCollisions();
-			handleBoxCollisions();
-			handlePlayerCollisions();
-			handleLavaCollisions();
-			handleAcidCollisions();
-			handleSingleAnimations();
+			//MIN JI'S PAUSE CODE START
+			if (FlxG.keys.justPressed("P")) {
+					FlxG.paused = !FlxG.paused;
+				}
+				
+			if (FlxG.paused) {
+				//pauseScreenGroup.update();
+				players.active = false;
+				platforms.active = false;
+				
+				pauseButton.active = true;
+				pauseButton.visible = true;
+				pauseButton.update();
+
+			}
 			
-			respawnDeadPlayers();
+			//MIN JI'S PAUSE CODE END
+			if (!FlxG.paused) {
+				super.update();
+				clock.addTime(FlxG.elapsed);
+			
+				handlePowerUpTriggering();
+				handlePlatformCollisions();
+				handleBoxCollisions();
+				handlePlayerCollisions();
+				handleLavaCollisions();
+				handleAcidCollisions();
+				handleSingleAnimations();
+			
+				respawnDeadPlayers();
+			}
 			
 			var winner:Player = checkForWinner();
 			if (winner != null) {
@@ -245,6 +281,39 @@ package
 			checkGameOver();
 		}
 		
+		
+		
+		
+		
+		
+		
+		//MIN JI'S PAUSE CODE START
+		
+		public function pauseAndMenu():void {			
+			dePause();
+			
+			FlxG.switchState( new MenuState());
+		}
+		
+		public function dePause():void {			
+						
+			FlxG.paused = false;
+
+			players.active = true;
+			platforms.active = true;
+			pauseButton.active = false;
+			pauseButton.visible = false;
+			players.update();
+			platforms.update();
+			pauseButton.update();
+			
+			resetGame();
+		}
+		//MIN JI'S PAUSE CODE END
+
+		
+		
+
 		/**
 		 * End the game with the specified winner.
 		 * @param	winner
@@ -560,7 +629,9 @@ package
 			timer.addTime(FlxG.elapsed);
 			if (timer.elapsed > TIMELIMIT) {
 				roundTime.text = "Overtime!";
-			} else {		 
+			}
+			
+			if (!FlxG.paused) {		 
 				roundTime.text = getCountdownString(TIMELIMIT, timer.elapsed);
 			}
 		}
@@ -571,7 +642,7 @@ package
 		protected function updateRabbitTimers():void {
 			for each (var player:Player in players.members) {
 				var timer:Clock = rabbitInfo[player].clock;
-				if (player.boxHeld != null) {
+				if (player.boxHeld != null && !FlxG.paused) {
 					if (player.boxHeld.id == rabbitBox.id) {
 						timer.addTime(FlxG.elapsed);
 					}
