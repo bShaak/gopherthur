@@ -283,10 +283,9 @@ package
 				pauseMenuButton.update();
 				pauseGameButton.update();
 				pauseMuteButton.update();
-
 			}
-			
 			//MIN JI'S PAUSE CODE END
+			
 			if (!FlxG.paused) {
 				super.update();
 				clock.addTime(FlxG.elapsed);
@@ -314,7 +313,6 @@ package
 		
 		
 		//MIN JI'S PAUSE CODE START
-		
 		public function pauseAndMenu():void {			
 			if (!FlxG.mute)
 				mute();
@@ -363,6 +361,7 @@ package
 				pauseMuteButton.update();
 
 			}
+			
 			dePause();
 		}
 		//MIN JI'S PAUSE CODE END
