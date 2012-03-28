@@ -28,6 +28,10 @@ package
 		public var zones:FlxGroup;
 		public var lava:FlxGroup; //maybe you'll want more than one lava pit?
 		public var acid:FlxGroup;
+		public var asteroids:FlxGroup;
+		public var asteroidTime:Number = 0;
+		
+		public var random:PseudoRandom;
 		public var scoreboard:FlxText;
 		public var roundTime:FlxText;	//visible countdown for a timed game
 		protected var running:Boolean = false;
@@ -213,6 +217,9 @@ package
 			}
 			add(acid);
 			
+			asteroids = new FlxGroup();
+			add(asteroids);
+			
 			FlxG.playMusic(Music);
 			this.afterCreate();
 		}
@@ -231,6 +238,8 @@ package
 			handlePlayerCollisions();
 			handleLavaCollisions();
 			handleAcidCollisions();
+			handleAsteroidCollisions();
+			
 			handleSingleAnimations();
 			
 			respawnDeadPlayers();
@@ -501,6 +510,14 @@ package
 			}
 		}
 		
+		protected function startAsteroids():void 
+		{
+			if (levelData.asteroids) {
+				clock.setTimeout(levelData.asteroids.fixedDelay, this.createAsteroid);
+				asteroidTime = levelData.asteroids.fixedDelay;
+			}
+		}
+		
 		protected function dropBoxesOnCollision(player:Player):void 
 		{
 			player.dropBox();
@@ -531,10 +548,47 @@ package
 		 */
 		protected function afterCreate():void 
 		{
+			random = new PseudoRandom(new Date().getTime());
+			startAsteroids();
 			running = true;
 			return;
 		}
+		
+		/**
+		 * Create an asteroid and queue up the next asteroid.
+		 */
+		protected function createAsteroid():void {
+			var time:Number = levelData.asteroids.fixedDelay + Math.floor(random.random() * levelData.asteroids.randomDelay);
+			var angle:Number = random.random() * Math.PI/4 - Math.PI/8;
+			
+			var x:int;
+			if (random.random() >= 0.5) {
+				x = -40;
+			} else {
+				x = FlxG.width;
+				angle = Math.PI + angle;
+			}
+			
+			var y:int = random.random() * (levelData.asteroids.regionBottom - levelData.asteroids.regionTop) + levelData.asteroids.regionTop;
+			var speed:Number = levelData.asteroids.fixedSpeed + random.random() * levelData.asteroids.randomSpeed;
+			asteroids.add(new Asteroid(x, y, speed, angle, asteroidTime, clock));
+			
+			clock.setElapsedTimeout(time + asteroidTime, this.createAsteroid);
+			asteroidTime += time;
+		}
 	
+		protected function handleAsteroidCollisions():void {
+			FlxG.collide(asteroids, players);
+			
+			// Remove asteroids that have travelled off the level.
+			for (var i:int = asteroids.members.length - 1; i >= 0; i--) {
+				var asteroid:Asteroid = asteroids.members[i];
+				if (asteroid != null && !asteroid.alive) {
+					asteroids.remove(asteroid);
+				}
+			}
+		}
+		
 		protected function createClock() : Clock {
 			return new Clock(null);
 		}

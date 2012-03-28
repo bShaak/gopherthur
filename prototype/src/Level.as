@@ -85,6 +85,14 @@ package
 		 *		-width: The width of the platform.
 		 *		-height: The height of the platform.
 		 *		-oneWay: See platforms.
+		 * 
+		 * asteroids: define an asteroid field for the map
+		 * 		-fixedDelay: base delay that will always be waited between asteroids.
+		 * 		-randomDelay: a uniformly random delay between 0 and randomDelay is added to the fixedDelay
+		 * 		-regionTop: the y coordinate of the top of the asteroid field region.
+		 *		-regionBottom: the y coordinate of the bottom of the asteroid field region (must be > regionTop).
+		 * 		-fixedSpeed: The base speed that the asteroids will travel (~150 seems like a good speed).
+		 * 		-randomSpeed: a uniformly random speed between 0 and randomSpeed is added to fixedSpeed.
 		*/		
 		
 		public static var levelData:Object = { startInfo: [ { x: FlxG.width / 10, y: 370, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1

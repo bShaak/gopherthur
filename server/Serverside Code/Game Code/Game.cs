@@ -72,6 +72,7 @@ namespace BoxSpring {
 
         private int messageCount = 0;
         private int roundId = 0;
+        private long seed = DateTime.Now.Ticks;
 
         // A function to be triggered when all players have confirmed a message
         private delegate void UponConfirm();
@@ -212,7 +213,7 @@ namespace BoxSpring {
                 Broadcast(ELAPSED, (int) ((DateTime.Now.Ticks - startTime) / 10000));
             }, 100);
 
-            Broadcast(START_GAME);
+            Broadcast(START_GAME, (int) seed);
         }
 
         private void AddTimer(Action action)
