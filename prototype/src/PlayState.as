@@ -48,7 +48,7 @@ package
 		protected var MAX_SCORE:int = 1; //define a score at which the game ends
 		
 		//embed sounds
-		[Embed(source = "../mp3/push_new.mp3")] private var Push:Class;
+		[Embed(source = "../mp3/push_new.mp3")] protected var Push:Class;
 		[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
 		[Embed(source = "../mp3/splatter.mp3")] private var splatter:Class;
 		
@@ -213,7 +213,7 @@ package
 			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(scoreboard);
 			
-			FlxG.playMusic(Music);
+			//FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
@@ -396,7 +396,7 @@ package
 					//handle one-way platforms first
 					if (platform.isOneWay()) {
 						//Players should only collide with the top edge of the platform, and only from above.
-						if (player.isAbove(platform)) { 
+						if (player.isAbove(platform)) { //player is ActivePlayer && 
 							if (FlxG.collide(platform, player)) {
 								player.velocity.y = platform.maxVelocity.y;
 							}
@@ -436,6 +436,10 @@ package
 			//player collisions (bumping one another) -> consider all player pairs
 			for each (var player:Player in players.members) {
 				for each (var player2:Player in players.members) {
+					/*if (player.isShoved())
+						trace("P1 is shoved");
+					if (player2.isShoved())
+						trace("P2 is shoved");*/
 					if (!player.isShoved() && !player2.isShoved())
 					{
 						FlxG.overlap(player, player2, shovePlayer);
@@ -446,7 +450,7 @@ package
 			FlxG.collide(masterMap, players);
 		}
 		
-		private function shovePlayer(player:Player, player2:Player):void 
+		protected function shovePlayer(player:Player, player2:Player):void 
 		{
 			if (player.isShoved() || player2.isShoved())
 				return;

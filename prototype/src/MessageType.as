@@ -24,7 +24,9 @@ package
         public static const READY_TO_ADD_PLAYERS:String = "p";
         public static const SETUP_GAME:String = "q";
         public static const GAME_OVER:String = "r";
-        public static const RESPAWN_PLAYER:String = "s";		
+        public static const RESPAWN_PLAYER:String = "s";	
+		public static const CHARGE:String = "t";
+		public static const SHOVE:String = "u";
 	}
 
 }

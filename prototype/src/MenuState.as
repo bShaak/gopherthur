@@ -91,7 +91,8 @@ package
 		
 		public function goToConnectionState():void
 		{
-			FlxG.switchState( new LevelSelect(PlayState.BOX_COLLECT, null, 1, 1));
+			//FlxG.switchState( new LevelSelect(PlayState.BOX_COLLECT, null, 1, 1));
+			FlxG.switchState( new GameLobbyState());//LevelSelect(PlayState.BOX_COLLECT, null, 1, 1));
 		} 
  
 	}

@@ -102,6 +102,7 @@ package
 											 { x:FlxG.width * 1 / 2 - 15, y: 10 },
 											 { x:FlxG.width * 1 / 2 - 5, y:40 },
 											 { x:FlxG.width * 1 / 2 + 5, y:10 },
+											 //{ x:20, y:300 },     //ras
 											 { x:FlxG.width * 1 / 2 + 15, y:40 } ],
 		
 									platforms: [ { start_x: 17*TW, //elevator
@@ -130,7 +131,8 @@ package
 										   width: 4*TW,
 										   height: 1 * TW } ],
 									circlePlatforms: [],
-									superPlatforms: []
+									superPlatforms: [],
+									name: "Forest"
 		}
 		public static var skyscraper:Object = { 
 									startInfo: [ { x: 6*TW, y: 24*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -179,7 +181,8 @@ package
 												   maxVelocity_x: 0,
 												   maxVelocity_y: 0 } ],   
 									 circlePlatforms: [],	
-									 superPlatforms: []
+									 superPlatforms: [],
+									 name: "Skyscraper"
 		}
 		public static var volcano:Object = { 
 			startInfo: [ { x: 5*TW, y: 3*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -251,7 +254,8 @@ package
 					  warningTime: 2000,
 					  offset: 0 } ],
 			circlePlatforms: [],
-			superPlatforms: []
+			superPlatforms: [],
+			name: "Volcano"
 		}
 		
 		public static var powerplant:Object = { 
@@ -366,7 +370,8 @@ package
 					  reverse: false,
 					  width: 3 * TW, 
 					  height: 1 * TW }
-					  ]
+					  ],
+					  name: "Powerplant"
 		}
 	}
 

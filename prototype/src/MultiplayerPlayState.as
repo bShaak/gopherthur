@@ -49,6 +49,7 @@ package
 			connection.addMessageHandler(MessageType.GAME_OVER, handleGameOverMessage);
 			connection.addMessageHandler(MessageType.RESPAWN_PLAYER, handleRepawnPlayerMessage);
 			connection.addMessageHandler(MessageType.RESET, handleResetMessage);
+			connection.addMessageHandler(MessageType.SHOVE, handleShoveMessage);
 			connection.send(MessageType.CONFIRM, MessageType.READY_TO_ADD_PLAYERS);
 		}
 		
@@ -241,6 +242,39 @@ package
 					p.y += smoothMovement[0].y;
 			}
 			trace("Curr pos: " + p.x + " " + p.y);
+		}
+		
+		override protected function shovePlayer(player:Player, player2:Player):void {
+			if ((player is ActivePlayer && player.shoveMsgSent) || 
+			    (player2 is ActivePlayer && player2.shoveMsgSent))
+				return;
+			if (player is ActivePlayer && player.isCharging()) {
+				player.shoveMsgSent = true;
+				player.getConnection().send(MessageType.CHARGE, player.velocity.x, player2.id, player2.velocity.x);
+			}
+			else if (player2 is ActivePlayer && player2.isCharging()) {
+				player2.shoveMsgSent = true;
+				player2.getConnection().send(MessageType.CHARGE, player2.velocity.x, player.id, player.velocity.x);
+			}
+		}
+		
+		/**
+		 * Player with ID equal to the one sent in message shoves the other player.
+		 * @param	m message containing the id of the shoving and shoved player
+		 */
+		private function handleShoveMessage(m:Message):void { 
+			FlxG.play(Push);
+			//var id:int = m.getInt(0);
+			//var velocity:int = m.getInt(1);
+			var shovingPlayer:Player = getPlayer(m.getInt(0));			
+			var shovedPlayer:Player = getPlayer(m.getInt(1));
+			shovingPlayer.shoveMsgSent = false;
+			shovedPlayer.shoveMsgSent = false;
+					
+			shovedPlayer.getShoved(shovingPlayer);
+			dropBoxesOnCollision(shovedPlayer);
+			shovingPlayer.velocity.x = 0;
+			
 		}
 		
 		override protected function createClock() : Clock {

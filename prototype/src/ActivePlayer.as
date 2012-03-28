@@ -17,7 +17,7 @@ package
 		
 		private var controlScheme:Controls;
 		private var connection:Connection;
-
+		
 		public function ActivePlayer(x:Number, y:Number, id:int, color:int, connection:Connection, controlScheme:Controls, walkAnimation:Class) 
 		{
 			super(x, y, id, color, walkAnimation);
@@ -26,8 +26,15 @@ package
 			
 			jumpKeyHeld = false;
 			jumpTimer = 0;
+			
+			shoveMsgSent = false;
 		}
 	
+		override public function getConnection():Connection {
+			//trace("ActivePlayer");
+			return this.connection;
+		}
+		
 		override public function update():void {
 			super.update();
 			this.acceleration.x = 0; //keep player from sliding if no button is currently pressed
