@@ -39,15 +39,28 @@ package
 			checkTimeouts();
 		}
 		
-
-		public function setTimeout(t:Number, callback:Function):void {
+		/**
+		 * Set an event to trigger when elapsed > t.
+		 * @param	t The time to trigger the callback.
+		 * @param	callback The callback.
+		 */
+		public function setElapsedTimeout(t:Number, callback:Function):void {
 			var cb:Object = new Object();
-			cb.t = t + elapsed;
+			cb.t = t;
 			cb.callback = callback;
 			
 			timeouts.push(cb);
 			timeouts.sortOn("t", Array.DESCENDING);
 			checkTimeouts();
+		}
+
+		/**
+		 * Set an event to trigger in t milliseconds.
+		 * @param	t The delay before triggering.
+		 * @param	callback The callback.
+		 */
+		public function setTimeout(t:Number, callback:Function):void {
+			setElapsedTimeout(t + elapsed, callback);
 		}
 		
 		private function checkTimeouts():void {

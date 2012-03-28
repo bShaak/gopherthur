@@ -4,7 +4,6 @@ using System.Text;
 using System.Collections;
 using PlayerIO.GameLibrary;
 using System.Drawing;
-//using System.Timers;
 
 namespace BoxSpring {
 	//Player class. each player that join the game will have these attributes.
@@ -79,9 +78,8 @@ namespace BoxSpring {
 
         private int messageCount = 0;
         private int roundId = 0;
+        private long seed = DateTime.Now.Ticks;
 
-        //private System.Timers.Timer timer = new System.Timers.Timer();
-        
         // A function to be triggered when all players have confirmed a message
         private delegate void UponConfirm();
 
@@ -221,12 +219,7 @@ namespace BoxSpring {
                 Broadcast(ELAPSED, (int) ((DateTime.Now.Ticks - startTime) / 10000));
             }, 100);
 
-            Broadcast(START_GAME);
-
-            /*Sche
-            timer.Elapsed += delegate { OnTimedEvent(GetPlayer(1), GetPlayer(2), this); }; //new System.Timers.ElapsedEventHandler(OnTimedEvent);
-            // Set the Interval to 10 ms.
-            timer.Interval = 10;*/
+            Broadcast(START_GAME, (int) seed);
         }
 
         private void AddTimer(Action action)
@@ -274,7 +267,7 @@ namespace BoxSpring {
         public override void GotMessage(Player player, Message message)
         {
             messageCount++;
-            //Console.WriteLine(message.Type); //ras
+
             switch (message.Type)
             {
                 case CONFIRM:

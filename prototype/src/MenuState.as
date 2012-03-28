@@ -33,29 +33,35 @@ package
 			mode.setFormat (null, 14, 0xFFFFFFFF, "center");
 			add(mode);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 180, null, goToBoxCollectPlayState); 
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 200, null, goToBoxCollectPlayState); 
 			add(playButton);
-			buttonLabel = new FlxText(FlxG.width / 2 - 50, FlxG.height - 172, 100, "CLASSIC");
+			buttonLabel = new FlxText(FlxG.width / 2 - 50, FlxG.height - 192, 100, "CLASSIC");
 			buttonLabel.setFormat(null, 16, 0x333333, "center");
 			add(buttonLabel);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 140, null, goToRabbitPlayState); 
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 160, null, goToRabbitPlayState); 
 			add(playButton);
-			buttonLabel = new FlxText(FlxG.width / 2 - 50, FlxG.height - 132, 100, "RABBIT");
+			buttonLabel = new FlxText(FlxG.width / 2 - 50, FlxG.height - 152, 100, "RABBIT");
 			buttonLabel.setFormat(null, 16, 0x333333, "center");
 			add(buttonLabel);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 100, null, goToTimedPlayState); 
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 120, null, goToTimedPlayState); 
 			add(playButton);
-			buttonLabel = new FlxText(FlxG.width / 2 - 52, FlxG.height - 92, 100, "TIMED");
+			buttonLabel = new FlxText(FlxG.width / 2 - 52, FlxG.height - 112, 100, "TIMED");
 			buttonLabel.setFormat(null, 16, 0x333333, "center");
 			add(buttonLabel);
 
-			playButton = new FlxButtonBig(FlxG.width/2 - 80, FlxG.height - 60, null, goToConnectionState);
+			playButton = new FlxButtonBig(FlxG.width/2 - 80, FlxG.height - 80, null, goToConnectionState);
 			add(playButton);
-			buttonLabel = new FlxText(FlxG.width / 2 - 80, FlxG.height - 52, 160, "MULTIPLAYER");
+			buttonLabel = new FlxText(FlxG.width / 2 - 80, FlxG.height - 72, 160, "MULTIPLAYER");
 			buttonLabel.setFormat(null, 16, 0x333333, "center");
 			add(buttonLabel); 
+			
+			playButton = new FlxButtonBig(FlxG.width/2 - 80, FlxG.height - 40, null, goToTutorial);
+			add(playButton);
+			buttonLabel = new FlxText(FlxG.width / 2 - 80, FlxG.height - 32, 160, "TUTORIAL");
+			buttonLabel.setFormat(null, 16, 0x333333, "center");
+			add(buttonLabel);
 		} 
  
 		override public function update():void
@@ -94,6 +100,10 @@ package
 			//FlxG.switchState( new LevelSelect(PlayState.BOX_COLLECT, null, 1, 1));
 			FlxG.switchState( new GameLobbyState());//LevelSelect(PlayState.BOX_COLLECT, null, 1, 1));
 		} 
+		
+		public function goToTutorial():void {
+			FlxG.switchState( new Tutorial() );
+		}
  
 	}
 }

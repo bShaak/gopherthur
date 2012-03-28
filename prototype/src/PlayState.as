@@ -28,6 +28,10 @@ package
 		public var zones:FlxGroup;
 		public var lava:FlxGroup; //maybe you'll want more than one lava pit?
 		public var acid:FlxGroup;
+		public var asteroids:FlxGroup;
+		public var asteroidTime:Number = 0;
+		
+		public var random:PseudoRandom;
 		public var scoreboard:FlxText;
 		public var roundTime:FlxText;	//visible countdown for a timed game
 		protected var running:Boolean = false;
@@ -54,6 +58,18 @@ package
 		
 		//player death animation
 		[Embed(source = "/sprites/death_animation_128x96.png")] private var PlayerDeathAnimation:Class;
+		
+		
+		//MIN JI'S PAUSE CODE START
+		FlxG.paused = false;
+		
+		private var pauseBgColor:FlxSprite;
+
+		private var pauseMenuButton:FlxButton;
+		private var pauseGameButton:FlxButton;
+		private var pauseMuteButton:FlxButton;
+		//MIN JI'S PAUSE CODE END
+		
 		
 		public function PlayState(data:Object, goal:int)
 		{
@@ -213,7 +229,26 @@ package
 			scoreboard.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(scoreboard);
 			
-			//FlxG.playMusic(Music);
+			asteroids = new FlxGroup();
+			add(asteroids);
+			//MIN JI'S PAUSE CODE START
+			pauseBgColor = new FlxSprite(0, 0);
+			pauseBgColor.makeGraphic(FlxG.width, FlxG.height, 0x55000000);
+			add(pauseBgColor);
+			
+			pauseGameButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 60, "BACK TO GAME", dePause);
+			add(pauseGameButton);
+			
+			pauseMenuButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 40, "BACK TO MENU", pauseAndMenu);
+			add(pauseMenuButton);
+
+			pauseMuteButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 20, "MUTE", mute);
+			pauseMuteButton.label = new FlxText(0, 0, 80, "MUTE");
+			pauseMuteButton.label.setFormat(null, 8, 0x333333, "center");
+			add(pauseMuteButton);
+			//MIN JI'S PAUSE CODE END
+			
+			FlxG.playMusic(Music);
 			this.afterCreate();
 		}
 		
@@ -222,18 +257,56 @@ package
 				return;
 			}
 			
-			super.update();
-			clock.addTime(FlxG.elapsed);
+			players.active = true;
+			platforms.active = true;
 			
-			handlePowerUpTriggering();
-			handlePlatformCollisions();
-			handleBoxCollisions();
-			handlePlayerCollisions();
-			handleLavaCollisions();
-			handleAcidCollisions();
-			handleSingleAnimations();
+			pauseBgColor.visible = false;
 			
-			respawnDeadPlayers();
+			pauseMenuButton.visible = false;
+			pauseGameButton.visible = false;
+			pauseMuteButton.visible = false;
+
+			
+			//MIN JI'S PAUSE CODE START
+			if (FlxG.keys.justPressed("P")) {
+					FlxG.paused = !FlxG.paused;
+				}
+				
+			if (FlxG.paused) {
+				players.active = false;
+				platforms.active = false;
+				
+				pauseBgColor.visible = true;
+				
+				pauseMenuButton.visible = true;
+				pauseGameButton.visible = true;
+				pauseMuteButton.visible = true;
+			
+				pauseMenuButton.active = true;
+				pauseGameButton.active = true;
+				pauseMuteButton.active = true;
+				
+				pauseMenuButton.update();
+				pauseGameButton.update();
+				pauseMuteButton.update();
+			}
+			//MIN JI'S PAUSE CODE END
+			
+			if (!FlxG.paused) {
+				super.update();
+				clock.addTime(FlxG.elapsed);
+			
+				handlePowerUpTriggering();
+				handlePlatformCollisions();
+				handleBoxCollisions();
+				handlePlayerCollisions();
+				handleLavaCollisions();
+				handleAcidCollisions();
+				handleAsteroidCollisions();
+				handleSingleAnimations();
+				
+				respawnDeadPlayers();
+			}
 			
 			var winner:Player = checkForWinner();
 			if (winner != null) {
@@ -245,6 +318,64 @@ package
 			checkGameOver();
 		}
 		
+		
+		//MIN JI'S PAUSE CODE START
+		public function pauseAndMenu():void {			
+			if (!FlxG.mute)
+				mute();
+				
+			dePause();
+			
+			FlxG.switchState( new MenuState());
+			
+			resetGame();
+		}
+		
+		public function dePause():void {					
+			FlxG.paused = false;
+
+			players.active = true;
+			platforms.active = true;
+			
+			pauseMenuButton.visible = false;
+			pauseGameButton.visible = false;
+			pauseMuteButton.visible = false;
+			
+			pauseMenuButton.active = false;
+			pauseGameButton.active = false;
+			pauseMuteButton.active = false;
+			
+			pauseMenuButton.update();
+			pauseGameButton.update();
+			pauseMuteButton.update();
+		}
+		
+		
+		public function mute():void {
+			FlxG.mute = !FlxG.mute;
+			
+			if(FlxG.mute) {
+				FlxG.volume = 0;
+				pauseMuteButton.label = new FlxText(0, 0, 80, "UNMUTE");
+				pauseMuteButton.label.setFormat(null, 8, 0x333333, "center");
+				pauseMuteButton.update();
+			}
+				
+			if(!FlxG.mute) {
+				FlxG.volume = 1;
+				pauseMuteButton.label = new FlxText(0, 0, 80, "MUTE");
+				pauseMuteButton.label.setFormat(null, 8, 0x333333, "center");
+				pauseMuteButton.update();
+
+			}
+			
+			dePause();
+		}
+		//MIN JI'S PAUSE CODE END
+
+		
+		
+
 		/**
 		 * End the game with the specified winner.
 		 * @param	winner
@@ -396,7 +527,7 @@ package
 					//handle one-way platforms first
 					if (platform.isOneWay()) {
 						//Players should only collide with the top edge of the platform, and only from above.
-						if (player.isAbove(platform)) { //player is ActivePlayer && 
+						if (player.isAbove(platform)) { 
 							if (FlxG.collide(platform, player)) {
 								player.velocity.y = platform.maxVelocity.y;
 							}
@@ -436,10 +567,6 @@ package
 			//player collisions (bumping one another) -> consider all player pairs
 			for each (var player:Player in players.members) {
 				for each (var player2:Player in players.members) {
-					/*if (player.isShoved())
-						trace("P1 is shoved");
-					if (player2.isShoved())
-						trace("P2 is shoved");*/
 					if (!player.isShoved() && !player2.isShoved())
 					{
 						FlxG.overlap(player, player2, shovePlayer);
@@ -476,11 +603,16 @@ package
 							
 				//determine orientation
 				var dir:int = 1;
+				var dir_y:int = 1;
 				if (player.x < player2.x)
 					dir = -1;
+				if (player.y < player2.y)
+					dir_y = -1;
 						
 				player.velocity.x = dir * player.maxVelocity.x;
 				player2.velocity.x = -dir * player2.maxVelocity.x;
+				player.velocity.y = dir_y * 80;
+				player2.velocity.y = -dir_y * 80;
 			}
 			//trace("After: " + player.velocity.x + " " + player2.velocity.x);
 		}
@@ -503,6 +635,14 @@ package
 					player.dropBox();
 					killAndRespawnPlayer(player);
 				}
+			}
+		}
+		
+		protected function startAsteroids():void 
+		{
+			if (levelData.asteroids) {
+				clock.setTimeout(levelData.asteroids.fixedDelay, this.createAsteroid);
+				asteroidTime = levelData.asteroids.fixedDelay;
 			}
 		}
 		
@@ -536,10 +676,47 @@ package
 		 */
 		protected function afterCreate():void 
 		{
+			random = new PseudoRandom(new Date().getTime());
+			startAsteroids();
 			running = true;
 			return;
 		}
+		
+		/**
+		 * Create an asteroid and queue up the next asteroid.
+		 */
+		protected function createAsteroid():void {
+			var time:Number = levelData.asteroids.fixedDelay + Math.floor(random.random() * levelData.asteroids.randomDelay);
+			var angle:Number = random.random() * Math.PI/4 - Math.PI/8;
+			
+			var x:int;
+			if (random.random() >= 0.5) {
+				x = -40;
+			} else {
+				x = FlxG.width;
+				angle = Math.PI + angle;
+			}
+			
+			var y:int = random.random() * (levelData.asteroids.regionBottom - levelData.asteroids.regionTop) + levelData.asteroids.regionTop;
+			var speed:Number = levelData.asteroids.fixedSpeed + random.random() * levelData.asteroids.randomSpeed;
+			asteroids.add(new Asteroid(x, y, speed, angle, asteroidTime, clock));
+			
+			clock.setElapsedTimeout(time + asteroidTime, this.createAsteroid);
+			asteroidTime += time;
+		}
 	
+		protected function handleAsteroidCollisions():void {
+			FlxG.collide(asteroids, players);
+			
+			// Remove asteroids that have travelled off the level.
+			for (var i:int = asteroids.members.length - 1; i >= 0; i--) {
+				var asteroid:Asteroid = asteroids.members[i];
+				if (asteroid != null && !asteroid.alive) {
+					asteroids.remove(asteroid);
+				}
+			}
+		}
+		
 		protected function createClock() : Clock {
 			return new Clock(null);
 		}
@@ -562,10 +739,15 @@ package
 		 * Update the timer for timed mode
 		 */
 		protected function updateTimer():void {
-			timer.addTime(FlxG.elapsed);
+			if (!FlxG.paused) {		 
+				timer.addTime(FlxG.elapsed);
+			}
+			
 			if (timer.elapsed > TIMELIMIT) {
 				roundTime.text = "Overtime!";
-			} else {		 
+			}
+			
+			else {		 
 				roundTime.text = getCountdownString(TIMELIMIT, timer.elapsed);
 			}
 		}
@@ -576,7 +758,7 @@ package
 		protected function updateRabbitTimers():void {
 			for each (var player:Player in players.members) {
 				var timer:Clock = rabbitInfo[player].clock;
-				if (player.boxHeld != null) {
+				if (player.boxHeld != null && !FlxG.paused) {
 					if (player.boxHeld.id == rabbitBox.id) {
 						timer.addTime(FlxG.elapsed);
 					}
