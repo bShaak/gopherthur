@@ -59,7 +59,11 @@ package
 		//MIN JI'S PAUSE CODE START
 		FlxG.paused = false;
 		
-		private var pauseButton:FlxButton;
+		private var pauseBgColor:FlxSprite;
+
+		private var pauseMenuButton:FlxButton;
+		private var pauseGameButton:FlxButton;
+		private var pauseMuteButton:FlxButton;
 		//MIN JI'S PAUSE CODE END
 		
 		
@@ -221,10 +225,22 @@ package
 			}
 			add(acid);
 			
+			//MIN JI'S PAUSE CODE START
+			pauseBgColor = new FlxSprite(0, 0);
+			pauseBgColor.makeGraphic(FlxG.width, FlxG.height, 0x55000000);
+			add(pauseBgColor);
 			
-			pauseButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 60, "BACK TO MENU", pauseAndMenu);
-			add(pauseButton);
+			pauseGameButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 60, "BACK TO GAME", dePause);
+			add(pauseGameButton);
 			
+			pauseMenuButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 40, "BACK TO MENU", pauseAndMenu);
+			add(pauseMenuButton);
+
+			pauseMuteButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 20, "MUTE", mute);
+			pauseMuteButton.label = new FlxText(0, 0, 80, "MUTE");
+			pauseMuteButton.label.setFormat(null, 8, 0x333333, "center");
+			add(pauseMuteButton);
+			//MIN JI'S PAUSE CODE END
 			
 			FlxG.playMusic(Music);
 			this.afterCreate();
@@ -237,7 +253,13 @@ package
 			
 			players.active = true;
 			platforms.active = true;
-			pauseButton.visible = false;
+			
+			pauseBgColor.visible = false;
+			
+			pauseMenuButton.visible = false;
+			pauseGameButton.visible = false;
+			pauseMuteButton.visible = false;
+
 			
 			//MIN JI'S PAUSE CODE START
 			if (FlxG.keys.justPressed("P")) {
@@ -245,13 +267,22 @@ package
 				}
 				
 			if (FlxG.paused) {
-				//pauseScreenGroup.update();
 				players.active = false;
 				platforms.active = false;
 				
-				pauseButton.active = true;
-				pauseButton.visible = true;
-				pauseButton.update();
+				pauseBgColor.visible = true;
+				
+				pauseMenuButton.visible = true;
+				pauseGameButton.visible = true;
+				pauseMuteButton.visible = true;
+			
+				pauseMenuButton.active = true;
+				pauseGameButton.active = true;
+				pauseMuteButton.active = true;
+				
+				pauseMenuButton.update();
+				pauseGameButton.update();
+				pauseMuteButton.update();
 
 			}
 			
@@ -282,32 +313,57 @@ package
 		}
 		
 		
-		
-		
-		
-		
-		
 		//MIN JI'S PAUSE CODE START
 		
 		public function pauseAndMenu():void {			
+			if (!FlxG.mute)
+				mute();
+				
 			dePause();
 			
 			FlxG.switchState( new MenuState());
+			
+			resetGame();
 		}
 		
-		public function dePause():void {			
-						
+		public function dePause():void {					
 			FlxG.paused = false;
 
 			players.active = true;
 			platforms.active = true;
-			pauseButton.active = false;
-			pauseButton.visible = false;
-			players.update();
-			platforms.update();
-			pauseButton.update();
 			
-			resetGame();
+			pauseMenuButton.visible = false;
+			pauseGameButton.visible = false;
+			pauseMuteButton.visible = false;
+			
+			pauseMenuButton.active = false;
+			pauseGameButton.active = false;
+			pauseMuteButton.active = false;
+			
+			pauseMenuButton.update();
+			pauseGameButton.update();
+			pauseMuteButton.update();
+		}
+		
+		
+		public function mute():void {
+			FlxG.mute = !FlxG.mute;
+			
+			if(FlxG.mute) {
+				FlxG.volume = 0;
+				pauseMuteButton.label = new FlxText(0, 0, 80, "UNMUTE");
+				pauseMuteButton.label.setFormat(null, 8, 0x333333, "center");
+				pauseMuteButton.update();
+			}
+				
+			if(!FlxG.mute) {
+				FlxG.volume = 1;
+				pauseMuteButton.label = new FlxText(0, 0, 80, "MUTE");
+				pauseMuteButton.label.setFormat(null, 8, 0x333333, "center");
+				pauseMuteButton.update();
+
+			}
+			dePause();
 		}
 		//MIN JI'S PAUSE CODE END
 
@@ -626,12 +682,15 @@ package
 		 * Update the timer for timed mode
 		 */
 		protected function updateTimer():void {
-			timer.addTime(FlxG.elapsed);
+			if (!FlxG.paused) {		 
+				timer.addTime(FlxG.elapsed);
+			}
+			
 			if (timer.elapsed > TIMELIMIT) {
 				roundTime.text = "Overtime!";
 			}
 			
-			if (!FlxG.paused) {		 
+			else {		 
 				roundTime.text = getCountdownString(TIMELIMIT, timer.elapsed);
 			}
 		}
