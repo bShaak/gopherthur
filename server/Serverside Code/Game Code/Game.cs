@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections;
 using PlayerIO.GameLibrary;
 using System.Drawing;
+//using System.Timers;
 
 namespace BoxSpring {
 	//Player class. each player that join the game will have these attributes.
@@ -12,11 +13,15 @@ namespace BoxSpring {
 		public int y;
         public int vx;
         public int vy;
+        public bool charging;
+        public const int MAX_SPEED = 160;
+
 		public Player() {
             x = 0;
             y = 0;
             vx = 0;
             vy = 0;
+            charging = false;
 		}
 	}
 
@@ -58,6 +63,8 @@ namespace BoxSpring {
         private const String SETUP_GAME = "q";
         private const String GAME_OVER = "r";
         private const String RESPAWN_PLAYER = "s";
+        private const String CHARGE = "t";
+        private const String SHOVE = "u";
 
         private int playerCount = 2; // Number of players in the game. Hardcoded for now.
         private int boxCount = 5; // Hardcoded for now. This will be fixed.
@@ -73,6 +80,8 @@ namespace BoxSpring {
         private int messageCount = 0;
         private int roundId = 0;
 
+        //private System.Timers.Timer timer = new System.Timers.Timer();
+        
         // A function to be triggered when all players have confirmed a message
         private delegate void UponConfirm();
 
@@ -213,6 +222,11 @@ namespace BoxSpring {
             }, 100);
 
             Broadcast(START_GAME);
+
+            /*Sche
+            timer.Elapsed += delegate { OnTimedEvent(GetPlayer(1), GetPlayer(2), this); }; //new System.Timers.ElapsedEventHandler(OnTimedEvent);
+            // Set the Interval to 10 ms.
+            timer.Interval = 10;*/
         }
 
         private void AddTimer(Action action)
@@ -260,7 +274,7 @@ namespace BoxSpring {
         public override void GotMessage(Player player, Message message)
         {
             messageCount++;
-
+            //Console.WriteLine(message.Type); //ras
             switch (message.Type)
             {
                 case CONFIRM:
@@ -286,6 +300,9 @@ namespace BoxSpring {
                         int y = message.GetInt(1);
                         int vx = message.GetInt(2);
                         int vy = message.GetInt(3);
+
+                        if (player.charging && Math.Abs(vx) <= Player.MAX_SPEED)
+                            player.charging = false;
 
                         int avCount = 0;
                         int boxMask = 0;
@@ -493,8 +510,62 @@ namespace BoxSpring {
 
                         break;
                     }
+                case CHARGE:
+                    {
+                        //timer.Enabled=true;
+                        int velocity = message.GetInt(0);
+                        player.charging = true;
+                        player.vx = velocity;
+
+                        Player player2 = GetPlayer(message.GetInt(1));
+                        player2.vx = message.GetInt(2);
+                        Broadcast(SHOVE, player.Id, player2.Id);
+
+                        Console.WriteLine(player.Id + " " + player.vx + " " + player2.Id + " " + player2.Id);
+
+                        /*
+
+                        if (player2.charging)
+                        {
+                            if (Math.Abs(player.vx) > Math.Abs(player2.vx))
+                                Broadcast(SHOVE, player.Id, player2.Id);
+                            else
+                                Broadcast(SHOVE, player2.Id, player.Id);
+                            
+                            player.charging = false;
+                            player2.charging = false;
+                        }*/
+
+                        /*ScheduleCallback(delegate
+                        {
+                            Console.WriteLine("Firing event");
+                            if (player.charging)
+                                Broadcast(SHOVE, player.Id, player2.Id);
+                            else if (player2.charging)
+                                Broadcast(SHOVE, player2.Id, player.Id);
+
+                            player.charging = false;
+                            player2.charging = false;
+                        }, 25);*/
+
+                        break;   
+                    }
             }
         }
+
+        // This timer allows for a small time gap between arrival of CHARGE messages from both players
+        /*private static void OnTimedEvent(Player p1, Player p2, GameCode gc)
+        {
+            Console.WriteLine("Firing event");
+            if (p1.charging)
+                gc.Broadcast(SHOVE, p1.Id, p2.Id);
+            else if (p2.charging)
+                gc.Broadcast(SHOVE, p2.Id, p1.Id);
+
+            p1.charging = false;
+            p2.charging = false;
+            gc.timer.Enabled = false;
+        }*/
 
         private Box GetBox(int boxId)
         {
