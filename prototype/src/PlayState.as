@@ -602,11 +602,16 @@ package
 							
 				//determine orientation
 				var dir:int = 1;
+				var dir_y:int = 1;
 				if (player.x < player2.x)
 					dir = -1;
+				if (player.y < player2.y)
+					dir_y = -1;
 						
 				player.velocity.x = dir * player.maxVelocity.x;
 				player2.velocity.x = -dir * player2.maxVelocity.x;
+				player.velocity.y = dir_y * 80;
+				player2.velocity.y = -dir_y * 80;
 			}
 			//trace("After: " + player.velocity.x + " " + player2.velocity.x);
 		}
