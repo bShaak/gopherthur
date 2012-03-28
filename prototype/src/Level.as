@@ -276,7 +276,14 @@ package
 					 { x: 21*TW, y: 24*TW },
 					 { x: 22*TW, y: 24*TW },],
 					 
-			platforms: [],
+			platforms: [{ start_x: 15*TW, 
+						   start_y: 17*TW,
+						   end_x: 21*TW,
+						   end_y: 17*TW,
+						   circuitTime: 4000,
+						   offset: 0,
+						   width: 4*TW,
+						   height: 1*TW }],
 			
 			acid: [ { x: 0*TW, 			//left acid
 					  y: 7 * TW,
@@ -287,89 +294,53 @@ package
 					  width: 6 * TW,
 					  height: 23 * TW } ],
 					  
-					  /* superPlatform: spining and moving platform information
-		 * 		-startMiddleX: The initial x position of the centre of rotation.
-		 * 		-startMiddleY: The initial y position of the centre of rotation.
-		 *		-endMiddleX: The final x position of the centre of rotation.
-		 * 		-endMiddleY: The final y position of the centre of rotation.
-		 *		-radius: The radius of rotation.
-		 *		-circuitTime: The time taken for the middle to make a circuit.
-		 *		-rotateTime: The time taken for a rotation.
-		 *		-initialPosition: A number between -1 and 1 representing the position of the centre in the circuit.
-		 *		-initialRotation: A number between 0 and 2pi representing the initial rotation.
-		 *		-reverse: True if the rotation should be reversed.
-		 *		-width: The width of the platform.
-		 *		-height: The height of the platform.
-		 *		-oneWay: See platforms.
-		 */
-					  superPlatforms: [ { startMiddleX: 9 * TW,
-					  startMiddleY: 10 * TW,
-					  endMiddleX: 9 * TW,
+			superPlatforms: [ { startMiddleX: 7 * TW,
+					  startMiddleY: 11 * TW,
+					  endMiddleX: 7 * TW,
 					  endMiddleY: 25 * TW,
 					  radius: 5 * 16,
-					  circuitTime: 12000,
-					  rotateTime: 8000,
-					  initialPosition: -1,
+					  circuitTime: 10000,
+					  rotateTime: 6000,
+					  initialPosition: 0,
 					  initialRotation: 0,
 					  reverse: true,
 					  width: 3 * TW, 
 					  height: 1 * TW },
-					  /*{ startMiddleX: 10 * TW,
-					  startMiddleY: 10 * TW,
-					  endMiddleX: 10 * TW,
-					  endMiddleY: 26 * TW,
-					  radius: 5 * 16,
-					  circuitTime: 12000,
-					  rotateTime: 6000,
-					  initialPosition: -1,
-					  initialRotation: Math.PI/2,
-					  reverse: false,
-					  width: 3 * TW, 
-					  height: 1 * TW },*/
-					  { startMiddleX: 9 * TW,
-					  startMiddleY: 10 * TW,
-					  endMiddleX: 9 * TW,
+					  
+					  { startMiddleX: 7 * TW,
+					  startMiddleY: 11 * TW,
+					  endMiddleX: 7 * TW,
 					  endMiddleY: 25 * TW,
 					  radius: 5 * 16,
-					  circuitTime: 12000,
-					  rotateTime: 8000,
-					  initialPosition: -1,
+					  circuitTime: 10000,
+					  rotateTime: 6000,
+					  initialPosition: 0,
 					  initialRotation: Math.PI,
 					  reverse: true,
 					  width: 3 * TW, 
 					  height: 1 * TW },
-					  /*{ startMiddleX: 10 * TW,
-					  startMiddleY: 10 * TW,
-					  endMiddleX: 10 * TW,
-					  endMiddleY: 26 * TW,
+					  
+					  { startMiddleX: 33 * TW,
+					  startMiddleY: 25 * TW,
+					  endMiddleX: 33 * TW,
+					  endMiddleY: 11 * TW,
 					  radius: 5 * 16,
-					  circuitTime: 12000,
+					  circuitTime: 10000,
 					  rotateTime: 6000,
-					  initialPosition: -1,
-					  initialRotation: Math.PI*3/2,
-					  reverse: false,
-					  width: 3 * TW, 
-					  height: 1 * TW }*/
-					  { startMiddleX: 31 * TW,
-					  startMiddleY: 10 * TW,
-					  endMiddleX: 31 * TW,
-					  endMiddleY: 25 * TW,
-					  radius: 5 * 16,
-					  circuitTime: 12000,
-					  rotateTime: 8000,
-					  initialPosition: -1,
+					  initialPosition: 0,
 					  initialRotation: 0,
 					  reverse: false,
 					  width: 3 * TW, 
 					  height: 1 * TW },
-					  { startMiddleX: 31 * TW,
-					  startMiddleY: 10 * TW,
-					  endMiddleX: 31 * TW,
-					  endMiddleY: 25 * TW,
+					  
+					  { startMiddleX: 33 * TW,
+					  startMiddleY: 25 * TW,
+					  endMiddleX: 33 * TW,
+					  endMiddleY: 11 * TW,
 					  radius: 5 * 16,
-					  circuitTime: 12000,
-					  rotateTime: 8000,
-					  initialPosition: -1,
+					  circuitTime: 10000,
+					  rotateTime: 6000,
+					  initialPosition: 0,
 					  initialRotation: Math.PI,
 					  reverse: false,
 					  width: 3 * TW, 
