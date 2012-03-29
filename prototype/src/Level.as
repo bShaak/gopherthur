@@ -94,6 +94,20 @@ package
 		 *		-regionBottom: the y coordinate of the bottom of the asteroid field region (must be > regionTop).
 		 * 		-fixedSpeed: The base speed that the asteroids will travel (~150 seems like a good speed).
 		 * 		-randomSpeed: a uniformly random speed between 0 and randomSpeed is added to fixedSpeed.
+		 * 
+		 * laserPlatforms: moving platforms that fire lasers
+		 *		- start_x: x-coord of the start position
+		 * 		- start_y: y-coord of the start position
+		 * 		- end_x: x-coord of the end point of the platform
+		 * 		- end_y: y-coord of the end point of the platform
+		 * 		- circuitTime: time in milliseconds for a complete circuit of the path (back and forth)
+		 * 		- offset: number between -1 and 1, representing where in the path the platform should start
+		 * 		- width: width of the platform in pixels
+		 * 		- height of playtform in pixels
+		 * 		- oneWay: true or defaults to false if value not present. If true, platform is a one-way platform
+		 * 		- dir: Direction to fire laser (eg, LaserPlatform.UP)
+		 * 		- onTime: time spent firing the laser
+		 * 		- offTime: time spent between firing the laser
 		*/		
 		
 		public static var levelData:Object = { startInfo: [ { x: FlxG.width / 10, y: 370, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -141,6 +155,7 @@ package
 										   height: 1 * TW } ],
 									circlePlatforms: [],
 									superPlatforms: [],
+									laserPlatforms: [],
 									name: "Forest"
 		}
 		public static var skyscraper:Object = { 
