@@ -256,17 +256,21 @@ package
 			//MIN JI'S PAUSE CODE START
 			pauseBgColor = new FlxSprite(0, 0);
 			pauseBgColor.makeGraphic(FlxG.width, FlxG.height, 0x55000000);
+			pauseBgColor.visible = false;
 			add(pauseBgColor);
 			
 			pauseGameButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 60, "BACK TO GAME", dePause);
+			pauseGameButton.visible = false;
 			add(pauseGameButton);
 			
 			pauseMenuButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 40, "BACK TO MENU", pauseAndMenu);
+			pauseMenuButton.visible = false;
 			add(pauseMenuButton);
 
 			pauseMuteButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 20, "MUTE", mute);
 			pauseMuteButton.label = new FlxText(0, 0, 80, "MUTE");
 			pauseMuteButton.label.setFormat(null, 8, 0x333333, "center");
+			pauseMuteButton.visible = false;
 			add(pauseMuteButton);
 			//MIN JI'S PAUSE CODE END
 			
@@ -290,7 +294,8 @@ package
 
 			
 			//MIN JI'S PAUSE CODE START
-			if (FlxG.keys.justPressed("P")) {
+			if (FlxG.keys.justPressed("P") && 
+			(players.members[0] is ActivePlayer && players.members[1] is ActivePlayer)) {
 					FlxG.paused = !FlxG.paused;
 				}
 				
