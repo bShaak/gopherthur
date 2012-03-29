@@ -2,7 +2,7 @@ package
 {
 	
 	/**
-	 * ...
+	 * Overloading FlxButton class in order to increase the size of buttons.
 	 * @author Ras
 	 */
 	
@@ -18,23 +18,23 @@ package
 		
 		public function FlxButtonBig(X:Number = 0, Y:Number = 0, Label:String = null, OnClick:Function = null, arg:Object = null)
 		{
-			super(X, Y, Label, OnClick);
+			super(X, Y);
 			loadGraphic(ImgBigButton, true, false, 160, 40);
 			
 			callback = OnClick;
 			argument = arg;
+			label = new FlxText(X + 30, Y + 8, 160, Label);
+			labelOffset = new FlxPoint(0, 9); 
 		}		
 		
 		override protected function onMouseUp(event:MouseEvent):void
 		{
-			//trace("Here");
 			if(callback == null || !exists || !visible || !active || (status != PRESSED))
 				return;
-			//trace("Here2");
 			if(argument == null)
-				onUp();
+				callback();
 			else
-				onUp(argument);
+				callback(argument);
 		}
 	}
 	
