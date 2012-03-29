@@ -20,6 +20,7 @@ package
 		[Embed(source = "levels/backgrounds/skyscraper_bg.png")] public static var SkyscraperBG:Class;
 		
 		[Embed(source = "levels/mapCSV_Volcano_Map1.csv", mimeType = "application/octet-stream")] public static var VolcanoTileMap:Class;
+		[Embed(source = "textures/volcano_textures.png")] public static var VolcanoTextures:Class;
 		[Embed(source = "levels/backgrounds/volcano_bg.png")] public static var VolcanoBG:Class;
 		
 		[Embed(source = "levels/mapCSV_PowerPlant_Map1.csv", mimeType = "application/octet-stream")] public static var PowerPlantTileMap:Class;
@@ -185,7 +186,7 @@ package
 			startInfo: [ { x: 5*TW, y: 3*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
 						 { x: 35*TW, y: 3*TW, color:0xff1111aa, walkAnimation: AnimateWalkBlue } ], //player 2
 			
-			maps: [ { layout: VolcanoTileMap, texture: SkyscraperTextures } ],			 
+			maps: [ { layout: VolcanoTileMap, texture: VolcanoTextures } ],			 
 					 
 			bg_color: 0xffCD8C95,
 			
