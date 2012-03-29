@@ -248,7 +248,8 @@ package
 														info.dir,
 														lasers,
 														info.onTime,
-														info.offTime);
+														info.offTime,
+														info.warmupTime);
 				platforms.add(laserPlat);
 			}
 			
@@ -641,7 +642,6 @@ package
 		private function handleLavaCollisions():void {
 			for each (var player:Player in players.members) {
 				if (FlxG.overlap(player, lava)) {
-					//TODO: lava death animation
 					// We don't want the box to respawn, so have to drop it here manually rather than
 					// just calling respawnPlayer
 					player.dropBox();
@@ -662,7 +662,7 @@ package
 		private function handleLaserCollisions():void {
 			for each (var player:Player in players.members) {
 				for each (var laser:Laser in lasers.members) {
-					if (laser.visible && FlxG.overlap(player, laser)) {
+					if (laser.visible && !laser.isWarmingUp() && FlxG.overlap(player, laser)) {
 						player.dropBox();
 						killAndRespawnPlayer(player);
 					}

@@ -8,12 +8,25 @@ package
 	 
 	public class Laser extends SBSprite
 	{
+		protected var warmingUp:Boolean;
+		public static var warmupColour:uint = 0x2266ffff;
+		public static var beamingColour:uint = 0x9966ffff;
 		
 		public function Laser(x:int, y:int, width:int, height:int) 
 		{
 			super(x, y);
 			
-			this.makeGraphic(width, height, 0x99001188);
+			this.makeGraphic(width, height, warmupColour);
+			
+			warmingUp = false;
+		}
+		
+		public function isWarmingUp():Boolean {
+			return warmingUp;
+		}
+		
+		public function setWarmup(warmupState:Boolean):void {
+			warmingUp = warmupState;
 		}
 		
 	}

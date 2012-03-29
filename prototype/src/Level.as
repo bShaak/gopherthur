@@ -25,6 +25,10 @@ package
 		
 		[Embed(source = "levels/mapCSV_PowerPlant_Map1.csv", mimeType = "application/octet-stream")] public static var PowerPlantTileMap:Class;
 		
+		[Embed(source = "levels/mapCSV_Lasergrid_Map1.csv", mimeType = "application/octet-stream")] public static var LasergridTileMap:Class;
+		[Embed(source = "textures/lasergrid_textures.png")] public static var LasergridTextures:Class;
+		[Embed(source = "levels/backgrounds/lasergrid_bg.png")] public static var LasergridBG:Class;
+		
 		private static const TW:int = 16; //Tile widths. Basically when you set up anything in the level, you want to align it to the grid, which is 
 										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
 										  //make it easier to read and update. e.g. something with width=2*TW is two tiles wide.
@@ -367,6 +371,98 @@ package
 					  height: 1 * TW }
 					  ],
 					  name: "Powerplant"
+		}
+		
+		public static var lasergrid:Object = { 
+			startInfo: [ { x: 7*TW, y: 23*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
+						 { x: 33*TW, y: 23*TW, color:0xffaa1111, walkAnimation: AnimateWalkRed } ], //player 2
+			
+			maps: [ { layout: LasergridTileMap, texture: LasergridTextures } ],			 
+					 
+			bg_color: 0xff003333,
+			
+			background: LasergridBG,
+			
+			boxes: [ { x: 18.5*TW, y: 4*TW }, //initial box positions
+					 { x: 19.5*TW, y: 4*TW },
+					 { x: 20.5*TW, y: 4*TW },
+					 { x: 19*TW, y: 2*TW },
+					 { x: 20*TW, y: 2*TW },],
+					 
+			platforms: [ {  start_x: 8*TW, //bottom one-way plat
+						   start_y: 22*TW,
+						   end_x: 8*TW,
+						   end_y: 22*TW,
+						   circuitTime: 1000,
+						   offset: 0,
+						   width: 5*TW,
+						   height: 1*TW,
+						   oneWay: true },
+						{  start_x: 27*TW, //left mid one-way plat
+						   start_y: 22*TW,
+						   end_x: 27*TW,
+						   end_y: 22*TW,
+						   circuitTime: 1000,
+						   offset: 0,
+						   width: 5*TW,
+						   height: 1*TW,
+						   oneWay: true } ],   
+			lava: [],
+			circlePlatforms: [],
+			superPlatforms: [],
+			laserPlatforms: [ {  start_x: 10*TW,
+								 start_y: 28*TW,
+								 end_x: 18*TW,
+								 end_y: 28*TW,
+								 circuitTime: 7000,
+								 offset: 0,
+								 width: 2*TW,
+								 height: 1*TW,
+								 oneWay: false,
+								 dir: LaserPlatform.UP,
+								 onTime: 1000,
+								 offTime: 5000,
+								 warmupTime: 1500},
+							  {  start_x: 20*TW,
+								 start_y: 28*TW,
+								 end_x: 28*TW,
+								 end_y: 28*TW,
+								 circuitTime: 7000,
+								 offset: 0,
+								 width: 2*TW,
+								 height: 1*TW,
+								 oneWay: false,
+								 dir: LaserPlatform.UP,
+								 onTime: 1000,
+								 offTime: 5000,
+								 warmupTime: 1500 },
+							  {  start_x: 1*TW,
+								 start_y: 10*TW,
+								 end_x: 1*TW,
+								 end_y: 16*TW,
+								 circuitTime: 7000,
+								 offset: 0,
+								 width: 1*TW,
+								 height: 2*TW,
+								 oneWay: false,
+								 dir: LaserPlatform.RIGHT,
+								 onTime: 1000,
+								 offTime: 5000,
+								 warmupTime: 1500 },
+							  {  start_x: 1*TW,
+								 start_y: 2*TW,
+								 end_x: 1*TW,
+								 end_y: 8*TW,
+								 circuitTime: 7000,
+								 offset: 0,
+								 width: 1*TW,
+								 height: 2*TW,
+								 oneWay: false,
+								 dir: LaserPlatform.RIGHT,
+								 onTime: 1000,
+								 offTime: 5000,
+								 warmupTime: 1500}],
+			name: "Laser Grid"
 		}
 	}
 
