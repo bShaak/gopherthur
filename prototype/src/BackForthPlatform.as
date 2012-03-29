@@ -12,7 +12,7 @@ package
 		[Embed(source = "/textures/metal.png")] private var MetalTexture:Class;
 		[Embed(source = "/textures/oneway_platform.png")] private var OnewayPlatformTexture:Class;
 		
-		private var clock:Clock;
+		protected var clock:Clock;
 		private var pathStart:FlxPoint;
 		private var pathEnd:FlxPoint;
 		private var initialPosition:Number;

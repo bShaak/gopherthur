@@ -50,7 +50,7 @@ package
 			cb.callback = callback;
 			
 			timeouts.push(cb);
-			timeouts.sortOn("t", Array.DESCENDING);
+			timeouts.sortOn("t", Array.DESCENDING | Array.NUMERIC);
 			checkTimeouts();
 		}
 

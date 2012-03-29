@@ -28,6 +28,7 @@ package
 		public var zones:FlxGroup;
 		public var lava:FlxGroup; //maybe you'll want more than one lava pit?
 		public var acid:FlxGroup;
+		public var lasers:FlxGroup;
 		public var asteroids:FlxGroup;
 		public var asteroidTime:Number = 0;
 		
@@ -231,6 +232,26 @@ package
 			
 			asteroids = new FlxGroup();
 			add(asteroids);
+			
+			lasers = new FlxGroup();
+			add(lasers);
+			
+			for each(info in levelData.laserPlatforms) {
+				var laserPlat:Platform = new LaserPlatform(new FlxPoint(info.start_x, info.start_y), // start
+														new FlxPoint(info.end_x, info.end_y), // end
+														info.circuitTime, // circuitTime
+														info.offset, // offset
+														info.width, // width
+														info.height, // height
+														clock,
+														info.oneWay,
+														info.dir,
+														lasers,
+														info.onTime,
+														info.offTime);
+				platforms.add(laserPlat);
+			}
+			
 			//MIN JI'S PAUSE CODE START
 			pauseBgColor = new FlxSprite(0, 0);
 			pauseBgColor.makeGraphic(FlxG.width, FlxG.height, 0x55000000);
@@ -302,6 +323,7 @@ package
 				handlePlayerCollisions();
 				handleLavaCollisions();
 				handleAcidCollisions();
+				handleLaserCollisions();
 				handleAsteroidCollisions();
 				handleSingleAnimations();
 				
@@ -556,7 +578,6 @@ package
 					if (FlxG.collide(box, platform)) {
 						if (box.isAbove(platform))
 							box.velocity.y = platform.maxVelocity.y;
-							trace(platform.maxVelocity.y);
 					}
 				}
 			}
@@ -634,6 +655,17 @@ package
 				if (FlxG.overlap(player, acid)) {
 					player.dropBox();
 					killAndRespawnPlayer(player);
+				}
+			}
+		}
+		
+		private function handleLaserCollisions():void {
+			for each (var player:Player in players.members) {
+				for each (var laser:Laser in lasers.members) {
+					if (laser.visible && FlxG.overlap(player, laser)) {
+						player.dropBox();
+						killAndRespawnPlayer(player);
+					}
 				}
 			}
 		}
