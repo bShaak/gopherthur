@@ -55,8 +55,8 @@ package
 				if (elapsedDownTime >= downTimeWaitPeriod) {
 					isInDownTime = false;
 					if (rumbleOn) {
-					rumbleOn = false;
-				}
+						rumbleOn = false;
+					}
 				}
 				else if (downTimeWaitPeriod - elapsedDownTime <= warningTime){
 					if (!rumbleOn) {

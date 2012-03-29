@@ -13,10 +13,10 @@ package
 		[Embed(source = "/textures/oneway_platform.png")] private var OnewayPlatformTexture:Class;
 		
 		protected var clock:Clock;
-		private var pathStart:FlxPoint;
-		private var pathEnd:FlxPoint;
-		private var initialPosition:Number;
-		private var circuitTime:Number;
+		protected var pathStart:FlxPoint;
+		protected var pathEnd:FlxPoint;
+		protected var initialPosition:Number;
+		protected var circuitTime:Number;
 		
 		/**
 		 * Create a moving platform.
