@@ -633,8 +633,8 @@ package
 						
 				player.velocity.x = dir * player.maxVelocity.x;
 				player2.velocity.x = -dir * player2.maxVelocity.x;
-				player.velocity.y = dir_y * 80;
-				player2.velocity.y = -dir_y * 80;
+				player.velocity.y = dir_y * 100;
+				player2.velocity.y = -dir_y * 100;
 			}
 			//trace("After: " + player.velocity.x + " " + player2.velocity.x);
 		}
