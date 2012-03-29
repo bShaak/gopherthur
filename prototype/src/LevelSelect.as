@@ -23,6 +23,9 @@ package
 		public var levelSelected:Object;
 		public var images:FlxGroup;
 		private var max_images:int = 2;
+		private var roomName:String; //ras
+		private var client:Client;  //ras
+		
 		[Embed (source = "sprites/basic.png")] protected var basic:Class;
 		[Embed (source = "sprites/skyscraper.png")] protected var skyscraper:Class;
 		[Embed (source = "sprites/skyscraper_highlight.png")] protected var skyHighlight:Class;
@@ -31,14 +34,15 @@ package
 		[Embed (source = "sprites/Volcano_highlight.png")] protected var volcanoHighlight:Class;
 		//private var img:ImgButton;
  
-		public function LevelSelect(mode:int, connection:Connection, playerId:int, playerCount:int)
+		public function LevelSelect(mode:int, rmName:String, playerId:int, playerCount:int, cl:Client = null) // connection:Connection
 		{
 			gameMode = mode;
-			connect = connection;
+			//connect = connection;
 			pID = playerId;
 			pCount = playerCount;
 			levelSelected = null; //set to basic map
-			
+			roomName = rmName;
+			client = cl;
 		}
 		
 		override public function create():void 
@@ -89,6 +93,7 @@ package
 			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 40, "EXIT", exitGame);
 			add(playButton);
 			chooseBasic();
+			//play(); //ras
 		}
 
 		override public function update():void
@@ -100,7 +105,6 @@ package
 			levelSelected = Level.levelData;
 			cleanHighlights();
 			images.members[0].loadGraphic(basicHighlight);
-			//play(); //ras
 		}
 		
 		public function chooseSkyscraper():void {
@@ -122,18 +126,18 @@ package
 		public function play():void
 		{
 			if(pID == -1){
-					FlxG.switchState(new PlayState(levelSelected, gameMode));
+				FlxG.switchState(new PlayState(levelSelected, gameMode));
 			}
 			else {
 				// collect
 				if (gameMode == 0) {
 					//FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connect, pID, pCount));
-					FlxG.switchState(new ObtainConnectionState(levelSelected));
+					FlxG.switchState(new ObtainConnectionState(levelSelected, roomName, client));
 				}
 				// Timed
 				else if (gameMode == 1) {
 					//FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.TIMED, connect, pID, pCount));
-					FlxG.switchState(new ObtainConnectionState(levelSelected));
+					FlxG.switchState(new ObtainConnectionState(levelSelected, roomName, client));
 				}
 			}
 		}

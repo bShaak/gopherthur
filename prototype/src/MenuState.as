@@ -2,7 +2,7 @@ package
 {
 	import org.flixel.*;
 	import PlayState;
- 
+	
 	public class MenuState extends FlxState
 	{
 		private var backgroundColor:FlxSprite;
@@ -15,6 +15,8 @@ package
 		
 		override public function create():void
 		{
+			//goToConnectionState(); //ras
+			//goToBoxCollectPlayState();
 			backgroundColor = new FlxSprite(0,0);
 			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0xFF0080C0);
 			add(backgroundColor);
@@ -31,29 +33,25 @@ package
 			mode.setFormat (null, 14, 0xFFFFFFFF, "center");
 			add(mode);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 180, null, goToBoxCollectPlayState); 
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 200, "CLASSIC", goToBoxCollectPlayState); //null
+			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
-			buttonLabel = new FlxText(FlxG.width / 2 - 50, FlxG.height - 172, 100, "CLASSIC");
-			buttonLabel.setFormat(null, 16, 0x333333, "center");
-			add(buttonLabel);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 140, null, goToRabbitPlayState); 
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 160, "RABBIT", goToRabbitPlayState); 
+			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
-			buttonLabel = new FlxText(FlxG.width / 2 - 50, FlxG.height - 132, 100, "RABBIT");
-			buttonLabel.setFormat(null, 16, 0x333333, "center");
-			add(buttonLabel);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 100, null, goToTimedPlayState); 
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 120, "TIMED", goToTimedPlayState); 
+			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
-			buttonLabel = new FlxText(FlxG.width / 2 - 52, FlxG.height - 92, 100, "TIMED");
-			buttonLabel.setFormat(null, 16, 0x333333, "center");
-			add(buttonLabel);
-
-			playButton = new FlxButtonBig(FlxG.width/2 - 80, FlxG.height - 60, null, goToConnectionState);
+			
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 80, "MULTIPLAYER", goToConnectionState);
+			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
-			buttonLabel = new FlxText(FlxG.width / 2 - 80, FlxG.height - 52, 160, "MULTIPLAYER");
-			buttonLabel.setFormat(null, 16, 0x333333, "center");
-			add(buttonLabel); 
+			
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 40, "TUTORIAL", goToTutorial);
+			playButton.label.setFormat(null, 16, 0x333333, "center");
+			add(playButton);
 		} 
  
 		override public function update():void
@@ -89,8 +87,13 @@ package
 		
 		public function goToConnectionState():void
 		{
-			FlxG.switchState( new LevelSelect(PlayState.BOX_COLLECT, null, 1, 1));
+			//FlxG.switchState( new LevelSelect(PlayState.BOX_COLLECT, null, 1, 1));
+			FlxG.switchState( new GameLobbyState());//LevelSelect(PlayState.BOX_COLLECT, null, 1, 1));
 		} 
+		
+		public function goToTutorial():void {
+			FlxG.switchState( new Tutorial() );
+		}
  
 	}
 }

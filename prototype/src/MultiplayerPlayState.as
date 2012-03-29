@@ -7,6 +7,7 @@ package
 	import playerio.*;
 	import org.flixel.*;
 	import flash.utils.*;
+	import flash.events.*;
 	
 	public class MultiplayerPlayState extends PlayState 
 	{
@@ -14,8 +15,12 @@ package
 		private var playerId:int;
 		private var playerCount:int;
 		private var currentPlayer:Player;
-		private var intervalId:int;
 		private var roundId:int = 0;
+		private var MSG_SEND_RATE:int = 20; //20
+		private const SMOOTHNESS:int = 2;
+		private var initState:Player;
+		private var smoothMovement:Player;
+		private var smoothTimer:Timer;  
 
 		public function MultiplayerPlayState(data:Object, goal:int, connection:Connection, playerId:int, playerCount:int) {
 			super(data, goal);
@@ -23,6 +28,7 @@ package
 			this.connection = connection;
 			this.playerId = playerId;
 			this.playerCount = playerCount;
+			this.smoothTimer = null;
 		}
 		
 		override protected function createPlayers():void {
@@ -43,6 +49,7 @@ package
 			connection.addMessageHandler(MessageType.GAME_OVER, handleGameOverMessage);
 			connection.addMessageHandler(MessageType.RESPAWN_PLAYER, handleRepawnPlayerMessage);
 			connection.addMessageHandler(MessageType.RESET, handleResetMessage);
+			connection.addMessageHandler(MessageType.SHOVE, handleShoveMessage);
 			connection.send(MessageType.CONFIRM, MessageType.READY_TO_ADD_PLAYERS);
 		}
 		
@@ -170,13 +177,41 @@ package
 		 * @param	m The position message
 		 */
 		private function handlePositionMessage(m:Message):void {
+			if (smoothTimer != null)
+				smoothTimer.reset();
+				
 			var id:int = m.getInt(0);
 			var x:int = m.getInt(1);
 			var y:int = m.getInt(2);
 			var vx:int = m.getInt(3);
 			var vy:int = m.getInt(4);
-
+			
 			var p:Player = getPlayer(id);
+			
+			/*p.x = initState.x;
+			p.y = initState.y;
+			p.velocity.x = initState.velocity.x;
+			p.velocity.y = initState.velocity.y;
+			
+			initState.x = x;
+			initState.y = y;
+			initState.velocity.x = vx;
+			initState.velocity.y = vy;*/
+			
+				/*smoothTimer = new Timer(MSG_SEND_RATE/SMOOTHNESS, SMOOTHNESS); 
+				smoothTimer.addEventListener(TimerEvent.TIMER, smoothOutMovement);
+				
+				trace("CurrentState: " + initState.x + " " + initState.y);
+				trace("NxtState: " + x + " " + y);
+				
+				smoothMovement.x = (x - playerInitState[0].x) / SMOOTHNESS;
+				smoothMovement.y = (y - playerInitState[0].y) / SMOOTHNESS;
+				trace(smoothMovement.x + " " + smoothMovement.y);
+				//smoothMovement.velocity.x = vx;
+				//smoothMovement.velocity.y = vy;
+				smoothTimer.start();*/
+						
+			
 			p.x = x;
 			p.y = y;
 			p.velocity.x = vx;
@@ -199,6 +234,49 @@ package
 			}
 		}
 		
+		private function smoothOutMovement(event:TimerEvent):void {
+			var p:Player = getPlayer(smoothMovement[0].id);
+			if (Math.abs(p.x + smoothMovement[0].x - initState[0].x) < 3 || 
+				Math.abs(p.y + smoothMovement[0].y - initState[0].y) < 3) {
+					p.x += smoothMovement[0].x;
+					p.y += smoothMovement[0].y;
+			}
+			trace("Curr pos: " + p.x + " " + p.y);
+		}
+		
+		override protected function shovePlayer(player:Player, player2:Player):void {
+			if ((player is ActivePlayer && player.shoveMsgSent) || 
+			    (player2 is ActivePlayer && player2.shoveMsgSent))
+				return;
+			if (player is ActivePlayer && player.isCharging()) {
+				player.shoveMsgSent = true;
+				player.getConnection().send(MessageType.CHARGE, player.velocity.x, player2.id, player2.velocity.x);
+			}
+			else if (player2 is ActivePlayer && player2.isCharging()) {
+				player2.shoveMsgSent = true;
+				player2.getConnection().send(MessageType.CHARGE, player2.velocity.x, player.id, player.velocity.x);
+			}
+		}
+		
+		/**
+		 * Player with ID equal to the one sent in message shoves the other player.
+		 * @param	m message containing the id of the shoving and shoved player
+		 */
+		private function handleShoveMessage(m:Message):void { 
+			FlxG.play(Push);
+			//var id:int = m.getInt(0);
+			//var velocity:int = m.getInt(1);
+			var shovingPlayer:Player = getPlayer(m.getInt(0));			
+			var shovedPlayer:Player = getPlayer(m.getInt(1));
+			shovingPlayer.shoveMsgSent = false;
+			shovedPlayer.shoveMsgSent = false;
+					
+			shovedPlayer.getShoved(shovingPlayer);
+			dropBoxesOnCollision(shovedPlayer);
+			shovingPlayer.velocity.x = 0;
+			
+		}
+		
 		override protected function createClock() : Clock {
 			return new Clock(connection);
 		}
@@ -211,7 +289,7 @@ package
 			var id:int = m.getInt(0);
 			var playerIndex:int = m.getInt(1);
 			var activePlayer:Boolean = id == playerId;
-
+			
 			var x:int = levelData.startInfo[playerIndex].x;
 			var y:int = levelData.startInfo[playerIndex].y;
 			var color:int = levelData.startInfo[playerIndex].color;
@@ -219,14 +297,18 @@ package
 			
 			// Create the new player.
 			var player:Player;
-			
+		
 			if (activePlayer) {
 				player = new ActivePlayer(x, y, id, color, connection, wasdControls, walkAnimation);
 				currentPlayer = player;
 			} else {
 				player = new Player(x, y, id, color, walkAnimation);
+				//var pInit:Player = new Player(x, y, id, color, walkAnimation);
+				initState = new Player(x, y, id, color, walkAnimation);
+				smoothMovement = new Player(x, y, id, color, walkAnimation);
 			}
 			players.add(player);
+						
 			var zone:Zone = new Zone(player.getSpawn().x - 50, player.getSpawn().y - 53, 100, 100, player);
 			zone.makeGraphic(zone.width, zone.height, player.getColour() - 0x55000000);
 			zones.add(zone);
@@ -242,8 +324,10 @@ package
 		 * @param	m
 		 */
 		private function startGame(m:Message):void {
+			random = new PseudoRandom(m.getInt(0));
+			startAsteroids();
 			running = true;
-			intervalId = setInterval(sendInfo, 20);
+			setInterval(sendInfo, MSG_SEND_RATE); 
 		}
 		
 		/**
@@ -327,13 +411,11 @@ package
 			//for right now, just do nothing because this crashes the game in multiplayer
 			
 			for each (var player:Player in players.members) {
-					if ( player.getScore() >= MAX_SCORE ) {
-						connection.disconnect();
-						FlxG.switchState( new GameOverState(levelData, mode, null, 1, -1));
-					}
+				if ( player.getScore() >= MAX_SCORE ) {
+					connection.disconnect();
+					FlxG.switchState( new GameOverState(levelData, mode, null, 1, -1));
 				}
-			
-			
+			}
 		}
 		
 		override protected function dropBoxesOnCollision(player:Player):void 

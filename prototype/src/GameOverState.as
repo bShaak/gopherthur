@@ -72,11 +72,11 @@ package
 			else {
 				// collect
 				if (gameMode == 0) {
-					FlxG.switchState(new ObtainConnectionState(levelSelected));
+					//FlxG.switchState(new ObtainConnectionState(levelSelected));
 				}
 				// Timed
 				else if (gameMode == 1) {
-					FlxG.switchState(new ObtainConnectionState(levelSelected));
+					//FlxG.switchState(new ObtainConnectionState(levelSelected));
 				}
 			}
 		}

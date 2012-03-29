@@ -21,9 +21,10 @@ package
 		
 		protected var charging:Boolean; //ras
 		protected var shoved:Boolean; //ras
-		protected const MAX_SPEED:int = 160;  //ras
+		protected const MAX_SPEED:int = 160;  
 		protected const SHOVE_STRENGTH:Array = [400, 500, 600]; //ras 
 		protected var numBoxesInZone:int = 0; //ras
+		public var shoveMsgSent:Boolean = false;
 		
 		public static const IDLE_THRESH:Number = 20; //player will appear idle if below this speed
 
@@ -75,6 +76,11 @@ package
 			//update the sprite's appearance based on their movement.
 			//We tie animations to movement rather than key input due to multiplayer restraints.
 			
+			if (shoved && Math.abs(velocity.x) <= MAX_SPEED) {
+				shoved = false;
+				maxVelocity.x = MAX_SPEED;
+			}
+			
 			if (this.velocity.x < 0) {
 				this.facing = FlxObject.LEFT;
 				if (this.hasBox())
@@ -112,6 +118,11 @@ package
 		
 		public function getSpawn():FlxPoint {
 			return spawn;
+		}
+		
+		public function getConnection():Connection {
+			//trace("Player");
+			return null;
 		}
 		
 		public function hasBox():Boolean {
@@ -238,37 +249,11 @@ package
 			var boxY:Number;
 			var numPixels:int = 2;
 			
-			/*if (this.boxHeld.overlaps(PlayState.masterMap)) {
-				//trace("Here");
-				//while (this.boxHeld.overlapsAt(PlayState.masterMap)
-				
-				switch (this.boxHeld.wasTouching) {
-					case FlxObject.LEFT:
-						trace("Left");
-						this.x += numPixels;
-						break;
-					case FlxObject.RIGHT:
-						trace("Right");
-						this.x -= numPixels;
-						break;
-					case FlxObject.UP:
-						trace("Up");
-						this.y += numPixels;
-						break;
-				}
-			}*/
-		
-							
-			
 			//update held box position
 			if (this.facing == FlxObject.LEFT) {
-				//if (this.boxHeld.overlaps(PlayState.masterMap) && !boxHeld.isTouching(FlxObject.UP)) 
-					//this.x += numPixels;
 				boxHeld.x = this.getMidpoint().x - this.width - Box.JUICEBOX_STRAW_WIDTH;
 			}
 			else if (this.facing == FlxObject.RIGHT) {
-				//if (this.boxHeld.overlaps(PlayState.masterMap) && !boxHeld.isTouching(FlxObject.UP)) 
-					//this.x -= numPixels;
 				boxHeld.x = this.getMidpoint().x + this.width/2;
 			}
 				
