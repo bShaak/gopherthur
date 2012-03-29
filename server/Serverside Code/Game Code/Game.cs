@@ -13,6 +13,7 @@ namespace BoxSpring {
         public int vx;
         public int vy;
         public bool charging;
+        public bool shoved;
         public const int MAX_SPEED = 160;
 
 		public Player() {
@@ -21,6 +22,7 @@ namespace BoxSpring {
             vx = 0;
             vy = 0;
             charging = false;
+            shoved = false;
 		}
 	}
 
@@ -296,6 +298,8 @@ namespace BoxSpring {
 
                         if (player.charging && Math.Abs(vx) <= Player.MAX_SPEED)
                             player.charging = false;
+                        else if (player.shoved && Math.Abs(vx) <= Player.MAX_SPEED)
+                            player.shoved = false;
 
                         int avCount = 0;
                         int boxMask = 0;
@@ -505,16 +509,36 @@ namespace BoxSpring {
                     }
                 case CHARGE:
                     {
-                        //timer.Enabled=true;
-                        int velocity = message.GetInt(0);
-                        player.charging = true;
-                        player.vx = velocity;
+                        Console.WriteLine("Charge msg");
 
+                        int velocity1 = message.GetInt(0);
                         Player player2 = GetPlayer(message.GetInt(1));
-                        player2.vx = message.GetInt(2);
-                        Broadcast(SHOVE, player.Id, player2.Id);
+                        
+                        if (player.shoved || player2.shoved)
+                            return;
+                        //timer.Enabled=true;
 
-                        Console.WriteLine(player.Id + " " + player.vx + " " + player2.Id + " " + player2.Id);
+                        int velocity2 = message.GetInt(2);
+
+                        if (Math.Abs(velocity1) > Math.Abs(velocity2))
+                        {
+                            player2.shoved = true;
+                            Broadcast(SHOVE, player.Id, player2.Id);
+                        }
+                        else
+                        {
+                            player.shoved = true;
+                            Broadcast(SHOVE, player2.Id, player.Id);
+                        }
+                        
+                        //player2.vx = message.GetInt(2);
+                        
+                        //Broadcast(SHOVE, player.Id, player2.Id);
+
+                        Console.WriteLine(player.Id + " " + velocity1 + " " + player2.Id + " " + velocity2);
+
+                        //player.charging = true;
+                        //player.vx = velocity1;
 
                         /*
 

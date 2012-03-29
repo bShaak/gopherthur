@@ -245,17 +245,38 @@ package
 		}
 		
 		override protected function shovePlayer(player:Player, player2:Player):void {
-			if ((player is ActivePlayer && player.shoveMsgSent) || 
-			    (player2 is ActivePlayer && player2.shoveMsgSent))
+			//trace("Sending shove msg");
+			if (player.shoveMsgSent || player2.shoveMsgSent)
 				return;
 			if (player is ActivePlayer && player.isCharging()) {
+				trace("*Actually sending shove msg");
 				player.shoveMsgSent = true;
 				player.getConnection().send(MessageType.CHARGE, player.velocity.x, player2.id, player2.velocity.x);
 			}
 			else if (player2 is ActivePlayer && player2.isCharging()) {
+				trace("**Actually sending shove msg");
 				player2.shoveMsgSent = true;
 				player2.getConnection().send(MessageType.CHARGE, player2.velocity.x, player.id, player.velocity.x);
 			}
+			/*else if (!currentPlayer.isCharging() && !currentPlayer.isShoved()){
+				//players who hold boxes drop them when bumped
+				FlxG.play(Push);
+				dropBoxesOnCollision(player);
+				dropBoxesOnCollision(player2);
+							
+				//determine orientation
+				var dir:int = 1;
+				var dir_y:int = 1;
+				if (player.x < player2.x)
+					dir = -1;
+				if (player.y < player2.y)
+					dir_y = -1;
+						
+				player.velocity.x = dir * player.maxVelocity.x;
+				player2.velocity.x = -dir * player2.maxVelocity.x;
+				player.velocity.y = dir_y * 100;
+				player2.velocity.y = -dir_y * 100;
+			}*/
 		}
 		
 		/**
@@ -335,6 +356,7 @@ package
 		 */
 		private function sendInfo():void {
 			if (connection.connected) {
+				//if (currentPlayer
 				var info:Array = [MessageType.POS, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y)];
 				for (var i:int = 0; i < boxes.members.length; i++) {
 					var box:Box = boxes.members[i];

@@ -39,15 +39,14 @@ package
 			super.update();
 			this.acceleration.x = 0; //keep player from sliding if no button is currently pressed
 			
+			// Controls are disabled when a player is charging or is shoved
 			if ((shoved || charging) && Math.abs(velocity.x) > MAX_SPEED)
 				return;
 			else if (charging && Math.abs(velocity.x) <= MAX_SPEED)
 				stopCharging();
-			else if (shoved && Math.abs(velocity.x) <= MAX_SPEED) {
-				shoved = false;
-				maxVelocity.x = MAX_SPEED;
-			}
-			
+			else if (shoved && Math.abs(velocity.x) <= MAX_SPEED) 
+				stopShove();
+						
 			//movement
 			if (controlScheme.left()) {
 				this.acceleration.x = -this.maxVelocity.x * 8;

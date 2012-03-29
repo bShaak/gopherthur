@@ -23,7 +23,7 @@ package
 			
 			callback = OnClick;
 			argument = arg;
-			label = new FlxText(X + 30, Y + 8, 160, Label);
+			label = new FlxText(X, Y, 160, Label);
 			labelOffset = new FlxPoint(0, 9); 
 		}		
 		

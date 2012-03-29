@@ -24,7 +24,7 @@ package
 		protected const MAX_SPEED:int = 160;  
 		protected const SHOVE_STRENGTH:Array = [400, 500, 600]; //ras 
 		protected var numBoxesInZone:int = 0; //ras
-		public var shoveMsgSent:Boolean = false;
+		public var shoveMsgSent:Boolean = false;  // makes sure the CHARGE msg is only sent once per charge
 		
 		public static const IDLE_THRESH:Number = 20; //player will appear idle if below this speed
 
@@ -237,7 +237,14 @@ package
 		protected function stopCharging():void {
 			//trace("STOP SLIDE");
 			 charging = false;
+			 shoveMsgSent = false;
 			 maxVelocity.x = MAX_SPEED;
+		}
+		
+		protected function stopShove():void {
+			shoved = false;
+			shoveMsgSent = false;
+			maxVelocity.x = MAX_SPEED;
 		}
 		
 		public function positionBox():void // ras: protected
