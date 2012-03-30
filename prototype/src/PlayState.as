@@ -31,8 +31,10 @@ package
 		public var lasers:FlxGroup;
 		public var asteroids:FlxGroup;
 		public var asteroidTime:Number = 0;
+		public var drawArea:FlxSprite;
 		
 		public var random:PseudoRandom;
+		public var randomSeed:int;
 		public var scoreboard:FlxText;
 		public var roundTime:FlxText;	//visible countdown for a timed game
 		protected var running:Boolean = false;
@@ -76,7 +78,7 @@ package
 		{
 			levelData = data;
 			mode = goal;
-			random = new PseudoRandom(new Date().getTime());
+			randomSeed = (new Date()).getTime();
 		}
 		
 		override public function create():void {
@@ -89,6 +91,10 @@ package
 			}
 			
 			clock = createClock();
+			random = new PseudoRandom(randomSeed);
+			drawArea = new FlxSprite(0, 0);
+			drawArea.makeGraphic(FlxG.width, FlxG.height, 0x00000000);
+			add(drawArea);
 			
 			if (mode == TIMED) {
 				timer = createClock();
@@ -180,7 +186,8 @@ package
 			
 			for each(var info:Object in levelData.circlePlatforms) {
 				platforms.add(new CirclePlatform(new FlxPoint(info.x, info.y), info.radius, info.rotateTime,
-					info.initialRotation, info.reverse, info.width, info.height, clock, info.oneWay));
+					info.initialRotation, info.reverse, info.width, info.height, clock, info.oneWay, drawArea,
+					info.rotationsPerReverse));
 			}
 			
 			for each(info in levelData.superPlatforms) {
@@ -195,10 +202,9 @@ package
 												info.width,
 												info.height,
 												clock,
-												info.oneWay);
+												info.oneWay,
+												drawArea);
 				platforms.add(p);
-				add(p.string);
-				add(p.track);
 				trace ("making super platform: " + info.startMiddleX );
 			}
 			add(platforms);
@@ -251,7 +257,7 @@ package
 														info.onTime,
 														info.offTime,
 														info.warmupTime,
-														random);
+														new PseudoRandom(randomSeed + int.MAX_VALUE * random.random()));
 				platforms.add(laserPlat);
 			}
 			
@@ -322,6 +328,7 @@ package
 			//MIN JI'S PAUSE CODE END
 			
 			if (!FlxG.paused) {
+				drawArea.fill(0x00000000);
 				super.update();
 				clock.addTime(FlxG.elapsed);
 			

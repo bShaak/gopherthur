@@ -22,8 +22,7 @@ package
 		private var initialRotation:Number;
 		private var reverse:Number = 1;
 		private var middle:FlxPoint;
-		public var string:FlxSprite;
-		public var track:FlxSprite;
+		private var drawArea:FlxSprite;
 		
 		/**
 		 * Create a moving platform.
@@ -42,7 +41,8 @@ package
 		 */
 		public function SuperPlatform(startMiddle:FlxPoint, endMiddle:FlxPoint, radius:Number, circuitTime:Number,
 										rotateTime:Number, initialPosition:Number, initialRotation:Number, reverse:Boolean,
-										plat_width:Number, plat_height:Number, clock:Clock, oneWay:Boolean) {
+										plat_width:Number, plat_height:Number, clock:Clock, oneWay:Boolean,
+										drawArea: FlxSprite) {
 			super(startMiddle.x + radius, startMiddle.y);
 			
 			this.clock = clock;
@@ -56,6 +56,7 @@ package
 			this.rotateTime = rotateTime;
 			this.initialPosition = initialPosition;
 			this.initialRotation = initialRotation;
+			this.drawArea = drawArea;
 			
 			if (reverse) {
 				this.reverse = -1;
@@ -68,14 +69,7 @@ package
 			//calculate max y velocity for helping keep sprites glued to platforms when they shift from up to down trajectories.
 			this.maxVelocity.y = Math.abs(2 * Math.PI * radius / (circuitTime / 1000)) +
 								Math.abs((this.endMiddle.y - this.startMiddle.y) / (circuitTime / 1000) * 2);
-								
-			this.string = new FlxSprite(0, 0);
-			string.makeGraphic(FlxG.width, FlxG.height, 0x00000000);
-			
-			this.track = new FlxSprite(0, 0);
-			track.makeGraphic(FlxG.width, FlxG.height, 0x00000000);
-			track.drawLine(startMiddle.x, startMiddle.y, endMiddle.x, endMiddle.y, 0xff000000);
-		}
+			}
 		
 		override public function update():void {
 			// Move the middle
@@ -91,8 +85,8 @@ package
 			x = middle.x + radius * Math.cos(reverse * (angle + initialRotation)) - width/2;
 			y = middle.y + radius * Math.sin(reverse * (angle + initialRotation)) - height / 2;
 			
-			string.fill(0x00000000);
-			string.drawLine(middle.x, middle.y, x + width / 2, y + height / 2, 0xff000000);
+			drawArea.drawLine(startMiddle.x, startMiddle.y, endMiddle.x, endMiddle.y, 0xff000000);
+			drawArea.drawLine(middle.x, middle.y, x + width / 2, y + height / 2, 0xff000000);
 		}
 	}
 }

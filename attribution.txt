@@ -1,0 +1,17 @@
+Background image for space level from NASA:
+
+http://www.nasa.gov/multimedia/imagegallery/image_feature_2210.html
+
+Usage permitted by:
+
+http://www.nasa.gov/audience/formedia/features/MP_Photo_Guidelines.html
+
+
+
+
+FlxInputText.as:
+
+Copyright (c) 2009 Martin Sebastian Wain
+License: Creative Commons Attribution 3.0 United States
+(http://creativecommons.org/licenses/by/3.0/us/)
+(A tiny "single line comment" reference in the source code is more than sufficient as attribution :)

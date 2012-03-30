@@ -29,6 +29,9 @@ package
 		[Embed(source = "textures/lasergrid_textures.png")] public static var LasergridTextures:Class;
 		[Embed(source = "levels/backgrounds/lasergrid_bg.png")] public static var LasergridBG:Class;
 		
+		[Embed(source = "levels/mapCSV_Space_Map1.csv", mimeType = "application/octet-stream")] public static var SpaceTileMap:Class;
+		[Embed(source = "levels/backgrounds/space_bg.png")] public static var SpaceBG:Class;
+
 		private static const TW:int = 16; //Tile widths. Basically when you set up anything in the level, you want to align it to the grid, which is 
 										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
 										  //make it easier to read and update. e.g. something with width=2*TW is two tiles wide.
@@ -334,7 +337,7 @@ package
 					  circuitTime: 8000,
 					  rotateTime: 4000,
 					  initialPosition: 0,
-					  initialRotation: 0,
+					  initialRotation: Math.PI/2,
 					  reverse: true,
 					  width: 3 * TW, 
 					  height: 1 * TW },
@@ -347,7 +350,7 @@ package
 					  circuitTime: 8000,
 					  rotateTime: 4000,
 					  initialPosition: 0,
-					  initialRotation: Math.PI,
+					  initialRotation: 3*Math.PI/2,
 					  reverse: true,
 					  width: 3 * TW, 
 					  height: 1 * TW },
@@ -360,7 +363,7 @@ package
 					  circuitTime: 8000,
 					  rotateTime: 4000,
 					  initialPosition: 0,
-					  initialRotation: 0,
+					  initialRotation: Math.PI/2,
 					  reverse: false,
 					  width: 3 * TW, 
 					  height: 1 * TW },
@@ -373,7 +376,7 @@ package
 					  circuitTime: 8000,
 					  rotateTime: 4000,
 					  initialPosition: 0,
-					  initialRotation: Math.PI,
+					  initialRotation: 3*Math.PI/2,
 					  reverse: false,
 					  width: 3 * TW, 
 					  height: 1 * TW }
@@ -471,6 +474,122 @@ package
 								 offTime: 5000,
 								 warmupTime: 1500}],
 			name: "Laser Grid"
+		}
+		
+		public static var space:Object = { 
+			startInfo: [ { x: 3*TW, y: 3*TW, color:0xffaa1111, walkAnimation: AnimateWalkRed }, //player 1
+						 { x: 37*TW, y: 3*TW, color:0xff1111aa, walkAnimation: AnimateWalkBlue } ], //player 2
+			
+			maps: [ { layout: SpaceTileMap, texture: SkyscraperTextures } ],			 
+					 
+			bg_color: 0xffCD8C95,
+			background: SpaceBG,
+			boxes: [ { x: 18*TW, y: 22*TW }, //initial box positions
+					 { x: 19*TW, y: 22*TW },
+					 { x: 20*TW, y: 22*TW },
+					 { x: 21*TW, y: 22*TW },
+					 { x: 22*TW, y: 22*TW },],
+					 
+			platforms: [{ start_x: 1*TW, // top left platform
+						   start_y: 7*TW,
+						   end_x: 13*TW,
+						   end_y: 7*TW,
+						   circuitTime: 4000,
+						   offset: 0,
+						   width: 4*TW,
+						   height: 1 * TW },
+						   { start_x: 23*TW, // top right platform
+						   start_y: 7*TW,
+						   end_x: 35*TW,
+						   end_y: 7*TW,
+						   circuitTime: 4000,
+						   offset: 1,
+						   width: 4*TW,
+						   height: 1 * TW },
+						   { start_x: 2*TW, // bottom platform
+						   start_y: 28*TW,
+						   end_x: 32*TW,
+						   end_y: 28*TW,
+						   circuitTime: 6000,
+						   offset: 1,
+						   width: 6*TW,
+						   height: 1*TW }],
+
+			circlePlatforms: [ { x: 9 * TW,		
+								 y: 20 * TW,
+								 radius: 3.5 * TW,
+								 rotateTime: 4000,
+								 reverse: true,
+								 initialRotation: 0,
+								 width: 3 * TW,
+								 height: 1 * TW,
+								 rotationsPerReverse: 0},
+								 { x: 9 * TW,		
+								 y: 20 * TW,
+								 radius: 3.5 * TW,
+								 rotateTime: 4000,
+								 reverse: true,
+								 initialRotation: Math.PI,
+								 width: 3 * TW,
+								 height: 1 * TW,
+								 rotationsPerReverse: 0},
+								 { x: 31 * TW,		
+								 y: 20 * TW,
+								 radius: 3.5 * TW,
+								 rotateTime: 4000,
+								 reverse: false,
+								 initialRotation: 0,
+								 width: 3 * TW,
+								 height: 1 * TW,
+								 rotationsPerReverse: 0},
+								 { x: 31 * TW,		
+								 y: 20 * TW,
+								 radius: 3.5 * TW,
+								 rotateTime: 4000,
+								 reverse: false,
+								 initialRotation: Math.PI,
+								 width: 3 * TW,
+								 height: 1 * TW,
+								 rotationsPerReverse: 0},
+								 { x: 20 * TW,		
+								 y: 15 * TW,
+								 radius: 5 * TW,
+								 rotateTime: 3000,
+								 reverse: false,
+								 initialRotation: 0,
+								 width: 3 * TW,
+								 height: 1 * TW,
+								 rotationsPerReverse: 4},
+								 { x: 20 * TW,		
+								 y: 15 * TW,
+								 radius: 5 * TW,
+								 rotateTime: 3000,
+								 reverse: false,
+								 initialRotation: Math.PI,
+								 width: 3 * TW,
+								 height: 1 * TW,
+								 rotationsPerReverse: 4}],
+			
+			acid: [],
+					  
+			superPlatforms: [],
+			
+			name: "Space",
+			
+		/*			 * asteroids: define an asteroid field for the map
+		 * 		-fixedDelay: base delay that will always be waited between asteroids.
+		 * 		-randomDelay: a uniformly random delay between 0 and randomDelay is added to the fixedDelay
+		 * 		-regionTop: the y coordinate of the top of the asteroid field region.
+		 *		-regionBottom: the y coordinate of the bottom of the asteroid field region (must be > regionTop).
+		 * 		-fixedSpeed: The base speed that the asteroids will travel (~150 seems like a good speed).
+		 * 		-randomSpeed: a uniformly random speed between 0 and randomSpeed is added to fixedSpeed. */
+		
+		 asteroids: { fixedDelay: 1200,
+					  randomDelay: 500,
+					  regionTop: 6 * TW,
+					  regionBottom: 30 * TW,
+					  fixedSpeed: 150,
+					  randomSpeed: 75 }
 		}
 	}
 
