@@ -24,6 +24,7 @@ package
 		[Embed(source = "levels/backgrounds/volcano_bg.png")] public static var VolcanoBG:Class;
 		
 		[Embed(source = "levels/mapCSV_PowerPlant_Map1.csv", mimeType = "application/octet-stream")] public static var PowerPlantTileMap:Class;
+		[Embed(source = "levels/backgrounds/powerplant_bg.png")] public static var PowerplantBG:Class;
 		
 		[Embed(source = "levels/mapCSV_Lasergrid_Map1.csv", mimeType = "application/octet-stream")] public static var LasergridTileMap:Class;
 		[Embed(source = "textures/lasergrid_textures.png")] public static var LasergridTextures:Class;
@@ -293,6 +294,8 @@ package
 			maps: [ { layout: PowerPlantTileMap, texture: SkyscraperTextures } ],			 
 					 
 			bg_color: 0xffCD8C95,
+			
+			background: PowerplantBG,
 			
 			boxes: [ { x: 18*TW, y: 24*TW }, //initial box positions
 					 { x: 19*TW, y: 24*TW },
