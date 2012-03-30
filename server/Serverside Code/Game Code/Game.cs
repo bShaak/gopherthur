@@ -510,25 +510,28 @@ namespace BoxSpring {
                 case CHARGE:
                     {
                         Console.WriteLine("Charge msg");
-
+                        
                         int velocity1 = message.GetInt(0);
                         Player player2 = GetPlayer(message.GetInt(1));
                         
-                        if (player.shoved || player2.shoved)
+                        if (player.shoved || player2.shoved || player.charging || player2.charging)
                             return;
                         //timer.Enabled=true;
 
                         int velocity2 = message.GetInt(2);
+                        int shoveDir = message.GetInt(3);
 
                         if (Math.Abs(velocity1) > Math.Abs(velocity2))
                         {
                             player2.shoved = true;
-                            Broadcast(SHOVE, player.Id, player2.Id);
+                            player.charging = true;
+                            Broadcast(SHOVE, player.Id, player2.Id, shoveDir);
                         }
                         else
                         {
                             player.shoved = true;
-                            Broadcast(SHOVE, player2.Id, player.Id);
+                            player2.charging = true;
+                            Broadcast(SHOVE, player2.Id, player.Id, shoveDir);
                         }
                         
                         //player2.vx = message.GetInt(2);

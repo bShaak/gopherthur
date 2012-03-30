@@ -27,7 +27,6 @@ package
 			jumpKeyHeld = false;
 			jumpTimer = 0;
 			
-			shoveMsgSent = false;
 		}
 	
 		override public function getConnection():Connection {

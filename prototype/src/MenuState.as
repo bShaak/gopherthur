@@ -2,6 +2,7 @@ package
 {
 	import org.flixel.*;
 	import PlayState;
+	import GameLobbyState;
 	
 	public class MenuState extends FlxState
 	{
@@ -15,7 +16,9 @@ package
 		
 		override public function create():void
 		{
-			goToConnectionState(); //ras
+			//goToConnectionState();
+			if (GameLobbyState.testVersion)
+				goToConnectionState(); //ras
 			//goToBoxCollectPlayState();
 			backgroundColor = new FlxSprite(0,0);
 			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0xFF0080C0);
