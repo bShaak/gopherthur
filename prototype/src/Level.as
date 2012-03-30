@@ -31,7 +31,8 @@ package
 		[Embed(source = "levels/backgrounds/lasergrid_bg.png")] public static var LasergridBG:Class;
 		
 		[Embed(source = "levels/mapCSV_Space_Map1.csv", mimeType = "application/octet-stream")] public static var SpaceTileMap:Class;
-		
+		[Embed(source = "levels/backgrounds/space_bg.png")] public static var SpaceBG:Class;
+
 		private static const TW:int = 16; //Tile widths. Basically when you set up anything in the level, you want to align it to the grid, which is 
 										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
 										  //make it easier to read and update. e.g. something with width=2*TW is two tiles wide.
@@ -485,7 +486,7 @@ package
 			maps: [ { layout: SpaceTileMap, texture: SkyscraperTextures } ],			 
 					 
 			bg_color: 0xffCD8C95,
-			
+			background: SpaceBG,
 			boxes: [ { x: 18*TW, y: 22*TW }, //initial box positions
 					 { x: 19*TW, y: 22*TW },
 					 { x: 20*TW, y: 22*TW },
@@ -524,7 +525,8 @@ package
 								 reverse: true,
 								 initialRotation: 0,
 								 width: 3 * TW,
-								 height: 1 * TW },
+								 height: 1 * TW,
+								 rotationsPerReverse: 0},
 								 { x: 9 * TW,		
 								 y: 20 * TW,
 								 radius: 3.5 * TW,
@@ -532,7 +534,8 @@ package
 								 reverse: true,
 								 initialRotation: Math.PI,
 								 width: 3 * TW,
-								 height: 1 * TW },
+								 height: 1 * TW,
+								 rotationsPerReverse: 0},
 								 { x: 31 * TW,		
 								 y: 20 * TW,
 								 radius: 3.5 * TW,
@@ -540,7 +543,8 @@ package
 								 reverse: false,
 								 initialRotation: 0,
 								 width: 3 * TW,
-								 height: 1 * TW },
+								 height: 1 * TW,
+								 rotationsPerReverse: 0},
 								 { x: 31 * TW,		
 								 y: 20 * TW,
 								 radius: 3.5 * TW,
@@ -548,7 +552,8 @@ package
 								 reverse: false,
 								 initialRotation: Math.PI,
 								 width: 3 * TW,
-								 height: 1 * TW },
+								 height: 1 * TW,
+								 rotationsPerReverse: 0},
 								 { x: 20 * TW,		
 								 y: 15 * TW,
 								 radius: 5 * TW,
@@ -556,7 +561,8 @@ package
 								 reverse: false,
 								 initialRotation: 0,
 								 width: 3 * TW,
-								 height: 1 * TW },
+								 height: 1 * TW,
+								 rotationsPerReverse: 4},
 								 { x: 20 * TW,		
 								 y: 15 * TW,
 								 radius: 5 * TW,
@@ -564,7 +570,8 @@ package
 								 reverse: false,
 								 initialRotation: Math.PI,
 								 width: 3 * TW,
-								 height: 1 * TW }],
+								 height: 1 * TW,
+								 rotationsPerReverse: 4}],
 			
 			acid: [],
 					  
