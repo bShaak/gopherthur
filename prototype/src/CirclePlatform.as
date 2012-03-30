@@ -17,6 +17,7 @@ package
 		private var initialRotation:Number;
 		private var rotateTime:Number;
 		private var reverse:Number = 1;
+		private var drawArea:FlxSprite;
 		
 		/**
 		 * Create a moving platform.
@@ -31,13 +32,15 @@ package
 		 * @param	oneWay True if the platform is one way.
 		 */
 		public function CirclePlatform(middle:FlxPoint, radius:Number, rotateTime:Number, initialRotation:Number,
-										reverse:Boolean, plat_width:Number, plat_height:Number, clock:Clock, oneWay:Boolean) {
+										reverse:Boolean, plat_width:Number, plat_height:Number, clock:Clock, oneWay:Boolean,
+										drawArea:FlxSprite) {
 			super(middle.x + radius, middle.y);
 			
 			this.rotateTime = rotateTime;
 			this.clock = clock;
 			this.immovable = true; //objects on top won't weigh it down
 			this.initialRotation = initialRotation;
+			this.drawArea = drawArea;
 			oneWay ? this.oneWay=true : this.oneWay=false;			
 			if (reverse) {
 				this.reverse = -1;
@@ -56,6 +59,7 @@ package
 			var angle:Number = 2 * Math.PI * (clock.elapsed % rotateTime) / rotateTime;
 			x = middle.x + radius * Math.cos(reverse * (angle + initialRotation)) - width/2;
 			y = middle.y + radius * Math.sin(reverse * (angle + initialRotation)) - height / 2;
+			drawArea.drawLine(middle.x, middle.y, x + width / 2, y + height / 2, 0xff000000);
 		}
 	}
 }

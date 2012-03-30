@@ -186,7 +186,7 @@ package
 			
 			for each(var info:Object in levelData.circlePlatforms) {
 				platforms.add(new CirclePlatform(new FlxPoint(info.x, info.y), info.radius, info.rotateTime,
-					info.initialRotation, info.reverse, info.width, info.height, clock, info.oneWay));
+					info.initialRotation, info.reverse, info.width, info.height, clock, info.oneWay, drawArea));
 			}
 			
 			for each(info in levelData.superPlatforms) {
