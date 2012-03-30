@@ -30,7 +30,7 @@ package
 		[Embed(source = "textures/lasergrid_textures.png")] public static var LasergridTextures:Class;
 		[Embed(source = "levels/backgrounds/lasergrid_bg.png")] public static var LasergridBG:Class;
 		
-		[Embed(source = "levels/mapCSV_Space_Map1.csv", mimeType = "application/octet-stream")] public static var SpaceTileMap:Class;
+		[Embed(source = "levels/mapCSV_Lasergrid_Map1.csv", mimeType = "application/octet-stream")] public static var SpaceTileMap:Class;
 		
 		private static const TW:int = 16; //Tile widths. Basically when you set up anything in the level, you want to align it to the grid, which is 
 										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
@@ -339,7 +339,7 @@ package
 					  circuitTime: 8000,
 					  rotateTime: 4000,
 					  initialPosition: 0,
-					  initialRotation: 0,
+					  initialRotation: Math.PI/2,
 					  reverse: true,
 					  width: 3 * TW, 
 					  height: 1 * TW },
@@ -352,7 +352,7 @@ package
 					  circuitTime: 8000,
 					  rotateTime: 4000,
 					  initialPosition: 0,
-					  initialRotation: Math.PI,
+					  initialRotation: 3*Math.PI/2,
 					  reverse: true,
 					  width: 3 * TW, 
 					  height: 1 * TW },
@@ -365,7 +365,7 @@ package
 					  circuitTime: 8000,
 					  rotateTime: 4000,
 					  initialPosition: 0,
-					  initialRotation: 0,
+					  initialRotation: Math.PI/2,
 					  reverse: false,
 					  width: 3 * TW, 
 					  height: 1 * TW },
@@ -378,7 +378,7 @@ package
 					  circuitTime: 8000,
 					  rotateTime: 4000,
 					  initialPosition: 0,
-					  initialRotation: Math.PI,
+					  initialRotation: 3*Math.PI/2,
 					  reverse: false,
 					  width: 3 * TW, 
 					  height: 1 * TW }

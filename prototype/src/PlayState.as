@@ -31,6 +31,7 @@ package
 		public var lasers:FlxGroup;
 		public var asteroids:FlxGroup;
 		public var asteroidTime:Number = 0;
+		public var drawArea:FlxSprite;
 		
 		public var random:PseudoRandom;
 		public var randomSeed:int;
@@ -91,7 +92,10 @@ package
 			
 			clock = createClock();
 			random = new PseudoRandom(randomSeed);
-
+			drawArea = new FlxSprite(0, 0);
+			drawArea.makeGraphic(FlxG.width, FlxG.height, 0x00000000);
+			add(drawArea);
+			
 			if (mode == TIMED) {
 				timer = createClock();
 				roundTime = new FlxText(-25, 25, FlxG.width, "0:00");
@@ -197,10 +201,9 @@ package
 												info.width,
 												info.height,
 												clock,
-												info.oneWay);
+												info.oneWay,
+												drawArea);
 				platforms.add(p);
-				add(p.string);
-				add(p.track);
 				trace ("making super platform: " + info.startMiddleX );
 			}
 			add(platforms);
@@ -324,6 +327,7 @@ package
 			//MIN JI'S PAUSE CODE END
 			
 			if (!FlxG.paused) {
+				drawArea.fill(0x00000000);
 				super.update();
 				clock.addTime(FlxG.elapsed);
 			
