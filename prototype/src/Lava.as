@@ -73,7 +73,6 @@ package
 			// We need to add one to the initial position offset because % takes the sign of the divident,
 			// so we need to force it to be positive.
 			var timeInCircuit:Number = ((clock.elapsed-downStartTime-downTimeWaitPeriod) + circuitTime * (1 + initialPosition / 2)) % circuitTime;
-			
 			// Now we find out the position within the circuit as a number between 0 and 1. That is,
 			// 0 for ix, iy and 1 for fx, fy. Since we want the movement to reverse, we just normalize time
 			// to 2 and then find the distance from 1 (so we get something like .7, .8, .9, 1, .9, .8, .7)
@@ -83,7 +82,8 @@ package
 			x = pathStart.x + (pathEnd.x - pathStart.x) * stage;
 			y = pathStart.y + (pathEnd.y - pathStart.y) * stage;
 			
-			if (timeInCircuit < prevTimeInCircuit) { //indicates we've looped around to start of path
+			// We need to use a tolerance because the clock is not necessarily strictly increasing in multiplayer 
+			if (timeInCircuit < prevTimeInCircuit - circuitTime / 4) { //indicates we've looped around to start of path
 				isInDownTime = true;
 				downStartTime = clock.elapsed;
 			}

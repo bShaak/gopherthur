@@ -76,6 +76,7 @@ package
 		{
 			levelData = data;
 			mode = goal;
+			random = new PseudoRandom(new Date().getTime());
 		}
 		
 		override public function create():void {
@@ -249,7 +250,8 @@ package
 														lasers,
 														info.onTime,
 														info.offTime,
-														info.warmupTime);
+														info.warmupTime,
+														random);
 				platforms.add(laserPlat);
 			}
 			
@@ -713,7 +715,6 @@ package
 		 */
 		protected function afterCreate():void 
 		{
-			random = new PseudoRandom(new Date().getTime());
 			startAsteroids();
 			running = true;
 			return;

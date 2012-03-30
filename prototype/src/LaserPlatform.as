@@ -19,25 +19,28 @@ package
 		protected var onTime:int;
 		protected var offTime:int;
 		protected var warmupTime:int;
+		protected var random:PseudoRandom;
 		
 		private var lastTime:int = 0;
 		private var numShots:int = 0;
 		
 		public function LaserPlatform(start:FlxPoint, end:FlxPoint, circuitTime:Number, initialPosition:Number,
 										plat_width:Number, plat_height:Number, clock:Clock, oneWay:Boolean,
-										dir:int, laserGroup:FlxGroup, onTime:int, offTime:int, warmupTime:int)
+										dir:int, laserGroup:FlxGroup, onTime:int, offTime:int, warmupTime:int,
+										random:PseudoRandom)
 		{
 			super(start, end, circuitTime, initialPosition, plat_width, plat_height, clock, oneWay);
 			this.dir = dir;
 			this.laserGroup = laserGroup;
 			this.onTime = onTime;
+			this.random = random;
 			//this.offTime = offTime;
 			/******** IMPORTANT ********
 			 * The offTime specified by the user (level declaration) isn't used at all right now. The offTime is completely 
 			 * randomized internally. I just thought it worked better for now. I'm still leaving the old offTime declarations
 			 * in though, in case we want to go back. So yeah, beware! --Ray
 			 */
-			this.offTime = FlxG.random() * 5000;
+			this.offTime = random.random() * 5000;
 			this.warmupTime = warmupTime;
 			
 			if (dir == UP || dir == DOWN) {
@@ -75,7 +78,7 @@ package
 		}
 		
 		protected function randomizeOffTime():void {
-			offTime = FlxG.random() * 5000 + 1000; //random between 1 and 6 seconds.
+			offTime = random.random() * 5000 + 1000; //random between 1 and 6 seconds.
 		}
 		
 		override public function update():void {

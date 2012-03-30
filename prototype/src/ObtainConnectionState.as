@@ -21,6 +21,7 @@ package
 		private var connectMsg:FlxText;
 		private var levelSelected:Object;
 		private var roomName:String;
+		private var seed:int;
 		
 		public function ObtainConnectionState(data:Object, rmName:String, cl:Client) {
 			levelSelected = data;
@@ -65,6 +66,7 @@ package
 		 */
 		private function registerId(m:Message):void {
 			playerId = m.getInt(0);
+			seed = m.getInt(1);
 			trace("Ready to start");
 			connection.send(MessageType.CONFIRM, MessageType.READY_TO_SETUP);
 		}
@@ -76,8 +78,8 @@ package
 		private function setupGame(m:Message):void {
 			trace("Game setting up");
 			gameJoined = true;
-			
-			FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connection, playerId, m.getInt(0)));
+
+			FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connection, playerId, seed, m.getInt(0)));
 		}
 		
 		/**
