@@ -162,6 +162,8 @@ package
 				level = Level.volcano;
 			else if (roomInfo.data.levelName == "Powerplant")
 				level = Level.powerplant;
+			else if (roomInfo.data.levelName == "Laser Grid")
+				level = Level.lasergrid;
 			
 			(new ObtainConnectionState(level, roomInfo.id, client)).joinRoom();
 			

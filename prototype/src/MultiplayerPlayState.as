@@ -22,13 +22,14 @@ package
 		private var smoothMovement:Player;
 		private var smoothTimer:Timer;  
 
-		public function MultiplayerPlayState(data:Object, goal:int, connection:Connection, playerId:int, playerCount:int) {
+		public function MultiplayerPlayState(data:Object, goal:int, connection:Connection, playerId:int, seed:int, playerCount:int) {
 			super(data, goal);
 
 			this.connection = connection;
 			this.playerId = playerId;
 			this.playerCount = playerCount;
 			this.smoothTimer = null;
+			this.random = new PseudoRandom(seed);
 		}
 		
 		override protected function createPlayers():void {
@@ -345,7 +346,6 @@ package
 		 * @param	m
 		 */
 		private function startGame(m:Message):void {
-			random = new PseudoRandom(m.getInt(0));
 			startAsteroids();
 			running = true;
 			setInterval(sendInfo, MSG_SEND_RATE); 

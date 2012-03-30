@@ -131,7 +131,7 @@ namespace BoxSpring {
 		public override void UserJoined(Player player) {
             Console.WriteLine("Player " + player.Id + " joined the room");
             // Notify the new player of their id
-            player.Send(JOINED, player.Id);
+            player.Send(JOINED, player.Id, (int)seed);
 		}
 
         public override void UserLeft(Player player) {
@@ -221,7 +221,7 @@ namespace BoxSpring {
                 Broadcast(ELAPSED, (int) ((DateTime.Now.Ticks - startTime) / 10000));
             }, 100);
 
-            Broadcast(START_GAME, (int) seed);
+            Broadcast(START_GAME);
         }
 
         private void AddTimer(Action action)
