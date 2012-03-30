@@ -29,7 +29,7 @@ package
 			this.playerId = playerId;
 			this.playerCount = playerCount;
 			this.smoothTimer = null;
-			this.random = new PseudoRandom(seed);
+			randomSeed = seed;
 		}
 		
 		override protected function createPlayers():void {
