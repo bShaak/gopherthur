@@ -9,7 +9,7 @@ package
 	 
 	public class CirclePlatform extends Platform
 	{
-		[Embed(source = "/textures/metal.png")] private var MetalTexture:Class;
+		[Embed(source = "/textures/space_platform_48x16.png")] private var MetalTexture:Class;
 		
 		private var clock:Clock;
 		private var middle:FlxPoint;
