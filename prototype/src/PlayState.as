@@ -33,6 +33,7 @@ package
 		public var asteroidTime:Number = 0;
 		
 		public var random:PseudoRandom;
+		public var randomSeed:int;
 		public var scoreboard:FlxText;
 		public var roundTime:FlxText;	//visible countdown for a timed game
 		protected var running:Boolean = false;
@@ -76,7 +77,7 @@ package
 		{
 			levelData = data;
 			mode = goal;
-			random = new PseudoRandom(new Date().getTime());
+			randomSeed = (new Date()).getTime();
 		}
 		
 		override public function create():void {
@@ -89,7 +90,8 @@ package
 			}
 			
 			clock = createClock();
-			
+			random = new PseudoRandom(randomSeed);
+
 			if (mode == TIMED) {
 				timer = createClock();
 				roundTime = new FlxText(-25, 25, FlxG.width, "0:00");
@@ -251,7 +253,7 @@ package
 														info.onTime,
 														info.offTime,
 														info.warmupTime,
-														random);
+														new PseudoRandom(randomSeed + int.MAX_VALUE * random.random()));
 				platforms.add(laserPlat);
 			}
 			
