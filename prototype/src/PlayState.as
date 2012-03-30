@@ -31,6 +31,7 @@ package
 		public var lasers:FlxGroup;
 		public var asteroids:FlxGroup;
 		public var asteroidTime:Number = 0;
+		public var drawArea:FlxSprite;
 		
 		public var random:PseudoRandom;
 		public var randomSeed:int;
@@ -91,7 +92,10 @@ package
 			
 			clock = createClock();
 			random = new PseudoRandom(randomSeed);
-
+			drawArea = new FlxSprite(0, 0);
+			drawArea.makeGraphic(FlxG.width, FlxG.height, 0x00000000);
+			add(drawArea);
+			
 			if (mode == TIMED) {
 				timer = createClock();
 				roundTime = new FlxText(-25, 25, FlxG.width, "0:00");
@@ -182,7 +186,8 @@ package
 			
 			for each(var info:Object in levelData.circlePlatforms) {
 				platforms.add(new CirclePlatform(new FlxPoint(info.x, info.y), info.radius, info.rotateTime,
-					info.initialRotation, info.reverse, info.width, info.height, clock, info.oneWay));
+					info.initialRotation, info.reverse, info.width, info.height, clock, info.oneWay, drawArea,
+					info.rotationsPerReverse));
 			}
 			
 			for each(info in levelData.superPlatforms) {
@@ -197,10 +202,9 @@ package
 												info.width,
 												info.height,
 												clock,
-												info.oneWay);
+												info.oneWay,
+												drawArea);
 				platforms.add(p);
-				add(p.string);
-				add(p.track);
 				trace ("making super platform: " + info.startMiddleX );
 			}
 			add(platforms);
@@ -324,6 +328,7 @@ package
 			//MIN JI'S PAUSE CODE END
 			
 			if (!FlxG.paused) {
+				drawArea.fill(0x00000000);
 				super.update();
 				clock.addTime(FlxG.elapsed);
 			
@@ -746,11 +751,28 @@ package
 		}
 	
 		protected function handleAsteroidCollisions():void {
-			FlxG.collide(asteroids, players);
+			for each (var player:Player in players.members) {
+				for each (var asteroid:Asteroid in asteroids.members) {
+					if (asteroid == null) {
+						continue;
+					}
+					if (FlxG.collide(asteroid, player)) {
+						//Players get squished if stuck between asteroid and any wall
+						if (FlxG.collide(player, masterMap) 
+							&&
+							((player.isAbove(asteroid) && player.isTouching(FlxObject.CEILING)) ||
+							 (player.isBelow(asteroid) && player.isTouching(FlxObject.FLOOR)) ||
+							 (player.isLeftOf(asteroid) && player.isTouching(FlxObject.LEFT)) ||
+							 (player.isRightOf(asteroid) && player.isTouching(FlxObject.RIGHT)))) {
+							killAndRespawnPlayer(player);
+						}
+					}
+				}
+			}
 			
 			// Remove asteroids that have travelled off the level.
 			for (var i:int = asteroids.members.length - 1; i >= 0; i--) {
-				var asteroid:Asteroid = asteroids.members[i];
+				asteroid = asteroids.members[i];
 				if (asteroid != null && !asteroid.alive) {
 					asteroids.remove(asteroid);
 				}
