@@ -6,7 +6,7 @@ package
 	 */
 	import org.flixel.*;
 	import playerio.*;
-	//import GameLobbyState;
+	import GameLobbyState;
 	
 	public class ObtainConnectionState extends FlxState {
 		private static const MAX_ATTEMPTS:int = 10;
@@ -15,7 +15,7 @@ package
 		private var client:Client;
 		private var gameJoined:Boolean;
 		private var attemptCount:int;
-		private var consolePos:int = 10; //90
+		private var consolePos:int = 10; 
 		private var ip:FlxInputText;
 		private var startButton:FlxButton;
 		private var connectMsg:FlxText;
@@ -35,61 +35,16 @@ package
 			this.gameJoined = false;
 			this.attemptCount = 0;
 			
-			/*var ipLabel:FlxText = new FlxText(10, 10, 350, "PLEASE ENTER SERVER IP ADDRESS");
-			ipLabel.setFormat(null, 13);
-			add(ipLabel);
-			
-			ip = new FlxInputText(10, 40, 220, 15, "127.0.0.1", 0x000000, null, 15);
-			add(ip);
-			startButton = new FlxButtonBig(240, 35, null, startSetup);
-			add(startButton);
-			var startButtonLabel:FlxText = new FlxText(284, 44, 80, "START");
-			startButtonLabel.setFormat(null, 15, 0x000000, "center");
-			add(startButtonLabel);*/
 			//startSetup(); //ras
 			getRoom();
 		}
 		
-		/*private function startSetup():void {
-			//startButton.active = false;
-			//startButton.update();
-			printMes("Obtaining connection");
-			
-			
-			trace("Attempting to connect to player.io");
-			PlayerIO.connect(
-				Prototype.globalStage,					//Referance to stage
-				"spring-box-subs29zgv0uqr24vblklca",	//Game id (Get your own at playerio.com. 1: Create user, 2:Goto admin pannel, 3:Create game, 4: Copy game id inside the "")
-				"public",							//Connection id, default is public
-				"GuestUser",						//Username
-				"",									//User auth. Can be left blank if authentication is disabled on connection
-				null,								//Current PartnerPay partner.
-				handleConnect,						//Function executed on successful connect
-				handleError							//Function executed if we recive an error
-			);
-		}*/
-				
 		private function printMes(mes:String):void {
 			connectMsg = new FlxText(10, consolePos, 300, mes);
-			connectMsg.setFormat(null, 12);
+			connectMsg.setFormat(null, 14);
 			consolePos += 20;
 			add(connectMsg);
 		}
-		
-		/**
-		 * Join a room after connecting to player.io.
-		 * @param	client
-		 */
-		/*private function handleConnect(client:Client):void {
-			this.client = client;
-			trace("Sucessfully connected to player.io");
-			printMes("Connected to player.io");
-				
-			//Set developmentsever (Comment out to connect to your server online)
-			//client.multiplayer.developmentServer = ip.text + ":8184";
-				
-			getRoom();
-		}*/
 		
 		/**
 		 * Proceed with setting up a match after joining a room.
@@ -97,12 +52,11 @@ package
 		 */
 		private function handleJoin(connection:Connection):void {
 			trace("Sucessfully connected to the multiplayer server. Waiting for second player.");
-			printMes("Waiting for a second player . . ." + roomName + " " + roomName.length);
+			printMes("Waiting for a second player . . .");
 			this.connection = connection;
 			connection.addDisconnectHandler(handleDisconnect);
 			connection.addMessageHandler(MessageType.JOINED, registerId);
 			connection.addMessageHandler(MessageType.SETUP_GAME, setupGame);
-			
 		}
 		
 		/**
@@ -122,7 +76,7 @@ package
 		private function setupGame(m:Message):void {
 			trace("Game setting up");
 			gameJoined = true;
-			//ip.remove();
+			
 			FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connection, playerId, m.getInt(0)));
 		}
 		
@@ -157,11 +111,12 @@ package
 		private function getRoom():void 
 		{
 			attemptCount++;
-			createRoom();
-			/*client.multiplayer.listRooms("BoxSpring", { }, 10, 0, joinRoom, function(e:PlayerIOError):void {
+			//createRoom();
+			////joinRoom()
+			client.multiplayer.listRooms("BoxSpring", { }, 10, 0, joinRoom, function(e:PlayerIOError):void {
 				trace("Error finding rooms.");
 				createRoom();
-			});*/
+			});
 		}
 		
 		/**
@@ -169,7 +124,7 @@ package
 		 * If none of the rooms work, create a new room.
 		 * @param	rooms
 		 */
-		/*private function joinRoom(rooms:Array) : void {
+		private function joinRoom(rooms:Array) : void {
 			if (gameJoined) {
 				return;
 			}
@@ -184,24 +139,30 @@ package
 			// Only try to join rooms with space.
 			if (room.onlineUsers < 2) {
 				trace("Attempting to join room" + room.id);
-				client.multiplayer.joinRoom(room.id, { }, handleJoin, function(e:PlayerIOError):void {
+				//client.multiplayer.joinRoom(room.id, { }, handleJoin, function(e:PlayerIOError):void {
 					// If we fail in joining, try to join one of the other rooms.
-					joinRoom(rooms);
-				});
-			} else {
-				joinRoom(rooms);
+					if (GameLobbyState.testVersion) {
+						roomName = room.id;
+						createRoom();
+					}
+					else {
+						createRoom();
+					}
+				//});
+			//} else {
+				//joinRoom(rooms);
 			}
-		}*/
+		}
 		
-		public function joinRoom():void {
-			/*if (gameJoined) {
+		/*public function joinRoom():void {
+			if (gameJoined) {
 				return;
-			}*/
+			}
 			
-			trace("Room name is " + roomName + " " + roomName.length);
+			//trace("Room name is " + roomName + " " + roomName.length);
 			
 			client.multiplayer.createJoinRoom(
-				roomName,	  						//Room id. If set to null a random roomid is used
+				null,	  						//Room id. If set to null a random roomid is used
 				"BoxSpring",						//The game type started on the server
 				true,								//Should the room be visible in the lobby?
 				{},									//Room data. This data is returned to lobby list. Variabels can be modifed on the server
@@ -209,12 +170,12 @@ package
 				handleJoin,							//Function executed on successful joining of the room
 				handleError							//Function executed if we got a join error
 			);
-		}
+		}*/
 		
 		/**
 		 * Create a new room and join it.
 		 */
-		private function createRoom() : void {
+		public function createRoom() : void {
 			if (gameJoined) {
 				return;
 			}
@@ -223,7 +184,7 @@ package
 			printMes("Creating room \"" + roomName + "\"");
 			//Create or join the room test
 			client.multiplayer.createJoinRoom(
-				roomName,//Room id. If set to null a random roomid is used
+				roomName,							//Room id. If set to null a random roomid is used
 				"BoxSpring",						//The game type started on the server
 				true,								//Should the room be visible in the lobby?
 				{levelName: levelSelected.name},	//Room data. This data is returned to lobby list. Variabels can be modifed on the server
