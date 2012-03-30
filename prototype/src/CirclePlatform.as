@@ -66,7 +66,8 @@ package
 			var angle:Number = 2 * Math.PI * (clock.elapsed % rotateTime) / rotateTime;
 			x = middle.x + radius * Math.cos(timedReverse * reverse * (angle + initialRotation)) - width/2;
 			y = middle.y + radius * Math.sin(timedReverse * reverse * (angle + initialRotation)) - height / 2;
-			drawArea.drawLine(middle.x, middle.y, x + width / 2, y + height / 2, 0xff000000);
+			drawArea.drawLine(middle.x, middle.y, x + width / 2, y + height / 2, 0xffffffff, 5);
+			drawArea.drawLine(middle.x, middle.y, x + width / 2, y + height / 2, 0xff000000, 1);
 		}
 	}
 }
