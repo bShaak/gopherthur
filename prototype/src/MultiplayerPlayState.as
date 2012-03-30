@@ -410,6 +410,8 @@ package
 					connection.send(MessageType.RESPAWN_PLAYER, player.id, player.boxHeld.id);
 				}
 				super.respawnPlayer(player);
+			} else {
+				player.visible = true;
 			}
 		}
 		
