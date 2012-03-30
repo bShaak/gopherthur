@@ -86,6 +86,9 @@ package
 			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 200, "LASER GRID", chooseLasergrid);
 			add(playButton);
 			
+			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 160, "SPACE", chooseSpace);
+			add(playButton);
+			
 			//img = new ImgButton(imageClass, 40, 30, "basic");
 			// gonna make a new button class to show levels, that is real nice
 			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "GO", play);
@@ -129,6 +132,10 @@ package
 		
 		public function chooseLasergrid():void {
 			levelSelected = Level.lasergrid;
+		}
+		
+		public function chooseSpace():void {
+			levelSelected = Level.space;
 		}
 		
 		public function play():void
