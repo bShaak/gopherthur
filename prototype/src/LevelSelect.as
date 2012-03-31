@@ -35,6 +35,10 @@ package
 		[Embed (source = "sprites/Volcano_highlight.png")] protected var volcanoHighlight:Class;
 		[Embed (source = "sprites/laser.png")] protected var laser:Class;
 		[Embed (source = "sprites/laser_highlight.png")] protected var laserHighlight:Class;
+		[Embed (source = "sprites/powerplant.png")] protected var PowerPlant:Class;
+		[Embed (source = "sprites/powerplant_highlight.png")] protected var PowerPlantHightlight:Class;
+		[Embed (source = "sprites/space.png")] protected var Space:Class;
+		[Embed (source = "sprites/space_highlight.png")] protected var SpaceHighlight:Class;
 		//private var img:ImgButton;
  
 		public function LevelSelect(mode:int, rmName:String, playerId:int, playerCount:int, cl:Client = null) // connection:Connection
@@ -82,17 +86,20 @@ package
 			add(playButton);
 			images.add(playButton);
 			
-			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 240, "POWERPLANT", choosePowerplant);
-			add(playButton);
-			
-			
 			playButton = new FlxButton(FlxG.width / 2 - 320, FlxG.height - 240, "", chooseLasergrid);
 			playButton.loadGraphic(laser);
 			add(playButton);
 			images.add(playButton);
 			
-			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 160, "SPACE", chooseSpace);
+			playButton = new FlxButton(FlxG.width / 2 - 103, FlxG.height - 240, "", choosePowerplant);
+			playButton.loadGraphic(PowerPlant);
 			add(playButton);
+			images.add(playButton);
+			
+			playButton = new FlxButton(FlxG.width / 2 + 115, FlxG.height - 240, "SPACE", chooseSpace);
+			playButton.loadGraphic(Space);
+			add(playButton);
+			images.add(playButton);
 			
 			//img = new ImgButton(imageClass, 40, 30, "basic");
 			// gonna make a new button class to show levels, that is real nice
@@ -132,18 +139,23 @@ package
 			images.members[2].loadGraphic(volcanoHighlight);
 		}
 		
-		public function choosePowerplant():void {
-			levelSelected = Level.powerplant;
-		}
-		
 		public function chooseLasergrid():void {
 			levelSelected = Level.lasergrid;
 			cleanHighlights();
 			images.members[3].loadGraphic(laserHighlight);
 		}
 		
+		public function choosePowerplant():void {
+			levelSelected = Level.powerplant;
+			cleanHighlights();
+			images.members[4].loadGraphic(PowerPlantHightlight);
+			
+		}
+		
 		public function chooseSpace():void {
 			levelSelected = Level.space;
+			cleanHighlights();
+			images.members[5].loadGraphic(SpaceHighlight);
 		}
 		
 		public function play():void
@@ -188,6 +200,12 @@ package
 						break;
 					case 3:
 						imageButton.loadGraphic(laser);
+						break;
+					case 4:
+						imageButton.loadGraphic(PowerPlant);
+						break;
+					case 5:
+						imageButton.loadGraphic(Space);
 						break;
 					default:
 						trace("error selecting level");
