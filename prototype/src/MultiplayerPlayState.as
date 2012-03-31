@@ -488,6 +488,7 @@ package
 			for each (var player:Player in players.members) {
 				if ( player.getScore() >= MAX_SCORE ) {
 					connection.disconnect();
+					FlxG.pauseSounds();
 					FlxG.switchState( new GameOverState(levelData, mode, null, 1, -1));
 				}
 			}
