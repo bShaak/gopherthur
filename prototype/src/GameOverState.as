@@ -23,6 +23,8 @@ package
 		private var randomSeed:int;
  
 		public function GameOverState(data:Object, mode:int, connection:Connection, playerId:int, playerCount:int, seed:int = -1)
+
+		[Embed (source="sprites/springbox_bluewin.png")] protected var BlueWin:Class;
 		{
 			gameMode = mode;
 			connect = connection;
@@ -38,17 +40,24 @@ package
 			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0xFF0080C0); //should be the same colour as the original menu
 			add(backgroundColor);
 			
+			var blueWin:FlxSprite = new FlxSprite(90, 0, BlueWin);
+			blueWin.loadGraphic(BlueWin, false, false, 350, 350);
+			add(blueWin);
+			
 			title = new FlxText(0, 16, FlxG.width, "SpringBox");
 			title.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(title);
 			
-			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "PLAY AGAIN", playAgain);
+			playButton = new FlxButtonBig(FlxG.width/2 - 80, FlxG.height - 140, "PLAY AGAIN", playAgain);
+			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			
-			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 60, "MAIN MENU", gotoMenu);
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 100, "MAIN MENU", gotoMenu);
+			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			
-			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 40, "EXIT", exitGame);
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 60, "EXIT", exitGame);
+			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 		}
 
