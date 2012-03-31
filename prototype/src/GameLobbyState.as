@@ -180,6 +180,8 @@ package
 				level = Level.powerplant;
 			else if (roomInfo.data.levelName == "Laser Grid")
 				level = Level.lasergrid;
+			else if (roomInfo.data.levelName == "Space")
+				level = Level.space;
 			
 			(new ObtainConnectionState(level, roomInfo.id, client)).createRoom();
 			
