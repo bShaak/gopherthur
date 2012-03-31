@@ -9,6 +9,7 @@ package
 	import org.flixel.*;
 	import playerio.*;
 	import flash.system.fscommand;
+	import GameLobbyState;
 	//import ImgButton;
 	
 	public class LevelSelect extends FlxState {
@@ -104,7 +105,8 @@ package
 			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 40, "EXIT", exitGame);
 			add(playButton);
 			chooseBasic();
-			//play(); //ras
+			if (GameLobbyState.testVersion)
+				play(); //ras
 		}
 
 		override public function update():void

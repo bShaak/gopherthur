@@ -15,13 +15,20 @@ package
 		private var playerId:int;
 		private var playerCount:int;
 		private var currentPlayer:Player;
+		private var otherPlayer:Player;
 		private var roundId:int = 0;
 		private var MSG_SEND_RATE:int = 20; //20
 		private const SMOOTHNESS:int = 2;
 		private var initState:Player;
 		private var smoothMovement:Player;
 		private var smoothTimer:Timer;  
-
+		
+		private var cnt:int = 0;
+		private var shoveMsgSent:Boolean;
+		
+		private var ping:int = 0;
+		private var pingTime:int;
+		
 		public function MultiplayerPlayState(data:Object, goal:int, connection:Connection, playerId:int, seed:int, playerCount:int) {
 			super(data, goal);
 
@@ -30,6 +37,16 @@ package
 			this.playerCount = playerCount;
 			this.smoothTimer = null;
 			randomSeed = seed;
+			this.shoveMsgSent = false;
+		}
+		
+		private function computePing():void {
+			pingTime = (new Date()).getTime();
+			connection.send(MessageType.PING);
+		}
+		private function registerPing(m:Message):void {
+			ping = ((new Date()).getTime() - pingTime) / 2;
+			clock.setTimeout(1000, this.computePing);
 		}
 		
 		override protected function createPlayers():void {
@@ -51,6 +68,8 @@ package
 			connection.addMessageHandler(MessageType.RESPAWN_PLAYER, handleRepawnPlayerMessage);
 			connection.addMessageHandler(MessageType.RESET, handleResetMessage);
 			connection.addMessageHandler(MessageType.SHOVE, handleShoveMessage);
+			connection.addMessageHandler(MessageType.PING, registerPing);
+			this.computePing();
 			connection.send(MessageType.CONFIRM, MessageType.READY_TO_ADD_PLAYERS);
 		}
 		
@@ -178,8 +197,11 @@ package
 		 * @param	m The position message
 		 */
 		private function handlePositionMessage(m:Message):void {
-			if (smoothTimer != null)
-				smoothTimer.reset();
+			if (shoveMsgSent || otherPlayer.isShoved())  // let the shove animation run locally
+				return;
+				
+			//if (smoothTimer != null)
+				//smoothTimer.reset();
 				
 			var id:int = m.getInt(0);
 			var x:int = m.getInt(1);
@@ -188,6 +210,15 @@ package
 			var vy:int = m.getInt(4);
 			
 			var p:Player = getPlayer(id);
+			
+			var ignoreY:Boolean = false;
+			// if player is on the elevator, let his y be determined locally
+			for each(var platform:Platform in platforms.members) {
+				if (FlxG.overlap(p, platform) && vy == int(platform.maxVelocity.y)) {
+					ignoreY = true;
+					break;
+				}
+			}
 			
 			/*p.x = initState.x;
 			p.y = initState.y;
@@ -212,11 +243,12 @@ package
 				//smoothMovement.velocity.y = vy;
 				smoothTimer.start();*/
 						
-			
 			p.x = x;
-			p.y = y;
 			p.velocity.x = vx;
-			p.velocity.y = vy;
+			if (!ignoreY) {
+				p.y = y;
+				p.velocity.y = vy;
+			}
 			
 			var boxMask:int = m.getInt(5);
 			var j:int = 6;
@@ -247,17 +279,29 @@ package
 		
 		override protected function shovePlayer(player:Player, player2:Player):void {
 			//trace("Sending shove msg");
-			if (player.shoveMsgSent || player2.shoveMsgSent)
+			if (this.shoveMsgSent)
 				return;
+				
+			var dir:int = 1;
 			if (player is ActivePlayer && player.isCharging()) {
-				trace("*Actually sending shove msg");
-				player.shoveMsgSent = true;
-				player.getConnection().send(MessageType.CHARGE, player.velocity.x, player2.id, player2.velocity.x);
+				trace("*Actually sending shove msg " + player.x + " " + player2.x);
+				this.shoveMsgSent = true;
+								
+				if (player.x > player2.x)
+					dir = -1;
+				
+				player.getConnection().send(MessageType.CHARGE, player.velocity.x, player2.id, player2.velocity.x, dir);
+				player.velocity.x = 0;
 			}
 			else if (player2 is ActivePlayer && player2.isCharging()) {
 				trace("**Actually sending shove msg");
-				player2.shoveMsgSent = true;
-				player2.getConnection().send(MessageType.CHARGE, player2.velocity.x, player.id, player.velocity.x);
+				this.shoveMsgSent = true;
+				
+				if (player.x < player2.x)
+					dir = -1;
+				
+				player2.getConnection().send(MessageType.CHARGE, player2.velocity.x, player.id, player.velocity.x, dir);
+				player2.velocity.x = 0;
 			}
 			/*else if (!currentPlayer.isCharging() && !currentPlayer.isShoved()){
 				//players who hold boxes drop them when bumped
@@ -285,18 +329,21 @@ package
 		 * @param	m message containing the id of the shoving and shoved player
 		 */
 		private function handleShoveMessage(m:Message):void { 
+			//trace("Handling shove msg " + cnt);
+			//cnt++;
 			FlxG.play(Push);
 			//var id:int = m.getInt(0);
 			//var velocity:int = m.getInt(1);
 			var shovingPlayer:Player = getPlayer(m.getInt(0));			
 			var shovedPlayer:Player = getPlayer(m.getInt(1));
-			shovingPlayer.shoveMsgSent = false;
-			shovedPlayer.shoveMsgSent = false;
-					
-			shovedPlayer.getShoved(shovingPlayer);
+			var shoveDir:int = m.getInt(2);
+			
+			//trace("Shoving p: " + shovingPlayer.id + " shoved p: " + shovedPlayer.id + " " + shoveDir);
+			
+			shovedPlayer.getShoved(shovingPlayer, shoveDir);
 			dropBoxesOnCollision(shovedPlayer);
 			shovingPlayer.velocity.x = 0;
-			
+			this.shoveMsgSent = false;
 		}
 		
 		override protected function createClock() : Clock {
@@ -325,9 +372,10 @@ package
 				currentPlayer = player;
 			} else {
 				player = new Player(x, y, id, color, walkAnimation);
+				otherPlayer = player;
 				//var pInit:Player = new Player(x, y, id, color, walkAnimation);
-				initState = new Player(x, y, id, color, walkAnimation);
-				smoothMovement = new Player(x, y, id, color, walkAnimation);
+				//initState = new Player(x, y, id, color, walkAnimation);
+				//smoothMovement = new Player(x, y, id, color, walkAnimation);
 			}
 			players.add(player);
 						
@@ -355,6 +403,8 @@ package
 		 * Broadcast all necessary info.
 		 */
 		private function sendInfo():void {
+			if (shoveMsgSent || otherPlayer.isShoved())  // let the shove animation run locally
+				return;
 			if (connection.connected) {
 				//if (currentPlayer
 				var info:Array = [MessageType.POS, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y)];

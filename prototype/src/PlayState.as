@@ -96,13 +96,6 @@ package
 			drawArea.makeGraphic(FlxG.width, FlxG.height, 0x00000000);
 			add(drawArea);
 			
-			if (mode == TIMED) {
-				timer = createClock();
-				roundTime = new FlxText(-25, 25, FlxG.width, "0:00");
-				roundTime.setFormat(null, 14, 0xFFFFFFFF, "right");
-				add(roundTime);
-			}
-			
 			players = new FlxGroup();
 			createPlayers();
 			
@@ -110,6 +103,26 @@ package
 			if (mode != RABBIT) { createZones(); }	//don't create zones if mode is rabbit
 			add(zones);
 			add(players);
+			
+			powerUps = new FlxGroup();
+			//createPowerUps();
+			//add(powerUps);
+			
+			masterMap = new FlxGroup();
+			
+			for each (var map:Object in levelData.maps) {
+				layerMap = new FlxTilemap();
+				layerMap.loadMap(new map.layout, map.texture, 16, 16, FlxTilemap.OFF, 0, 1, 1);
+				masterMap.add(layerMap);
+			}
+			add(masterMap);
+			
+			if (mode == TIMED) {
+				timer = createClock();
+				roundTime = new FlxText(0, 25, FlxG.width, "0:00");
+				roundTime.setFormat(null, 14, 0xFFFFFFFF, "center");
+				add(roundTime);
+			}
 			
 			if (mode == RABBIT) {
 				rabbitInfo = new Dictionary();
@@ -156,19 +169,6 @@ package
 				}
 			}
 			add(boxes);
-			
-			powerUps = new FlxGroup();
-			//createPowerUps();
-			//add(powerUps);
-			
-			masterMap = new FlxGroup();
-			
-			for each (var map:Object in levelData.maps) {
-				layerMap = new FlxTilemap();
-				layerMap.loadMap(new map.layout, map.texture, 16, 16, FlxTilemap.OFF, 0, 1, 1);
-				masterMap.add(layerMap);
-			}
-			add(masterMap);
 			
 			platforms = new FlxGroup();
 			
@@ -751,11 +751,28 @@ package
 		}
 	
 		protected function handleAsteroidCollisions():void {
-			FlxG.collide(asteroids, players);
+			for each (var player:Player in players.members) {
+				for each (var asteroid:Asteroid in asteroids.members) {
+					if (asteroid == null) {
+						continue;
+					}
+					if (FlxG.collide(asteroid, player)) {
+						//Players get squished if stuck between asteroid and any wall
+						if (FlxG.collide(player, masterMap) 
+							&&
+							((player.isAbove(asteroid) && player.isTouching(FlxObject.CEILING)) ||
+							 (player.isBelow(asteroid) && player.isTouching(FlxObject.FLOOR)) ||
+							 (player.isLeftOf(asteroid) && player.isTouching(FlxObject.LEFT)) ||
+							 (player.isRightOf(asteroid) && player.isTouching(FlxObject.RIGHT)))) {
+							killAndRespawnPlayer(player);
+						}
+					}
+				}
+			}
 			
 			// Remove asteroids that have travelled off the level.
 			for (var i:int = asteroids.members.length - 1; i >= 0; i--) {
-				var asteroid:Asteroid = asteroids.members[i];
+				asteroid = asteroids.members[i];
 				if (asteroid != null && !asteroid.alive) {
 					asteroids.remove(asteroid);
 				}
