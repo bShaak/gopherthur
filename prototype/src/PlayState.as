@@ -96,13 +96,6 @@ package
 			drawArea.makeGraphic(FlxG.width, FlxG.height, 0x00000000);
 			add(drawArea);
 			
-			if (mode == TIMED) {
-				timer = createClock();
-				roundTime = new FlxText(-25, 25, FlxG.width, "0:00");
-				roundTime.setFormat(null, 14, 0xFFFFFFFF, "right");
-				add(roundTime);
-			}
-			
 			players = new FlxGroup();
 			createPlayers();
 			
@@ -110,6 +103,26 @@ package
 			if (mode != RABBIT) { createZones(); }	//don't create zones if mode is rabbit
 			add(zones);
 			add(players);
+			
+			powerUps = new FlxGroup();
+			//createPowerUps();
+			//add(powerUps);
+			
+			masterMap = new FlxGroup();
+			
+			for each (var map:Object in levelData.maps) {
+				layerMap = new FlxTilemap();
+				layerMap.loadMap(new map.layout, map.texture, 16, 16, FlxTilemap.OFF, 0, 1, 1);
+				masterMap.add(layerMap);
+			}
+			add(masterMap);
+			
+			if (mode == TIMED) {
+				timer = createClock();
+				roundTime = new FlxText(0, 25, FlxG.width, "0:00");
+				roundTime.setFormat(null, 14, 0xFFFFFFFF, "center");
+				add(roundTime);
+			}
 			
 			if (mode == RABBIT) {
 				rabbitInfo = new Dictionary();
@@ -156,19 +169,6 @@ package
 				}
 			}
 			add(boxes);
-			
-			powerUps = new FlxGroup();
-			//createPowerUps();
-			//add(powerUps);
-			
-			masterMap = new FlxGroup();
-			
-			for each (var map:Object in levelData.maps) {
-				layerMap = new FlxTilemap();
-				layerMap.loadMap(new map.layout, map.texture, 16, 16, FlxTilemap.OFF, 0, 1, 1);
-				masterMap.add(layerMap);
-			}
-			add(masterMap);
 			
 			platforms = new FlxGroup();
 			
@@ -267,17 +267,22 @@ package
 			pauseBgColor.visible = false;
 			add(pauseBgColor);
 			
-			pauseGameButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 60, "BACK TO GAME", dePause);
+			pauseGameButton = new FlxButtonBig(FlxG.width / 2 - 60, FlxG.height / 2 - 80, "BACK TO GAME", dePause);
+			pauseGameButton.label.setFormat(null, 16, 0x333333, "center");
 			pauseGameButton.visible = false;
 			add(pauseGameButton);
 			
-			pauseMenuButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 40, "BACK TO MENU", pauseAndMenu);
+			pauseMenuButton = new FlxButtonBig(FlxG.width / 2 - 60, FlxG.height / 2 - 40, "BACK TO MENU", pauseAndMenu);
+			pauseMenuButton.label.setFormat(null, 16, 0x333333, "center");
 			pauseMenuButton.visible = false;
 			add(pauseMenuButton);
 
-			pauseMuteButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 - 20, "MUTE", mute);
-			pauseMuteButton.label = new FlxText(0, 0, 80, "MUTE");
-			pauseMuteButton.label.setFormat(null, 8, 0x333333, "center");
+			pauseMuteButton = new FlxButtonBig(FlxG.width / 2 - 60, FlxG.height / 2, "MUTE", mute);
+			
+			if (FlxG.mute && FlxG.volume == 0) {
+				pauseMuteButton.label = new FlxText(0, 0, 160, "UNMUTE");
+			}
+			pauseMuteButton.label.setFormat(null, 16, 0x333333, "center");
 			pauseMuteButton.visible = false;
 			add(pauseMuteButton);
 			//MIN JI'S PAUSE CODE END
@@ -393,15 +398,15 @@ package
 			
 			if(FlxG.mute) {
 				FlxG.volume = 0;
-				pauseMuteButton.label = new FlxText(0, 0, 80, "UNMUTE");
-				pauseMuteButton.label.setFormat(null, 8, 0x333333, "center");
+				pauseMuteButton.label = new FlxText(0, 0, 160, "UNMUTE");
+				pauseMuteButton.label.setFormat(null, 16, 0x333333, "center");
 				pauseMuteButton.update();
 			}
 				
 			if(!FlxG.mute) {
 				FlxG.volume = 1;
-				pauseMuteButton.label = new FlxText(0, 0, 80, "MUTE");
-				pauseMuteButton.label.setFormat(null, 8, 0x333333, "center");
+				pauseMuteButton.label = new FlxText(0, 0, 160, "MUTE");
+				pauseMuteButton.label.setFormat(null, 16, 0x333333, "center");
 				pauseMuteButton.update();
 
 			}

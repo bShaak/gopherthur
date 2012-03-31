@@ -29,7 +29,7 @@ package
 			mainBoxBG.loadGraphic(MainBoxBG, false, false, 640, 480);
 			add(mainBoxBG);
 			
-			var mainBox:FlxSprite = new FlxSprite(200, 60, MainBox);
+			var mainBox:FlxSprite = new FlxSprite(200, 55, MainBox);
 			mainBox.loadGraphic(MainBox, false, false, 250, 250);
 			add(mainBox);
 			
@@ -45,7 +45,7 @@ package
 			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 160, "RABBIT", goToRabbitPlayState); 
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 160, "KEEP AWAY", goToRabbitPlayState); 
 			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			
