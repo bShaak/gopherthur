@@ -13,6 +13,9 @@ package
 	public class Zone extends FlxSprite
 	{
 		public var player:Player;
+		
+		public static var ZONE_WIDTH:int = 96;
+		
 		public function Zone(x:int, y:int, width:int, height:int, player:Player) {
 			this.x = x;
 			this.y = y;
