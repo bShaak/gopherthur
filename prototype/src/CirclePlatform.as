@@ -9,7 +9,8 @@ package
 	 
 	public class CirclePlatform extends Platform
 	{
-		[Embed(source = "/textures/space_platform_48x16.png")] private var MetalTexture:Class;
+		//[Embed(source = "/textures/space_platform_48x16.png")] private var MetalTexture:Class;
+		[Embed(source = "/textures/metal.png")] private var MetalTexture:Class;
 		
 		private var clock:Clock;
 		private var middle:FlxPoint;
@@ -66,8 +67,8 @@ package
 			var angle:Number = 2 * Math.PI * (clock.elapsed % rotateTime) / rotateTime;
 			x = middle.x + radius * Math.cos(timedReverse * reverse * (angle + initialRotation)) - width/2;
 			y = middle.y + radius * Math.sin(timedReverse * reverse * (angle + initialRotation)) - height / 2;
-			drawArea.drawLine(middle.x, middle.y, x + width / 2, y + height / 2, 0xffffffff, 5);
-			drawArea.drawLine(middle.x, middle.y, x + width / 2, y + height / 2, 0xff000000, 1);
+			drawArea.drawLine(middle.x, middle.y, x + width / 2, y + height / 2, 0xffffffff, 7);
+			drawArea.drawLine(middle.x, middle.y, x + width / 2, y + height / 2, 0xff000000, 3);
 		}
 	}
 }
