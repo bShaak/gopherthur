@@ -23,7 +23,8 @@ package
 		[Embed(source = "textures/volcano_textures.png")] public static var VolcanoTextures:Class;
 		[Embed(source = "levels/backgrounds/volcano_bg.png")] public static var VolcanoBG:Class;
 		
-		[Embed(source = "levels/mapCSV_PowerPlant_Map1.csv", mimeType = "application/octet-stream")] public static var PowerPlantTileMap:Class;
+		[Embed(source = "levels/mapCSV_Group1_Map1.csv", mimeType = "application/octet-stream")] public static var PowerPlantTileMap:Class;
+		[Embed(source = "textures/powerplant_textures.png")] public static var PowerplantTextures:Class;
 		
 		[Embed(source = "levels/mapCSV_Lasergrid_Map1.csv", mimeType = "application/octet-stream")] public static var LasergridTileMap:Class;
 		[Embed(source = "textures/lasergrid_textures.png")] public static var LasergridTextures:Class;
@@ -293,7 +294,7 @@ package
 			startInfo: [ { x: 3*TW, y: 3*TW, color:0xffaa1111, walkAnimation: AnimateWalkRed }, //player 1
 						 { x: 37*TW, y: 3*TW, color:0xff1111aa, walkAnimation: AnimateWalkBlue } ], //player 2
 			
-			maps: [ { layout: PowerPlantTileMap, texture: SkyscraperTextures } ],			 
+			maps: [ { layout: PowerPlantTileMap, texture: PowerplantTextures } ],			 
 					 
 			bg_color: 0xffCD8C95,
 			
