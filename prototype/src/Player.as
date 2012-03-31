@@ -25,6 +25,7 @@ package
 		protected const MAX_SPEED:int = 160;  
 		//protected const SHOVE_STRENGTH:Array = [400, 500, 600]; //ras 
 		protected const BUMP_STRENGTH:Array = [200, 300, 400];
+		protected const SLAM_RANGE:int = 165;
 		protected var numBoxesInZone:int = 0; //ras
 		
 		public static const IDLE_THRESH:Number = 20; //player will appear idle if below this speed
@@ -55,6 +56,7 @@ package
 			this.id = id;
 
 			// TODO: Handle this better
+			//this.makeGraphic(width, height, color);
 			this.colour = color;
 			
 		
@@ -64,6 +66,7 @@ package
 			this.addAnimation("idle_right", [0], 1, true);
 			this.addAnimation("jumping_right", [2], 1, true);
 			this.addAnimation("falling_right", [3], 1, true);
+			this.addAnimation("slam_dunk_right", [5], 1, true);
 			
 			//set default graphic
 			if (this.x < FlxG.width / 2)
@@ -106,16 +109,41 @@ package
 				}
 			}
 			else { //player is in the air
-				if (this.velocity.y > 0) {
+				if (this.isHoldingBox && this.isWithinSlamRange() && numBoxesInZone == 2 && !this.boxHeldIsInZone())
+					this.play("slam_dunk_right");
+				else if (this.velocity.y > 0)
 					this.play("falling_right");
-				}
-				else if (this.velocity.y < 0) {
+				else if (this.velocity.y < 0)
 					this.play("jumping_right");
 				}
 				
 			}
 			
 			positionBox();
+		}
+		
+		private function isWithinSlamRange():Boolean {
+			//no slam dunks if you're facing away from spawn
+			var dist:Number = this.spawn.x - this.x;
+			if ((dist <=0 && this.facing == FlxObject.RIGHT) ||
+				(dist >= 0 && this.facing == FlxObject.LEFT))
+				return false;
+				
+			if (Math.sqrt(Math.pow(this.x - this.spawn.x, 2) + Math.pow(this.y - this.spawn.y, 2)) < SLAM_RANGE)
+				return true;
+			else
+				return false;
+		}
+		
+		private function boxHeldIsInZone():Boolean {
+			if (!isHoldingBox)
+				return false;
+			
+			if ((FlxU.abs(spawn.x - this.boxHeld.getMidpoint().x) <= Zone.ZONE_WIDTH / 2 - boxHeld.width/2 ) &&
+				(FlxU.abs(spawn.y - this.boxHeld.getMidpoint().y) <= Zone.ZONE_WIDTH / 2 - boxHeld.height/2 ))
+				return true;
+			else 
+				return false;
 		}
 		
 		public function getColour():int {

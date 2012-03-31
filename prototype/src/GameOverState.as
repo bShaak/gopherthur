@@ -21,10 +21,10 @@ package
 		private var pCount:int;
 		private var levelSelected:Object;
 		private var randomSeed:int;
+		
+		[Embed (source="sprites/springbox_bluewin.png")] protected var BlueWin:Class;
  
 		public function GameOverState(data:Object, mode:int, connection:Connection, playerId:int, playerCount:int, seed:int = -1)
-
-		//[Embed (source="sprites/springbox_bluewin.png")] protected var BlueWin:Class;
 		{
 			gameMode = mode;
 			connect = connection;
@@ -40,9 +40,9 @@ package
 			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0xFF0080C0); //should be the same colour as the original menu
 			add(backgroundColor);
 			
-			/*var blueWin:FlxSprite = new FlxSprite(90, 0, BlueWin);
+			var blueWin:FlxSprite = new FlxSprite(90, 0, BlueWin);
 			blueWin.loadGraphic(BlueWin, false, false, 350, 350);
-			add(blueWin);*/
+			add(blueWin);
 			
 			title = new FlxText(0, 16, FlxG.width, "SpringBox");
 			title.setFormat (null, 16, 0xFFFFFFFF, "center");

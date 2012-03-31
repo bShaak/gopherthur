@@ -53,10 +53,11 @@ package
 		public var RABBIT_TIMELIMIT:int = 60000;
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
 		protected var MAX_SCORE:int = 1; //define a score at which the game ends
+		private var Music:Class;
 		
 		//embed sounds
 		[Embed(source = "../mp3/push_new.mp3")] protected var Push:Class;
-		[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
+		//[Embed(source = "../mp3/Bustabuss.mp3")] private var Music:Class;
 		[Embed(source = "../mp3/splatter.mp3")] private var splatter:Class;
 		
 		//player death animation
@@ -90,6 +91,7 @@ package
 				add(bg);
 			}
 			
+			Music = levelData.music;
 			clock = createClock();
 			random = new PseudoRandom(randomSeed);
 			drawArea = new FlxSprite(0, 0);
@@ -363,8 +365,8 @@ package
 		
 		//MIN JI'S PAUSE CODE START
 		public function pauseAndMenu():void {			
-			if (!FlxG.mute)
-				mute();
+			
+			FlxG.pauseSounds();
 				
 			dePause();
 			
