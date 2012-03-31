@@ -308,8 +308,8 @@ package
 					 
 			platforms: [],
 			
-			acid: [ { x: 0*TW, 			//left acid
-					  y: 8 * TW,
+			acid: [ { x: 0.25*TW, 			//left acid
+					  y: 8.25 * TW,
 					  width: 6 * TW,
 					  height: 23 * TW},
 					{ x: 34*TW, 		//right acid
