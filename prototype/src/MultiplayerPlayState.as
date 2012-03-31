@@ -68,7 +68,7 @@ package
 			connection.addMessageHandler(MessageType.GAME_OVER, handleGameOverMessage);
 			connection.addMessageHandler(MessageType.RESPAWN_PLAYER, handleRepawnPlayerMessage);
 			connection.addMessageHandler(MessageType.RESET, handleResetMessage);
-			connection.addMessageHandler(MessageType.SHOVE, handleShoveMessage);
+			//connection.addMessageHandler(MessageType.SHOVE, handleShoveMessage);
 			connection.addMessageHandler(MessageType.PING, registerPing);
 			this.computePing();
 			connection.send(MessageType.CONFIRM, MessageType.READY_TO_ADD_PLAYERS);
@@ -198,8 +198,11 @@ package
 		 * @param	m The position message
 		 */
 		private function handlePositionMessage(m:Message):void {
-			if (shoveMsgSent || otherPlayer.isShoved())  // let the shove animation run locally
-				return;
+			//if (shoveMsgSent || otherPlayer.isShoved())  // let the shove animation run locally
+				//return;
+			//if (otherPlayer.bumped)
+				//return;
+			//trace("Here");
 				
 			//if (smoothTimer != null)
 				//smoothTimer.reset();
@@ -278,7 +281,7 @@ package
 			trace("Curr pos: " + p.x + " " + p.y);
 		}
 		
-		override protected function shovePlayer(player:Player, player2:Player):void {
+		/*override protected function shovePlayer(player:Player, player2:Player):void {
 			//trace("Sending shove msg");
 			if (this.shoveMsgSent)
 				return;
@@ -304,14 +307,14 @@ package
 				player2.getConnection().send(MessageType.CHARGE, player2.velocity.x, player.id, player.velocity.x, dir);
 				player2.velocity.x = 0;
 			}
-			else {//if (!currentPlayer.isCharging() && !currentPlayer.isShoved()){
-				//players who hold boxes drop them when bumped
-				FlxG.play(Push);
-				dropBoxesOnCollision(player);
-				dropBoxesOnCollision(player2);
+			
+			//players who hold boxes drop them when bumped
+			FlxG.play(Push);
+			dropBoxesOnCollision(player);
+			dropBoxesOnCollision(player2);
 							
-				//determine orientation
-				var dir:int = 1;
+			//determine orientation
+			var dir:int = 1;
 				var dir_y:int = 1;
 				if (player.x < player2.x)
 					dir = -1;
@@ -323,13 +326,13 @@ package
 				player.velocity.y = dir_y * 100;
 				player2.velocity.y = -dir_y * 100;
 			}
-		}
+		}*/
 		
 		/**
 		 * Player with ID equal to the one sent in message shoves the other player.
 		 * @param	m message containing the id of the shoving and shoved player
 		 */
-		private function handleShoveMessage(m:Message):void { 
+		/*private function handleShoveMessage(m:Message):void { 
 			//trace("Handling shove msg " + cnt);
 			//cnt++;
 			FlxG.play(Push);
@@ -345,7 +348,7 @@ package
 			dropBoxesOnCollision(shovedPlayer);
 			shovingPlayer.velocity.x = 0;
 			this.shoveMsgSent = false;
-		}
+		}*/
 		
 		override protected function createClock() : Clock {
 			return new Clock(connection);

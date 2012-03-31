@@ -53,7 +53,7 @@ package
 		
 		public var RABBIT_TIMELIMIT:int = 60000;
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
-		protected var MAX_SCORE:int = 1; //define a score at which the game ends
+		protected var MAX_SCORE:int = 3; //define a score at which the game ends
 		private var Music:Class;
 		
 		//embed sounds
@@ -629,7 +629,7 @@ package
 		
 		protected function shovePlayer(player:Player, player2:Player):void 
 		{
-			if (player.isShoved() || player2.isShoved())
+			/*if (player.isShoved() || player2.isShoved())
 				return;
 			//trace("B4: " + player.velocity.x + " " + player2.velocity.x);
 			if (player.isCharging() || player2.isCharging()) {
@@ -645,12 +645,15 @@ package
 					player2.velocity.x = 0;
 				}
 			}
-			else {
+			else {*/
 				//players who hold boxes drop them when bumped
 				FlxG.play(Push);
 				dropBoxesOnCollision(player);
 				dropBoxesOnCollision(player2);
-							
+					
+				//player.getBumped(player2);
+				//player2.getBumped(player);
+				
 				//determine orientation
 				var dir:int = 1;
 				var dir_y:int = 1;
@@ -663,7 +666,7 @@ package
 				player2.velocity.x = -dir * player2.maxVelocity.x;
 				player.velocity.y = dir_y * 100;
 				player2.velocity.y = -dir_y * 100;
-			}
+			//}
 			//trace("After: " + player.velocity.x + " " + player2.velocity.x);
 		}
 		
