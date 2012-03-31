@@ -23,8 +23,9 @@ package
 		[Embed(source = "textures/volcano_textures.png")] public static var VolcanoTextures:Class;
 		[Embed(source = "levels/backgrounds/volcano_bg.png")] public static var VolcanoBG:Class;
 		
-		[Embed(source = "levels/mapCSV_Group1_Map1.csv", mimeType = "application/octet-stream")] public static var PowerPlantTileMap:Class;
+		[Embed(source = "levels/mapCSV_Powerplant_Map1.csv", mimeType = "application/octet-stream")] public static var PowerPlantTileMap:Class;
 		[Embed(source = "textures/powerplant_textures.png")] public static var PowerplantTextures:Class;
+		[Embed(source = "levels/backgrounds/powerplant_bg.png")] public static var PowerplantBG:Class;
 		
 		[Embed(source = "levels/mapCSV_Lasergrid_Map1.csv", mimeType = "application/octet-stream")] public static var LasergridTileMap:Class;
 		[Embed(source = "textures/lasergrid_textures.png")] public static var LasergridTextures:Class;
@@ -298,6 +299,8 @@ package
 					 
 			bg_color: 0xffCD8C95,
 			
+			background: PowerplantBG,
+			
 			boxes: [ { x: 18*TW, y: 24*TW }, //initial box positions
 					 { x: 19*TW, y: 24*TW },
 					 { x: 20*TW, y: 24*TW },
@@ -306,8 +309,8 @@ package
 					 
 			platforms: [],
 			
-			acid: [ { x: 0*TW, 			//left acid
-					  y: 8 * TW,
+			acid: [ { x: 0.25*TW, 			//left acid
+					  y: 8.25 * TW,
 					  width: 6 * TW,
 					  height: 23 * TW},
 					{ x: 34*TW, 		//right acid
