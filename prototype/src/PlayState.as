@@ -40,6 +40,7 @@ package
 		protected var running:Boolean = false;
 		protected var clock:Clock;
 		protected var timer:Clock;	//timer for a timed game
+		protected var lastTime:int = 0;
 		
 		protected var mode:int;
 		public static const BOX_COLLECT:int = 0;
@@ -78,6 +79,7 @@ package
 		{
 			levelData = data;
 			mode = goal;
+			SBSprite.TOLERANCE = 4;
 			randomSeed = (new Date()).getTime();
 		}
 		
@@ -353,6 +355,11 @@ package
 			//update scoreboard
 			scoreboard.text = "SCORE: " + players.members[0].getScore() + " - " + players.members[1].getScore();
 			checkGameOver();
+			
+			for each (var player:Player in players.members) {
+				player.updateRealVelocity((clock.elapsed - lastTime) / 1000.0);
+			}
+			lastTime = clock.elapsed;
 		}
 		
 		

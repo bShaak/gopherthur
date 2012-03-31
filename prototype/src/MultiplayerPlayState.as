@@ -31,7 +31,7 @@ package
 		
 		public function MultiplayerPlayState(data:Object, goal:int, connection:Connection, playerId:int, seed:int, playerCount:int) {
 			super(data, goal);
-
+			SBSprite.TOLERANCE = 8;
 			this.connection = connection;
 			this.playerId = playerId;
 			this.playerCount = playerCount;
@@ -407,7 +407,8 @@ package
 				return;
 			if (connection.connected) {
 				//if (currentPlayer
-				var info:Array = [MessageType.POS, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y)];
+				var info:Array = [MessageType.POS, int(currentPlayer.x), int(currentPlayer.y),
+									int(currentPlayer.realVelocity.x), int(currentPlayer.realVelocity.y)];
 				for (var i:int = 0; i < boxes.members.length; i++) {
 					var box:Box = boxes.members[i];
 						if (box != null) {

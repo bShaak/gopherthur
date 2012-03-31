@@ -10,7 +10,7 @@ package
 	 */
 	public class SBSprite extends FlxSprite
 	{
-		protected static const TOLERANCE:int = 4; //pixels
+		public static var TOLERANCE:int = 4; //pixels
 		
 		public function SBSprite(x:Number, y:Number)
 		{
@@ -28,7 +28,7 @@ package
 		}
 		
 		public function isAbove(s:FlxSprite):Boolean {
-			if (this.y + this.height - 1.5*TOLERANCE <= s.y &&
+			if (this.y + this.height - 2*TOLERANCE <= s.y &&
 			    this.x + TOLERANCE <= s.x + s.width &&
 				this.x + this.width - TOLERANCE >= s.x)
 				return true;

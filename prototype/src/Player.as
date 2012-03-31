@@ -25,6 +25,9 @@ package
 		protected const SHOVE_STRENGTH:Array = [400, 500, 600]; //ras 
 		protected var numBoxesInZone:int = 0; //ras
 		
+		protected var lastPos:FlxPoint;
+		public var realVelocity:FlxPoint;
+		
 		public static const IDLE_THRESH:Number = 20; //player will appear idle if below this speed
 
 		//Embed sounds we will use
@@ -50,7 +53,8 @@ package
 			this.shoved = false;
 			this.throwStrength = new FlxPoint(400, -50); //the velocity the box will have when thrown
 			this.id = id;
-
+			this.lastPos = new FlxPoint(x, y);
+			this.realVelocity = new FlxPoint(0, 0);
 			// TODO: Handle this better
 			//this.makeGraphic(width, height, color);
 			this.colour = color;
@@ -266,6 +270,13 @@ package
 				
 			boxHeld.y = this.getMidpoint().y - this.height;
 				
+		}
+		
+		public function updateRealVelocity(elapsed:Number):void {
+			realVelocity.x = (x - lastPos.x) / elapsed;
+			realVelocity.y = (y - lastPos.y) / elapsed;
+			lastPos.x = x;
+			lastPos.y = y;
 		}
 	}
 }
