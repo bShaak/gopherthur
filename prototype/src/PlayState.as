@@ -52,7 +52,7 @@ package
 		
 		public var RABBIT_TIMELIMIT:int = 60000;
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
-		protected var MAX_SCORE:int = 1; //define a score at which the game ends
+		protected var MAX_SCORE:int = 3; //define a score at which the game ends
 		private var Music:Class;
 		
 		//embed sounds
