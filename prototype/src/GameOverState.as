@@ -20,18 +20,18 @@ package
 		private var pID:int;
 		private var pCount:int;
 		private var levelSelected:Object;
+		private var randomSeed:int;
  
-		[Embed (source="sprites/springbox_bluewin.png")] protected var BlueWin:Class;
+		public function GameOverState(data:Object, mode:int, connection:Connection, playerId:int, playerCount:int, seed:int = -1)
 
-		
-		public function GameOverState(data:Object, mode:int, connection:Connection, playerId:int, playerCount:int)
+		[Embed (source="sprites/springbox_bluewin.png")] protected var BlueWin:Class;
 		{
 			gameMode = mode;
 			connect = connection;
 			pID = playerId;
 			pCount = playerCount;
 			levelSelected = data;
-			
+			randomSeed = seed;
 		}
 		
 		override public function create():void 
@@ -82,10 +82,13 @@ package
 			else {
 				// collect
 				if (gameMode == 0) {
+					FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connect, pID, randomSeed, pCount));
 					//FlxG.switchState(new ObtainConnectionState(levelSelected));
 				}
 				// Timed
 				else if (gameMode == 1) {
+					trace("Here");
+					FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connect, pID, randomSeed, pCount));
 					//FlxG.switchState(new ObtainConnectionState(levelSelected));
 				}
 			}

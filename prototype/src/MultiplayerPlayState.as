@@ -28,6 +28,7 @@ package
 		
 		private var ping:int = 0;
 		private var pingTime:int;
+		private var intervalID:int;
 		
 		public function MultiplayerPlayState(data:Object, goal:int, connection:Connection, playerId:int, seed:int, playerCount:int) {
 			super(data, goal);
@@ -397,7 +398,7 @@ package
 		private function startGame(m:Message):void {
 			startAsteroids();
 			running = true;
-			setInterval(sendInfo, MSG_SEND_RATE); 
+			intervalID = setInterval(sendInfo, MSG_SEND_RATE); 
 		}
 		
 		/**
@@ -483,13 +484,13 @@ package
 		}
 		
 		override protected function checkGameOver():void {
-			//for right now, just do nothing because this crashes the game in multiplayer
-			
 			for each (var player:Player in players.members) {
 				if ( player.getScore() >= MAX_SCORE ) {
-					connection.disconnect();
+					//connection.disconnect();
+					clearInterval(intervalID);
 					FlxG.pauseSounds();
-					FlxG.switchState( new GameOverState(levelData, mode, null, 1, -1));
+					FlxG.switchState( new GameOverState(levelData, BOX_COLLECT, connection, playerId, playerCount, randomSeed));
+					//FlxG.switchState( new GameOverState(levelData, mode, null, 1, -1));
 				}
 			}
 		}

@@ -27,8 +27,6 @@ package
 			levelSelected = data;
 			roomName = rmName;
 			client = cl;
-			
-			//trace("Level selected: " + levelSelected.name);
 		}
 		
 		override public function create():void
@@ -36,7 +34,6 @@ package
 			this.gameJoined = false;
 			this.attemptCount = 0;
 			
-			//startSetup(); //ras
 			getRoom();
 		}
 		
@@ -113,12 +110,15 @@ package
 		private function getRoom():void 
 		{
 			attemptCount++;
-			//createRoom();
-			////joinRoom()
-			client.multiplayer.listRooms("BoxSpring", { }, 10, 0, joinRoom, function(e:PlayerIOError):void {
-				trace("Error finding rooms.");
-				createRoom();
-			});
+			
+			if (GameLobbyState.testVersion) {
+				client.multiplayer.listRooms("BoxSpring", { }, 10, 0, joinAvailableRoom, function(e:PlayerIOError):void {
+					trace("Error finding rooms.");
+					joinCreateRoom();
+				});
+			}
+			else	
+				joinCreateRoom();
 		}
 		
 		/**
@@ -126,13 +126,13 @@ package
 		 * If none of the rooms work, create a new room.
 		 * @param	rooms
 		 */
-		private function joinRoom(rooms:Array) : void {
+		private function joinAvailableRoom(rooms:Array) : void {
 			if (gameJoined) {
 				return;
 			}
 			
 			if (rooms.length == 0) {
-				createRoom();
+				joinCreateRoom();
 				return;
 			}
 			
@@ -142,47 +142,24 @@ package
 			if (room.onlineUsers < 2) {
 				trace("Attempting to join room" + room.id);
 				//client.multiplayer.joinRoom(room.id, { }, handleJoin, function(e:PlayerIOError):void {
-					// If we fail in joining, try to join one of the other rooms.
-					if (GameLobbyState.testVersion) {
-						roomName = room.id;
-						createRoom();
-					}
-					else {
-						createRoom();
-					}
-				//});
-			//} else {
-				//joinRoom(rooms);
+				// If we fail in joining, try to join one of the other rooms.
+				if (GameLobbyState.testVersion) {
+					roomName = room.id;
+					joinCreateRoom();
+				}
+				else {
+					joinCreateRoom();
+				}
 			}
 		}
-		
-		/*public function joinRoom():void {
-			if (gameJoined) {
-				return;
-			}
-			
-			//trace("Room name is " + roomName + " " + roomName.length);
-			
-			client.multiplayer.createJoinRoom(
-				null,	  						//Room id. If set to null a random roomid is used
-				"BoxSpring",						//The game type started on the server
-				true,								//Should the room be visible in the lobby?
-				{},									//Room data. This data is returned to lobby list. Variabels can be modifed on the server
-				{},									//User join data
-				handleJoin,							//Function executed on successful joining of the room
-				handleError							//Function executed if we got a join error
-			);
-		}*/
 		
 		/**
 		 * Create a new room and join it.
 		 */
-		public function createRoom() : void {
+		public function joinCreateRoom() : void {
 			if (gameJoined) {
 				return;
 			}
-			// + "," + levelSelected.name
-			trace("Creating room");
 			printMes("Creating room \"" + roomName + "\"");
 			//Create or join the room test
 			client.multiplayer.createJoinRoom(
