@@ -372,8 +372,8 @@ package
 		
 		//MIN JI'S PAUSE CODE START
 		public function pauseAndMenu():void {			
-			if (!FlxG.mute)
-				mute();
+			
+			FlxG.pauseSounds();
 				
 			dePause();
 			

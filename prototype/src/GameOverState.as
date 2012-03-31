@@ -22,10 +22,9 @@ package
 		private var levelSelected:Object;
 		private var randomSeed:int;
 		
- 		[Embed (source="sprites/springbox_bluewin.png")] protected var BlueWin:Class;
-
+		[Embed (source="sprites/springbox_bluewin.png")] protected var BlueWin:Class;
+ 
 		public function GameOverState(data:Object, mode:int, connection:Connection, playerId:int, playerCount:int, seed:int = -1)
-
 		{
 			gameMode = mode;
 			connect = connection;
