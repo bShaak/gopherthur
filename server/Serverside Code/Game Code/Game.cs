@@ -66,6 +66,7 @@ namespace BoxSpring {
         private const String RESPAWN_PLAYER = "s";
         private const String CHARGE = "t";
         private const String SHOVE = "u";
+        private const String PING = "v";
 
         private int playerCount = 2; // Number of players in the game. Hardcoded for now.
         private int boxCount = 5; // Hardcoded for now. This will be fixed.
@@ -286,6 +287,11 @@ namespace BoxSpring {
                             Console.WriteLine("All confirmation received for " + mes);
                             actions[mes]();
                         }
+                        break;
+                    }
+                case PING:
+                    {
+                        player.Send(PING);
                         break;
                     }
                 case POS:
