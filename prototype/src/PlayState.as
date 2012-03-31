@@ -751,11 +751,28 @@ package
 		}
 	
 		protected function handleAsteroidCollisions():void {
-			FlxG.collide(asteroids, players);
+			for each (var player:Player in players.members) {
+				for each (var asteroid:Asteroid in asteroids.members) {
+					if (asteroid == null) {
+						continue;
+					}
+					if (FlxG.collide(asteroid, player)) {
+						//Players get squished if stuck between asteroid and any wall
+						if (FlxG.collide(player, masterMap) 
+							&&
+							((player.isAbove(asteroid) && player.isTouching(FlxObject.CEILING)) ||
+							 (player.isBelow(asteroid) && player.isTouching(FlxObject.FLOOR)) ||
+							 (player.isLeftOf(asteroid) && player.isTouching(FlxObject.LEFT)) ||
+							 (player.isRightOf(asteroid) && player.isTouching(FlxObject.RIGHT)))) {
+							killAndRespawnPlayer(player);
+						}
+					}
+				}
+			}
 			
 			// Remove asteroids that have travelled off the level.
 			for (var i:int = asteroids.members.length - 1; i >= 0; i--) {
-				var asteroid:Asteroid = asteroids.members[i];
+				asteroid = asteroids.members[i];
 				if (asteroid != null && !asteroid.alive) {
 					asteroids.remove(asteroid);
 				}
