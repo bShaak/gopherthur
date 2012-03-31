@@ -37,7 +37,7 @@ package
 			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 160, "RABBIT", goToRabbitPlayState); 
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 160, "KEEP AWAY", goToRabbitPlayState); 
 			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			

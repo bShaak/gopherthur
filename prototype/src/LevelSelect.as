@@ -22,7 +22,7 @@ package
 		private var pCount:int;
 		public var levelSelected:Object;
 		public var images:FlxGroup;
-		private var max_images:int = 2;
+		private var max_images:int = 3;
 		private var roomName:String; //ras
 		private var client:Client;  //ras
 		
@@ -32,6 +32,8 @@ package
 		[Embed (source = "sprites/basic_highlight.png")] protected var basicHighlight:Class;
 		[Embed (source = "sprites/Volcano.png")] protected var volcano:Class;
 		[Embed (source = "sprites/Volcano_highlight.png")] protected var volcanoHighlight:Class;
+		[Embed (source = "sprites/laser.png")] protected var laser:Class;
+		[Embed (source = "sprites/laser_highlight.png")] protected var laserHighlight:Class;
 		//private var img:ImgButton;
  
 		public function LevelSelect(mode:int, rmName:String, playerId:int, playerCount:int, cl:Client = null) // connection:Connection
@@ -83,8 +85,10 @@ package
 			add(playButton);
 			
 			
-			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 200, "LASER GRID", chooseLasergrid);
+			playButton = new FlxButton(FlxG.width / 2 - 320, FlxG.height - 240, "", chooseLasergrid);
+			playButton.loadGraphic(laser);
 			add(playButton);
+			images.add(playButton);
 			
 			playButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height - 160, "SPACE", chooseSpace);
 			add(playButton);
@@ -132,6 +136,8 @@ package
 		
 		public function chooseLasergrid():void {
 			levelSelected = Level.lasergrid;
+			cleanHighlights();
+			images.members[3].loadGraphic(laserHighlight);
 		}
 		
 		public function chooseSpace():void {
@@ -177,6 +183,9 @@ package
 						break;
 					case 2:
 						imageButton.loadGraphic(volcano);
+						break;
+					case 3:
+						imageButton.loadGraphic(laser);
 						break;
 					default:
 						trace("error selecting level");
