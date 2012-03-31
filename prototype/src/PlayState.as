@@ -96,13 +96,6 @@ package
 			drawArea.makeGraphic(FlxG.width, FlxG.height, 0x00000000);
 			add(drawArea);
 			
-			if (mode == TIMED) {
-				timer = createClock();
-				roundTime = new FlxText(-25, 25, FlxG.width, "0:00");
-				roundTime.setFormat(null, 14, 0xFFFFFFFF, "right");
-				add(roundTime);
-			}
-			
 			players = new FlxGroup();
 			createPlayers();
 			
@@ -110,6 +103,26 @@ package
 			if (mode != RABBIT) { createZones(); }	//don't create zones if mode is rabbit
 			add(zones);
 			add(players);
+			
+			powerUps = new FlxGroup();
+			//createPowerUps();
+			//add(powerUps);
+			
+			masterMap = new FlxGroup();
+			
+			for each (var map:Object in levelData.maps) {
+				layerMap = new FlxTilemap();
+				layerMap.loadMap(new map.layout, map.texture, 16, 16, FlxTilemap.OFF, 0, 1, 1);
+				masterMap.add(layerMap);
+			}
+			add(masterMap);
+			
+			if (mode == TIMED) {
+				timer = createClock();
+				roundTime = new FlxText(0, 25, FlxG.width, "0:00");
+				roundTime.setFormat(null, 14, 0xFFFFFFFF, "center");
+				add(roundTime);
+			}
 			
 			if (mode == RABBIT) {
 				rabbitInfo = new Dictionary();
@@ -156,19 +169,6 @@ package
 				}
 			}
 			add(boxes);
-			
-			powerUps = new FlxGroup();
-			//createPowerUps();
-			//add(powerUps);
-			
-			masterMap = new FlxGroup();
-			
-			for each (var map:Object in levelData.maps) {
-				layerMap = new FlxTilemap();
-				layerMap.loadMap(new map.layout, map.texture, 16, 16, FlxTilemap.OFF, 0, 1, 1);
-				masterMap.add(layerMap);
-			}
-			add(masterMap);
 			
 			platforms = new FlxGroup();
 			
