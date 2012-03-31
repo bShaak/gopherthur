@@ -12,8 +12,9 @@ package
 		private var mode:FlxText;
 		private var buttonLabel:FlxText;
 		
-		[Embed (source="sprites/mainBox.png")] protected var MainBox:Class;
-		
+		[Embed (source="sprites/springbox_main.png")] protected var MainBox:Class;
+		[Embed (source="sprites/springbox_mainBG.png")] protected var MainBoxBG:Class;
+
 		override public function create():void
 		{
 			//goToConnectionState();
@@ -24,8 +25,12 @@ package
 			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0xFF0080C0);
 			add(backgroundColor);
 			
-			var mainBox:FlxSprite = new FlxSprite(220, 70, MainBox);
-			mainBox.loadGraphic(MainBox, false, false, 215, 238);
+			var mainBoxBG:FlxSprite = new FlxSprite(0, 0, MainBoxBG);
+			mainBoxBG.loadGraphic(MainBoxBG, false, false, 640, 480);
+			add(mainBoxBG);
+			
+			var mainBox:FlxSprite = new FlxSprite(200, 60, MainBox);
+			mainBox.loadGraphic(MainBox, false, false, 250, 250);
 			add(mainBox);
 			
 			title = new FlxText(0, 20, FlxG.width, "SpringBox");
