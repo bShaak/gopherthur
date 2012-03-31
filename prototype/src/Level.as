@@ -240,7 +240,9 @@ package
 					 { x: 19*TW, y: 24*TW },
 					 { x: 20*TW, y: 24*TW },
 					 { x: 21*TW, y: 24*TW },
-					 { x: 22*TW, y: 24*TW },],
+					 { x: 22 * TW, y: 24 * TW } ],
+					 
+			rabbit_box: { x:FlxG.width * 1 / 2 - 5, y: 25*TW },
 					 
 			platforms: [ { start_x: 9*TW, //left elevator
 						   start_y: 10*TW,
@@ -489,7 +491,9 @@ package
 					 { x: 19*TW, y: 22*TW },
 					 { x: 20*TW, y: 22*TW },
 					 { x: 21*TW, y: 22*TW },
-					 { x: 22*TW, y: 22*TW },],
+					 { x: 22 * TW, y: 22 * TW }, ],
+					 
+			rabbit_box: { x:FlxG.width * 1 / 2 - 5, y: 23*TW },
 					 
 			platforms: [{ start_x: 1*TW, // top left platform
 						   start_y: 7*TW,

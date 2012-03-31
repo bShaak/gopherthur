@@ -167,9 +167,6 @@ package
 			var roomInfo:RoomInfo = RoomInfo(selectedRoom);
 			timer.stop();
 			
-			//trace("RoomID: " + roomInfo.id);
-			//trace("Level: " + roomInfo.data.levelName);
-			
 			if (roomInfo.data.levelName == "Forest")
 				level = Level.levelData;
 			else if (roomInfo.data.levelName == "Skyscraper")
@@ -183,7 +180,7 @@ package
 			else if (roomInfo.data.levelName == "Space")
 				level = Level.space;
 			
-			(new ObtainConnectionState(level, roomInfo.id, client)).createRoom();
+			(new ObtainConnectionState(level, roomInfo.id, client)).joinCreateRoom();
 			
 			roomName.remove();
 		}
@@ -191,8 +188,6 @@ package
 		public function goToLevelSelectMenu():void {
 			var rmName:String = roomName.text;
 			rmName = rmName.substr(rmName.indexOf(" ") + 1); // remove leading space
-			
-			//trace("Room: " + rmName + " " + rmName.length);
 			
 			if (rmName.length > 0) {
 				FlxG.switchState( new LevelSelect(PlayState.BOX_COLLECT, rmName, 1, 1, client));
