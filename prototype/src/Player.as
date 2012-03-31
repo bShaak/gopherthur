@@ -21,8 +21,10 @@ package
 		
 		protected var charging:Boolean; //ras
 		protected var shoved:Boolean; //ras
+		public var bumped:Boolean;
 		protected const MAX_SPEED:int = 160;  
-		protected const SHOVE_STRENGTH:Array = [400, 500, 600]; //ras 
+		//protected const SHOVE_STRENGTH:Array = [400, 500, 600]; //ras 
+		protected const BUMP_STRENGTH:Array = [200, 300, 400];
 		protected var numBoxesInZone:int = 0; //ras
 		
 		public static const IDLE_THRESH:Number = 20; //player will appear idle if below this speed
@@ -46,13 +48,13 @@ package
 			this.width = 16;
 			this.height = 24;
 			this.isHoldingBox = false;
-			this.charging = false; //ras
-			this.shoved = false;
+			//this.charging = false; //ras
+			//this.shoved = false;
+			this.bumped = false;
 			this.throwStrength = new FlxPoint(400, -50); //the velocity the box will have when thrown
 			this.id = id;
 
 			// TODO: Handle this better
-			//this.makeGraphic(width, height, color);
 			this.colour = color;
 			
 		
@@ -75,10 +77,15 @@ package
 			//update the sprite's appearance based on their movement.
 			//We tie animations to movement rather than key input due to multiplayer restraints.
 			
-			if (shoved && Math.abs(velocity.x) <= MAX_SPEED) {
-				shoved = false;
+			if (bumped && Math.abs(velocity.x) <= MAX_SPEED) {
+				bumped = false;
 				maxVelocity.x = MAX_SPEED;
 			}
+			
+			/*if (shoved && Math.abs(velocity.x) <= MAX_SPEED) {
+				shoved = false;
+				maxVelocity.x = MAX_SPEED;
+			}*/
 			
 			if (this.velocity.x < 0) {
 				this.facing = FlxObject.LEFT;
@@ -191,7 +198,7 @@ package
 			numBoxesInZone = num;
 		}
 		
-		public function getShoved(player:Player, dir:int = 0):void {
+		/*public function getShoved(player:Player, dir:int = 0):void {
 			this.maxVelocity.x = player.SHOVE_STRENGTH[player.numBoxesInZone];
 			this.shoved = true;
 			
@@ -202,6 +209,20 @@ package
 			}
 			this.velocity.x = player.SHOVE_STRENGTH[player.numBoxesInZone] * dir;
 			//trace("Shoved at " + this.velocity.x + " " + player.velocity.x);
+		}*/
+		
+		public function getBumped(player:Player):void {
+			this.maxVelocity.x = player.BUMP_STRENGTH[player.numBoxesInZone];
+			this.bumped = true;
+			
+			var dir:int;
+			if (dir == 0) {
+				dir = 1;
+				if (this.x < player.x)
+					dir = -1;
+			}
+			
+			this.velocity.x = player.BUMP_STRENGTH[player.numBoxesInZone] * dir;
 		}
 		
 		public function incrementScore():void {
@@ -220,21 +241,16 @@ package
 			return shoved;
 		}
 		
-		protected function startCharging():void {
-			//trace("START SLIDE");
+		/*protected function startCharging():void {
 			charging = true;
 			maxVelocity.x = SHOVE_STRENGTH[numBoxesInZone];
 			if (this.facing == FlxObject.LEFT) {
-				//trace("Left");
 				velocity.x = -SHOVE_STRENGTH[numBoxesInZone];
 			}
 			else {
-				//trace("Right");
 				velocity.x = SHOVE_STRENGTH[numBoxesInZone];
 			}
-				
-			//trace(velocity.x);
-		}
+		}*/
 		
 		protected function stopCharging():void {
 			//trace("STOP SLIDE");
