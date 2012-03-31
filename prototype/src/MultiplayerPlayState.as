@@ -282,7 +282,7 @@ package
 			if (this.shoveMsgSent)
 				return;
 				
-			var dir:int = 1;
+			//var dir:int = 1;
 			if (player is ActivePlayer && player.isCharging()) {
 				trace("*Actually sending shove msg " + player.x + " " + player2.x);
 				this.shoveMsgSent = true;
@@ -303,7 +303,7 @@ package
 				player2.getConnection().send(MessageType.CHARGE, player2.velocity.x, player.id, player.velocity.x, dir);
 				player2.velocity.x = 0;
 			}
-			/*else if (!currentPlayer.isCharging() && !currentPlayer.isShoved()){
+			else {//if (!currentPlayer.isCharging() && !currentPlayer.isShoved()){
 				//players who hold boxes drop them when bumped
 				FlxG.play(Push);
 				dropBoxesOnCollision(player);
@@ -321,7 +321,7 @@ package
 				player2.velocity.x = -dir * player2.maxVelocity.x;
 				player.velocity.y = dir_y * 100;
 				player2.velocity.y = -dir_y * 100;
-			}*/
+			}
 		}
 		
 		/**
@@ -371,6 +371,7 @@ package
 				player = new ActivePlayer(x, y, id, color, connection, wasdControls, walkAnimation);
 				currentPlayer = player;
 			} else {
+				//player = new Player(x, y, id, color, walkAnimation);
 				player = new Player(x, y, id, color, walkAnimation);
 				otherPlayer = player;
 				//var pInit:Player = new Player(x, y, id, color, walkAnimation);

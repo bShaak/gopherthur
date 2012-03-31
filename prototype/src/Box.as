@@ -49,7 +49,6 @@ package
 			this.width = 12; //set width/height after, because they're smaller than the graphic
 			this.height = 18;
 			this.setDirection(FlxObject.RIGHT);
-			//this.offset = new FlxPoint(4, 4);
 		}
 		
 		public function getSpawn():FlxPoint {
