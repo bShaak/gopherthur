@@ -26,6 +26,9 @@ package
 		private var cnt:int = 0;
 		private var shoveMsgSent:Boolean;
 		
+		private var ping:int = 0;
+		private var pingTime:int;
+		
 		public function MultiplayerPlayState(data:Object, goal:int, connection:Connection, playerId:int, seed:int, playerCount:int) {
 			super(data, goal);
 
@@ -35,6 +38,15 @@ package
 			this.smoothTimer = null;
 			randomSeed = seed;
 			this.shoveMsgSent = false;
+		}
+		
+		private function computePing():void {
+			pingTime = (new Date()).getTime();
+			connection.send(MessageType.PING);
+		}
+		private function registerPing(m:Message):void {
+			ping = ((new Date()).getTime() - pingTime) / 2;
+			clock.setTimeout(1000, this.computePing);
 		}
 		
 		override protected function createPlayers():void {
@@ -56,6 +68,8 @@ package
 			connection.addMessageHandler(MessageType.RESPAWN_PLAYER, handleRepawnPlayerMessage);
 			connection.addMessageHandler(MessageType.RESET, handleResetMessage);
 			connection.addMessageHandler(MessageType.SHOVE, handleShoveMessage);
+			connection.addMessageHandler(MessageType.PING, registerPing);
+			this.computePing();
 			connection.send(MessageType.CONFIRM, MessageType.READY_TO_ADD_PLAYERS);
 		}
 		
