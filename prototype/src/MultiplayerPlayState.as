@@ -28,6 +28,7 @@ package
 		
 		private var ping:int = 0;
 		private var pingTime:int;
+		private var intervalID:int;
 		
 		public function MultiplayerPlayState(data:Object, goal:int, connection:Connection, playerId:int, seed:int, playerCount:int) {
 			super(data, goal);
@@ -282,7 +283,7 @@ package
 			if (this.shoveMsgSent)
 				return;
 				
-			var dir:int = 1;
+			//var dir:int = 1;
 			if (player is ActivePlayer && player.isCharging()) {
 				trace("*Actually sending shove msg " + player.x + " " + player2.x);
 				this.shoveMsgSent = true;
@@ -303,7 +304,7 @@ package
 				player2.getConnection().send(MessageType.CHARGE, player2.velocity.x, player.id, player.velocity.x, dir);
 				player2.velocity.x = 0;
 			}
-			/*else if (!currentPlayer.isCharging() && !currentPlayer.isShoved()){
+			else {//if (!currentPlayer.isCharging() && !currentPlayer.isShoved()){
 				//players who hold boxes drop them when bumped
 				FlxG.play(Push);
 				dropBoxesOnCollision(player);
@@ -321,7 +322,7 @@ package
 				player2.velocity.x = -dir * player2.maxVelocity.x;
 				player.velocity.y = dir_y * 100;
 				player2.velocity.y = -dir_y * 100;
-			}*/
+			}
 		}
 		
 		/**
@@ -371,6 +372,7 @@ package
 				player = new ActivePlayer(x, y, id, color, connection, wasdControls, walkAnimation);
 				currentPlayer = player;
 			} else {
+				//player = new Player(x, y, id, color, walkAnimation);
 				player = new Player(x, y, id, color, walkAnimation);
 				otherPlayer = player;
 				//var pInit:Player = new Player(x, y, id, color, walkAnimation);
@@ -396,7 +398,7 @@ package
 		private function startGame(m:Message):void {
 			startAsteroids();
 			running = true;
-			setInterval(sendInfo, MSG_SEND_RATE); 
+			intervalID = setInterval(sendInfo, MSG_SEND_RATE); 
 		}
 		
 		/**
@@ -483,12 +485,13 @@ package
 		}
 		
 		override protected function checkGameOver():void {
-			//for right now, just do nothing because this crashes the game in multiplayer
-			
 			for each (var player:Player in players.members) {
 				if ( player.getScore() >= MAX_SCORE ) {
-					connection.disconnect();
-					FlxG.switchState( new GameOverState(levelData, mode, null, 1, -1));
+					//connection.disconnect();
+					clearInterval(intervalID);
+					FlxG.pauseSounds();
+					FlxG.switchState( new GameOverState(levelData, BOX_COLLECT, connection, playerId, playerCount, randomSeed));
+					//FlxG.switchState( new GameOverState(levelData, mode, null, 1, -1));
 				}
 			}
 		}

@@ -29,7 +29,7 @@ package
 			mainBoxBG.loadGraphic(MainBoxBG, false, false, 640, 480);
 			add(mainBoxBG);
 			
-			var mainBox:FlxSprite = new FlxSprite(200, 60, MainBox);
+			var mainBox:FlxSprite = new FlxSprite(200, 55, MainBox);
 			mainBox.loadGraphic(MainBox, false, false, 250, 250);
 			add(mainBox);
 			
@@ -37,27 +37,27 @@ package
 			title.setFormat (null, 25, 0xFFFFFFFF, "center");
 			add(title);
 			
-			mode = new FlxText(0, FlxG.height - 165, FlxG.width, "PICK A MODE:");
+			mode = new FlxText(0, FlxG.height - 170, FlxG.width, "PICK A MODE:");
 			mode.setFormat (null, 14, 0xFFFFFFFF, "center");
 			add(mode);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 200, "CLASSIC", goToBoxCollectPlayState); //null
+			playButton = new FlxButtonBig(FlxG.width / 2 - 150, FlxG.height - 140, "CLASSIC", goToBoxCollectPlayState); //null
 			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 160, "RABBIT", goToRabbitPlayState); 
+			playButton = new FlxButtonBig(FlxG.width / 2 + 10, FlxG.height - 140, "KEEP AWAY", goToRabbitPlayState); 
 			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 120, "TIMED", goToTimedPlayState); 
+			playButton = new FlxButtonBig(FlxG.width / 2 - 150, FlxG.height - 100, "TIMED", goToTimedPlayState); 
 			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 80, "MULTIPLAYER", goToConnectionState);
+			playButton = new FlxButtonBig(FlxG.width / 2 + 10, FlxG.height - 100, "MULTIPLAYER", goToConnectionState);
 			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 40, "TUTORIAL", goToTutorial);
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 50, "TUTORIAL", goToTutorial);
 			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 		} 

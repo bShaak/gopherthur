@@ -14,23 +14,32 @@ package
 		[Embed(source = "levels/mapCSV_Basic_Map1.csv", mimeType = "application/octet-stream")] public static var BasicMap:Class;
 		[Embed(source = "levels/Basic.png")] public static var BasicTiles:Class;
 		[Embed(source = "levels/backgrounds/forest_bg.png")] public static var ForestBG:Class;
+		[Embed(source = "../mp3/Bustabuss.mp3")] public static var Bustabuss:Class;
 		
 		[Embed(source = "levels/mapCSV_Skyscraper_Map1.csv", mimeType = "application/octet-stream")] public static var SkyscraperTileMap:Class;
 		[Embed(source = "levels/skyscraper_textures.png")] public static var SkyscraperTextures:Class;
 		[Embed(source = "levels/backgrounds/skyscraper_bg.png")] public static var SkyscraperBG:Class;
+		[Embed(source = "../mp3/penguin_dance.mp3")] public static var PenguinDance:Class;
 		
 		[Embed(source = "levels/mapCSV_Volcano_Map1.csv", mimeType = "application/octet-stream")] public static var VolcanoTileMap:Class;
 		[Embed(source = "textures/volcano_textures.png")] public static var VolcanoTextures:Class;
 		[Embed(source = "levels/backgrounds/volcano_bg.png")] public static var VolcanoBG:Class;
+		[Embed(source = "../mp3/groovy.mp3")] public static var Groovy:Class;
 		
-		[Embed(source = "levels/mapCSV_PowerPlant_Map1.csv", mimeType = "application/octet-stream")] public static var PowerPlantTileMap:Class;
+		[Embed(source = "levels/mapCSV_Powerplant_Map1.csv", mimeType = "application/octet-stream")] public static var PowerPlantTileMap:Class;
+		[Embed(source = "textures/powerplant_textures.png")] public static var PowerplantTextures:Class;
+		[Embed(source = "levels/backgrounds/powerplant_bg.png")] public static var PowerplantBG:Class;
+		[Embed(source = "../mp3/YouHaveItAll.mp3")] public static var YouHaveItAll:Class;
+		
 		
 		[Embed(source = "levels/mapCSV_Lasergrid_Map1.csv", mimeType = "application/octet-stream")] public static var LasergridTileMap:Class;
 		[Embed(source = "textures/lasergrid_textures.png")] public static var LasergridTextures:Class;
 		[Embed(source = "levels/backgrounds/lasergrid_bg.png")] public static var LasergridBG:Class;
+		[Embed(source = "../mp3/SquareRootOfFunk.mp3")] public static var SquareRootOfFunk:Class;
 		
 		[Embed(source = "levels/mapCSV_Space_Map1.csv", mimeType = "application/octet-stream")] public static var SpaceTileMap:Class;
 		[Embed(source = "levels/backgrounds/space_bg.png")] public static var SpaceBG:Class;
+		[Embed(source = "../mp3/anticipation.mp3")] public static var Anticipation:Class;
 
 		private static const TW:int = 16; //Tile widths. Basically when you set up anything in the level, you want to align it to the grid, which is 
 										  //composed of 16x16 tiles, so just do your desired tile number multiplied by TW to specify the location, to
@@ -163,7 +172,8 @@ package
 									circlePlatforms: [],
 									superPlatforms: [],
 									laserPlatforms: [],
-									name: "Forest"
+									name: "Forest",
+									music: Bustabuss
 		}
 		public static var skyscraper:Object = { 
 									startInfo: [ { x: 6*TW, y: 24*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -213,7 +223,8 @@ package
 												   maxVelocity_y: 0 } ],   
 									 circlePlatforms: [],	
 									 superPlatforms: [],
-									 name: "Skyscraper"
+									 name: "Skyscraper",
+									 music: YouHaveItAll
 		}
 		public static var volcano:Object = { 
 			startInfo: [ { x: 5*TW, y: 3*TW, color:0xff11aa11, walkAnimation: AnimateWalkGreen }, //player 1
@@ -229,7 +240,9 @@ package
 					 { x: 19*TW, y: 24*TW },
 					 { x: 20*TW, y: 24*TW },
 					 { x: 21*TW, y: 24*TW },
-					 { x: 22*TW, y: 24*TW },],
+					 { x: 22 * TW, y: 24 * TW } ],
+					 
+			rabbit_box: { x:FlxG.width * 1 / 2 - 5, y: 25*TW },
 					 
 			platforms: [ { start_x: 9*TW, //left elevator
 						   start_y: 10*TW,
@@ -286,16 +299,19 @@ package
 					  offset: 0 } ],
 			circlePlatforms: [],
 			superPlatforms: [],
-			name: "Volcano"
+			name: "Volcano",
+			music: Groovy
 		}
 		
 		public static var powerplant:Object = { 
 			startInfo: [ { x: 3*TW, y: 3*TW, color:0xffaa1111, walkAnimation: AnimateWalkRed }, //player 1
 						 { x: 37*TW, y: 3*TW, color:0xff1111aa, walkAnimation: AnimateWalkBlue } ], //player 2
 			
-			maps: [ { layout: PowerPlantTileMap, texture: SkyscraperTextures } ],			 
+			maps: [ { layout: PowerPlantTileMap, texture: PowerplantTextures } ],			 
 					 
 			bg_color: 0xffCD8C95,
+			
+			background: PowerplantBG,
 			
 			boxes: [ { x: 18*TW, y: 24*TW }, //initial box positions
 					 { x: 19*TW, y: 24*TW },
@@ -305,8 +321,8 @@ package
 					 
 			platforms: [],
 			
-			acid: [ { x: 0*TW, 			//left acid
-					  y: 8 * TW,
+			acid: [ { x: 0.25*TW, 			//left acid
+					  y: 8.25 * TW,
 					  width: 6 * TW,
 					  height: 23 * TW},
 					{ x: 34*TW, 		//right acid
@@ -366,7 +382,8 @@ package
 					  width: 3 * TW, 
 					  height: 1 * TW }
 					  ],
-					  name: "Powerplant"
+					  name: "Powerplant",
+					  music: PenguinDance
 		}
 		
 		public static var lasergrid:Object = { 
@@ -458,7 +475,8 @@ package
 								 onTime: 1000,
 								 offTime: 5000,
 								 warmupTime: 1500}],
-			name: "Laser Grid"
+			name: "Laser Grid",
+			music: SquareRootOfFunk
 		}
 		
 		public static var space:Object = { 
@@ -473,7 +491,9 @@ package
 					 { x: 19*TW, y: 22*TW },
 					 { x: 20*TW, y: 22*TW },
 					 { x: 21*TW, y: 22*TW },
-					 { x: 22*TW, y: 22*TW },],
+					 { x: 22 * TW, y: 22 * TW }, ],
+					 
+			rabbit_box: { x:FlxG.width * 1 / 2 - 5, y: 23*TW },
 					 
 			platforms: [{ start_x: 1*TW, // top left platform
 						   start_y: 7*TW,
@@ -560,6 +580,7 @@ package
 			superPlatforms: [],
 			
 			name: "Space",
+			music: Anticipation,
 			
 		 asteroids: { fixedDelay: 1200,
 					  randomDelay: 500,

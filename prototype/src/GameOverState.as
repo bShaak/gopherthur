@@ -20,15 +20,19 @@ package
 		private var pID:int;
 		private var pCount:int;
 		private var levelSelected:Object;
- 
-		public function GameOverState(data:Object, mode:int, connection:Connection, playerId:int, playerCount:int)
+		private var randomSeed:int;
+		
+ 		[Embed (source="sprites/springbox_bluewin.png")] protected var BlueWin:Class;
+
+		public function GameOverState(data:Object, mode:int, connection:Connection, playerId:int, playerCount:int, seed:int = -1)
+
 		{
 			gameMode = mode;
 			connect = connection;
 			pID = playerId;
 			pCount = playerCount;
 			levelSelected = data;
-			
+			randomSeed = seed;
 		}
 		
 		override public function create():void 
@@ -37,17 +41,24 @@ package
 			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0xFF0080C0); //should be the same colour as the original menu
 			add(backgroundColor);
 			
+			var blueWin:FlxSprite = new FlxSprite(90, 0, BlueWin);
+			blueWin.loadGraphic(BlueWin, false, false, 350, 350);
+			add(blueWin);
+			
 			title = new FlxText(0, 16, FlxG.width, "SpringBox");
 			title.setFormat (null, 16, 0xFFFFFFFF, "center");
 			add(title);
 			
-			playButton = new FlxButton(FlxG.width/2 - 40, FlxG.height - 80, "PLAY AGAIN", playAgain);
+			playButton = new FlxButtonBig(FlxG.width/2 - 80, FlxG.height - 140, "PLAY AGAIN", playAgain);
+			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			
-			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 60, "MAIN MENU", gotoMenu);
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 100, "MAIN MENU", gotoMenu);
+			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 			
-			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 40, "EXIT", exitGame);
+			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 60, "EXIT", exitGame);
+			playButton.label.setFormat(null, 16, 0x333333, "center");
 			add(playButton);
 		}
 
@@ -72,10 +83,13 @@ package
 			else {
 				// collect
 				if (gameMode == 0) {
+					FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connect, pID, randomSeed, pCount));
 					//FlxG.switchState(new ObtainConnectionState(levelSelected));
 				}
 				// Timed
 				else if (gameMode == 1) {
+					trace("Here");
+					FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connect, pID, randomSeed, pCount));
 					//FlxG.switchState(new ObtainConnectionState(levelSelected));
 				}
 			}
