@@ -116,8 +116,6 @@ package
 				else if (this.velocity.y < 0)
 					this.play("jumping_right");
 				}
-				
-			}
 			
 			positionBox();
 		}
