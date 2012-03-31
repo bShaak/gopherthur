@@ -29,8 +29,8 @@ package
 			mainBoxBG.loadGraphic(MainBoxBG, false, false, 640, 480);
 			add(mainBoxBG);
 			
-			var mainBox:FlxSprite = new FlxSprite(200, 55, MainBox);
-			mainBox.loadGraphic(MainBox, false, false, 250, 250);
+			var mainBox:FlxSprite = new FlxSprite(100, 35, MainBox);
+			mainBox.loadGraphic(MainBox, false, false, 450, 300);
 			add(mainBox);
 			
 			title = new FlxText(0, 20, FlxG.width, "SpringBox");
