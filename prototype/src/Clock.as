@@ -14,7 +14,7 @@ package
 		public var elapsed:int = 0;
 		
 		private var timeouts:Array = new Array();
-		private var slowDown = false;
+		private var slowDown:Boolean = false;
 		public function Clock(connection:Connection) 
 		{
 			if (connection != null) {
