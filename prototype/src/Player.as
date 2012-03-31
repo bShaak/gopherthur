@@ -16,7 +16,7 @@ package
 		protected var isHoldingBox:Boolean;
 		public var boxHeld:Box;
 		protected var spawn:FlxPoint;
-		protected var colour:int;
+		public var colour:int;
 		protected var throwStrength:FlxPoint;
 		
 		protected var charging:Boolean; //ras
@@ -24,7 +24,6 @@ package
 		protected const MAX_SPEED:int = 160;  
 		protected const SHOVE_STRENGTH:Array = [400, 500, 600]; //ras 
 		protected var numBoxesInZone:int = 0; //ras
-		public var shoveMsgSent:Boolean = false;  // makes sure the CHARGE msg is only sent once per charge
 		
 		public static const IDLE_THRESH:Number = 20; //player will appear idle if below this speed
 
@@ -192,14 +191,17 @@ package
 			numBoxesInZone = num;
 		}
 		
-		public function getShoved(player:Player):void {
+		public function getShoved(player:Player, dir:int = 0):void {
 			this.maxVelocity.x = player.SHOVE_STRENGTH[player.numBoxesInZone];
 			this.shoved = true;
 			
-			var dir:int = 1;
-			if (this.x < player.x)
-				dir = -1;
-			this.velocity.x = player.SHOVE_STRENGTH[player.numBoxesInZone]*dir;
+			if (dir == 0) {
+				dir = 1;
+				if (this.x < player.x)
+					dir = -1;
+			}
+			this.velocity.x = player.SHOVE_STRENGTH[player.numBoxesInZone] * dir;
+			//trace("Shoved at " + this.velocity.x + " " + player.velocity.x);
 		}
 		
 		public function incrementScore():void {
@@ -237,13 +239,11 @@ package
 		protected function stopCharging():void {
 			//trace("STOP SLIDE");
 			 charging = false;
-			 shoveMsgSent = false;
 			 maxVelocity.x = MAX_SPEED;
 		}
 		
 		protected function stopShove():void {
 			shoved = false;
-			shoveMsgSent = false;
 			maxVelocity.x = MAX_SPEED;
 		}
 		

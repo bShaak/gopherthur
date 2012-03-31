@@ -306,39 +306,24 @@ package
 					 { x: 21*TW, y: 24*TW },
 					 { x: 22*TW, y: 24*TW },],
 					 
-			platforms: [{ start_x: 13*TW, 
-						   start_y: 16*TW,
-						   end_x: 23*TW,
-						   end_y: 16*TW,
-						   circuitTime: 4000,
-						   offset: 0,
-						   width: 4*TW,
-						   height: 1 * TW },
-						   { start_x: 13*TW, 
-						   start_y: 22*TW,
-						   end_x: 23*TW,
-						   end_y: 22*TW,
-						   circuitTime: 4000,
-						   offset: 1,
-						   width: 4*TW,
-						   height: 1*TW }],
+			platforms: [],
 			
 			acid: [ { x: 0*TW, 			//left acid
-					  y: 7 * TW,
+					  y: 8 * TW,
 					  width: 6 * TW,
 					  height: 23 * TW},
-					  { x: 34*TW, 		//right acid
-					  y: 7 * TW, 
-					  width: 6 * TW,
-					  height: 23 * TW } ],
+					{ x: 34*TW, 		//right acid
+					 y: 8 * TW, 
+					 width: 6 * TW,
+					  height: 23 * TW }],
 					  
 			superPlatforms: [ { startMiddleX: 6 * TW,
-					  startMiddleY: 8 * TW,
+					  startMiddleY: 10 * TW,
 					  endMiddleX: 6 * TW,
-					  endMiddleY: 26 * TW,
+					  endMiddleY: 18 * TW,
 					  radius: 3 * 16,
-					  circuitTime: 8000,
-					  rotateTime: 4000,
+					  circuitTime: 6000,
+					  rotateTime: 3000,
 					  initialPosition: 0,
 					  initialRotation: Math.PI/2,
 					  reverse: true,
@@ -346,12 +331,12 @@ package
 					  height: 1 * TW },
 					  
 					  { startMiddleX: 6 * TW,
-					  startMiddleY: 8 * TW,
+					  startMiddleY: 10 * TW,
 					  endMiddleX: 6 * TW,
-					  endMiddleY: 26 * TW,
+					  endMiddleY: 18 * TW,
 					  radius: 3 * 16,
-					  circuitTime: 8000,
-					  rotateTime: 4000,
+					  circuitTime: 6000,
+					  rotateTime: 3000,
 					  initialPosition: 0,
 					  initialRotation: 3*Math.PI/2,
 					  reverse: true,
@@ -359,12 +344,12 @@ package
 					  height: 1 * TW },
 					  
 					  { startMiddleX: 34 * TW,
-					  startMiddleY: 26 * TW,
+					  startMiddleY: 18 * TW,
 					  endMiddleX: 34 * TW,
-					  endMiddleY: 8 * TW,
+					  endMiddleY: 10 * TW,
 					  radius: 3 * 16,
-					  circuitTime: 8000,
-					  rotateTime: 4000,
+					  circuitTime: 6000,
+					  rotateTime: 3000,
 					  initialPosition: 0,
 					  initialRotation: Math.PI/2,
 					  reverse: false,
@@ -372,12 +357,12 @@ package
 					  height: 1 * TW },
 					  
 					  { startMiddleX: 34 * TW,
-					  startMiddleY: 26 * TW,
+					  startMiddleY: 18 * TW,
 					  endMiddleX: 34 * TW,
-					  endMiddleY: 8 * TW,
+					  endMiddleY: 10 * TW,
 					  radius: 3 * 16,
-					  circuitTime: 8000,
-					  rotateTime: 4000,
+					  circuitTime: 6000,
+					  rotateTime: 3000,
 					  initialPosition: 0,
 					  initialRotation: 3*Math.PI/2,
 					  reverse: false,
@@ -579,14 +564,6 @@ package
 			
 			name: "Space",
 			
-		/*			 * asteroids: define an asteroid field for the map
-		 * 		-fixedDelay: base delay that will always be waited between asteroids.
-		 * 		-randomDelay: a uniformly random delay between 0 and randomDelay is added to the fixedDelay
-		 * 		-regionTop: the y coordinate of the top of the asteroid field region.
-		 *		-regionBottom: the y coordinate of the bottom of the asteroid field region (must be > regionTop).
-		 * 		-fixedSpeed: The base speed that the asteroids will travel (~150 seems like a good speed).
-		 * 		-randomSpeed: a uniformly random speed between 0 and randomSpeed is added to fixedSpeed. */
-		
 		 asteroids: { fixedDelay: 1200,
 					  randomDelay: 500,
 					  regionTop: 6 * TW,

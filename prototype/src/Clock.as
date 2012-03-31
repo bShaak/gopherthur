@@ -14,7 +14,7 @@ package
 		public var elapsed:int = 0;
 		
 		private var timeouts:Array = new Array();
-		
+		private var slowDown:Boolean = false;
 		public function Clock(connection:Connection) 
 		{
 			if (connection != null) {
@@ -24,7 +24,13 @@ package
 		
 		private function handleElapsedMessage(m:Message) : void {
 			// Synchronize the clock with the server.
-			elapsed = m.getInt(0);
+			var time:int = m.getInt(0);
+			if (time < elapsed) {
+				slowDown = true;
+			} else {
+				elapsed = time;
+				slowDown = false;
+			}
 			checkTimeouts();
 		}
 		
@@ -34,8 +40,11 @@ package
 		 */
 		public function addTime(t:Number) : void {
 			// convert the time to milliseconds and add it to the elapsed time.
-			elapsed += Math.round(t * 1000);
-			
+			if (slowDown) {
+				elapsed += Math.round(t * 500);
+			} else {
+				elapsed += Math.round(t * 1000);
+			}
 			checkTimeouts();
 		}
 		
