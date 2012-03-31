@@ -76,8 +76,7 @@ package
 				if (!isHoldingBox) {
 					//pick up box in front of player... eventually? maybe we want to
 					//keep it so you automatically pick up boxes you run into
-					startCharging();	
-					//velocity.x = -260;
+					//startCharging();	
 				}
 				else { //throw box
 					FlxG.play(Throw);

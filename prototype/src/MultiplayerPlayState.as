@@ -26,6 +26,9 @@ package
 		private var cnt:int = 0;
 		private var shoveMsgSent:Boolean;
 		
+		private var ping:int = 0;
+		private var pingTime:int;
+		
 		public function MultiplayerPlayState(data:Object, goal:int, connection:Connection, playerId:int, seed:int, playerCount:int) {
 			super(data, goal);
 
@@ -35,6 +38,15 @@ package
 			this.smoothTimer = null;
 			randomSeed = seed;
 			this.shoveMsgSent = false;
+		}
+		
+		private function computePing():void {
+			pingTime = (new Date()).getTime();
+			connection.send(MessageType.PING);
+		}
+		private function registerPing(m:Message):void {
+			ping = ((new Date()).getTime() - pingTime) / 2;
+			clock.setTimeout(1000, this.computePing);
 		}
 		
 		override protected function createPlayers():void {
@@ -56,6 +68,8 @@ package
 			connection.addMessageHandler(MessageType.RESPAWN_PLAYER, handleRepawnPlayerMessage);
 			connection.addMessageHandler(MessageType.RESET, handleResetMessage);
 			connection.addMessageHandler(MessageType.SHOVE, handleShoveMessage);
+			connection.addMessageHandler(MessageType.PING, registerPing);
+			this.computePing();
 			connection.send(MessageType.CONFIRM, MessageType.READY_TO_ADD_PLAYERS);
 		}
 		
@@ -268,7 +282,7 @@ package
 			if (this.shoveMsgSent)
 				return;
 				
-			var dir:int = 1;
+			//var dir:int = 1;
 			if (player is ActivePlayer && player.isCharging()) {
 				trace("*Actually sending shove msg " + player.x + " " + player2.x);
 				this.shoveMsgSent = true;
@@ -289,7 +303,7 @@ package
 				player2.getConnection().send(MessageType.CHARGE, player2.velocity.x, player.id, player.velocity.x, dir);
 				player2.velocity.x = 0;
 			}
-			/*else if (!currentPlayer.isCharging() && !currentPlayer.isShoved()){
+			else {//if (!currentPlayer.isCharging() && !currentPlayer.isShoved()){
 				//players who hold boxes drop them when bumped
 				FlxG.play(Push);
 				dropBoxesOnCollision(player);
@@ -307,7 +321,7 @@ package
 				player2.velocity.x = -dir * player2.maxVelocity.x;
 				player.velocity.y = dir_y * 100;
 				player2.velocity.y = -dir_y * 100;
-			}*/
+			}
 		}
 		
 		/**
@@ -357,6 +371,7 @@ package
 				player = new ActivePlayer(x, y, id, color, connection, wasdControls, walkAnimation);
 				currentPlayer = player;
 			} else {
+				//player = new Player(x, y, id, color, walkAnimation);
 				player = new Player(x, y, id, color, walkAnimation);
 				otherPlayer = player;
 				//var pInit:Player = new Player(x, y, id, color, walkAnimation);
@@ -473,6 +488,7 @@ package
 			for each (var player:Player in players.members) {
 				if ( player.getScore() >= MAX_SCORE ) {
 					connection.disconnect();
+					FlxG.pauseSounds();
 					FlxG.switchState( new GameOverState(levelData, mode, null, 1, -1));
 				}
 			}

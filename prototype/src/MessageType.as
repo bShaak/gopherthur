@@ -27,6 +27,7 @@ package
         public static const RESPAWN_PLAYER:String = "s";	
 		public static const CHARGE:String = "t";
 		public static const SHOVE:String = "u";
+		public static const PING:String = "v";
 	}
 
 }
