@@ -52,7 +52,7 @@ package
 			//this.charging = false; //ras
 			//this.shoved = false;
 			this.bumped = false;
-			this.throwStrength = new FlxPoint(400, -50); //the velocity the box will have when thrown
+			this.throwStrength = new FlxPoint(480, -50); //the velocity the box will have when thrown
 			this.id = id;
 
 			// TODO: Handle this better
