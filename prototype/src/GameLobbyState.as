@@ -31,7 +31,7 @@ package
 			roomContainer = new FlxGroup();
 			usedRoomNames = new Array();
 			backgroundColor = new FlxSprite(0, 0);
-			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0x00000000);
+			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0x000000);
 			connectMsg = new FlxText(10, 10, 300, "Connecting to PlayerIO . . .");
 			connectMsg.setFormat(null, 14);
 		}
@@ -85,7 +85,7 @@ package
 			add(title);
 			
 			var roomNameLabel:FlxText = new FlxText(5, 65, 100, "Room Name:");
-			roomNameLabel.setFormat(null, 16, 0x111111, "center");
+			roomNameLabel.setFormat(null, 16, 0xffffff, "center");
 			add(roomNameLabel);
 			
 			roomName = new FlxInputText(100, 71, 150, 20, " ", 0x000000, null, 20);
@@ -94,10 +94,7 @@ package
 			var createGameBtn:FlxButton = new FlxButtonBig(440, 70, "Create", goToLevelSelectMenu); //350
 			createGameBtn.label.setFormat(null, 16, 0x111111, "center");
 			add(createGameBtn);
-			/*var buttonLabel:FlxText = new FlxText(480, 78, 100, "Create"); //380
-			buttonLabel.setFormat(null, 16, 0x333333, "center");
-			add(buttonLabel);*/
-			
+						
 			var availableGamesTxt:FlxText = new FlxText(20, 120, 250, "Available Games:");
 			availableGamesTxt.setFormat(null, 16, 0x111111);// , "center");
 			add(availableGamesTxt);

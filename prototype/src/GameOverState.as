@@ -49,15 +49,15 @@ package
 			add(title);
 			
 			playButton = new FlxButtonBig(FlxG.width/2 - 80, FlxG.height - 140, "PLAY AGAIN", playAgain);
-			playButton.label.setFormat(null, 16, 0x333333, "center");
+			playButton.label.setFormat(null, 16, 0x111111, "center");
 			add(playButton);
 			
 			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 100, "MAIN MENU", gotoMenu);
-			playButton.label.setFormat(null, 16, 0x333333, "center");
+			playButton.label.setFormat(null, 16, 0x111111, "center");
 			add(playButton);
 			
 			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 60, "EXIT", exitGame);
-			playButton.label.setFormat(null, 16, 0x333333, "center");
+			playButton.label.setFormat(null, 16, 0x111111, "center");
 			add(playButton);
 		}
 
@@ -82,14 +82,12 @@ package
 			else {
 				// collect
 				if (gameMode == 0) {
-					FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connect, pID, randomSeed, pCount));
-					//FlxG.switchState(new ObtainConnectionState(levelSelected));
+					FlxG.switchState(new GameLobbyState());
 				}
 				// Timed
 				else if (gameMode == 1) {
 					trace("Here");
-					FlxG.switchState(new MultiplayerPlayState(levelSelected, PlayState.BOX_COLLECT, connect, pID, randomSeed, pCount));
-					//FlxG.switchState(new ObtainConnectionState(levelSelected));
+					FlxG.switchState(new GameLobbyState());
 				}
 			}
 		}
