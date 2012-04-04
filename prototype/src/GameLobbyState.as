@@ -31,7 +31,7 @@ package
 			roomContainer = new FlxGroup();
 			usedRoomNames = new Array();
 			backgroundColor = new FlxSprite(0, 0);
-			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0x00000000);
+			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0x000000);
 			connectMsg = new FlxText(10, 10, 300, "Connecting to PlayerIO . . .");
 			connectMsg.setFormat(null, 14);
 		}
@@ -85,17 +85,19 @@ package
 			add(title);
 			
 			var roomNameLabel:FlxText = new FlxText(5, 65, 100, "Room Name:");
-			roomNameLabel.setFormat(null, 16, 0x111111, "center");
+			roomNameLabel.setFormat(null, 16, 0xffffff, "center");
 			add(roomNameLabel);
 			
-			roomName = new FlxInputText(100, 78, 120, 20, " ", 0x000000, null, 20);
+			roomName = new FlxInputText(100, 71, 150, 20, " ", 0x000000, null, 20);
 			add(roomName);
 			
-			var createGameBtn:FlxButton = new FlxButtonBig(350, 70, null, goToLevelSelectMenu); 
+			var createGameBtn:FlxButton = new FlxButtonBig(440, 70, "Create", goToLevelSelectMenu); //350
+			createGameBtn.label.setFormat(null, 16, 0x111111, "center");
 			add(createGameBtn);
-			var buttonLabel:FlxText = new FlxText(380, 78, 100, "Create");
-			buttonLabel.setFormat(null, 16, 0x333333, "center");
-			add(buttonLabel);
+						
+			var availableGamesTxt:FlxText = new FlxText(20, 120, 250, "Available Games:");
+			availableGamesTxt.setFormat(null, 16, 0x111111);// , "center");
+			add(availableGamesTxt);
 			
 			errorMsg = new FlxText(15, 125, 250, "Room name has to be at least one character long.");
 			errorMsg.setFormat(null, 15, 0xff4444);
@@ -112,7 +114,7 @@ package
 				return;
 			
 			for (i = 0; i < rooms.length; i++) {
-				for (var j:int = 0; j < roomContainer.length; j += 3) {
+				for (var j:int = 0; j < roomContainer.length; j += 2) { //3
 					if (rooms[i].id == roomContainer.members[j].text) {
 						cnt++;
 						break;
@@ -120,13 +122,13 @@ package
 				}
 			}
 			
-			if ((rooms.length == cnt) && (roomContainer.length / 3 == cnt))
+			if ((rooms.length == cnt) && (roomContainer.length / 2 == cnt)) //3
 				return;
 			
 			//trace("RoomList: " + rooms.length + " " + roomContainer.length + " " + cnt);
 			
 			var roomSize:int = rooms.length;
-			var offset:int = 135;
+			var offset:int = 155;//135
 			
 			if (roomContainer.length > 0) {
 				//roomContainer.destroy();
@@ -141,15 +143,12 @@ package
 				
 				if (rooms[i].onlineUsers < 2) {
 					var availableGames:FlxText = new FlxText(20, offset, 150, rooms[i].id);
-					availableGames.setFormat(null, 15, 0xffffff);
+					availableGames.setFormat(null, 17, 0xffffff);
 					roomContainer.add(availableGames);
 						
-					var joinBtn:FlxButton = new FlxButtonBig(350, offset, null, joinRoom, rooms[i]); 
+					var joinBtn:FlxButton = new FlxButtonBig(440, offset - 7, "Join", joinRoom, rooms[i]); //350 
+					joinBtn.label.setFormat(null, 16, 0x111111, "center");
 					roomContainer.add(joinBtn);
-						
-					var joinLabel:FlxText = new FlxText(405, offset + 8, 50, "Join");
-					joinLabel.setFormat(null, 16, 0x000000, "center");
-					roomContainer.add(joinLabel);
 						
 					offset += 50;
 				}

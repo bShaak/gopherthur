@@ -42,23 +42,23 @@ package
 			add(mode);
 			
 			playButton = new FlxButtonBig(FlxG.width / 2 - 150, FlxG.height - 140, "CLASSIC", goToBoxCollectPlayState); //null
-			playButton.label.setFormat(null, 16, 0x333333, "center");
+			playButton.label.setFormat(null, 16, 0x111111, "center");
 			add(playButton);
 			
 			playButton = new FlxButtonBig(FlxG.width / 2 + 10, FlxG.height - 140, "KEEP AWAY", goToRabbitPlayState); 
-			playButton.label.setFormat(null, 16, 0x333333, "center");
+			playButton.label.setFormat(null, 16, 0x111111, "center");
 			add(playButton);
 			
 			playButton = new FlxButtonBig(FlxG.width / 2 - 150, FlxG.height - 100, "TIMED", goToTimedPlayState); 
-			playButton.label.setFormat(null, 16, 0x333333, "center");
+			playButton.label.setFormat(null, 16, 0x111111, "center");
 			add(playButton);
 			
 			playButton = new FlxButtonBig(FlxG.width / 2 + 10, FlxG.height - 100, "MULTIPLAYER", goToConnectionState);
-			playButton.label.setFormat(null, 16, 0x333333, "center");
+			playButton.label.setFormat(null, 16, 0x111111, "center");
 			add(playButton);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 - 80, FlxG.height - 50, "TUTORIAL", goToTutorial);
-			playButton.label.setFormat(null, 16, 0x333333, "center");
+			playButton = new FlxButtonBig(FlxG.width / 2 - 75, FlxG.height - 50, "TUTORIAL", goToTutorial);
+			playButton.label.setFormat(null, 16, 0x111111, "center");
 			add(playButton);
 		} 
  

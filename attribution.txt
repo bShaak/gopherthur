@@ -7,6 +7,23 @@ Usage permitted by:
 http://www.nasa.gov/audience/formedia/features/MP_Photo_Guidelines.html
 
 
+Music by:
+
+defunkt dialekt:               Square Root of Funk  GPL
+
+yd:                            Anticipation         Creative Common Attribution 3.0 United States
+
+Henrik Namark, reachground.se: Busta Buss 
+
+p0ss:                          You Have it All      GPL, Creative Commons Attribution 3.0 United States
+
+p0ss:                          Groovy               GPL, Creative Commons Attribution 3.0 United States
+
+Dijital:                       Penguin Dance        Creative Commons Attribution 3.0 United States
+
+Delilah:                       Tornado Siren        Creative Commons Attribution 3.0 United States
+
+
 
 
 FlxInputText.as:

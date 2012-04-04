@@ -207,6 +207,9 @@ package
 			//if (smoothTimer != null)
 				//smoothTimer.reset();
 				
+			if (running == false)
+				return;
+				
 			var id:int = m.getInt(0);
 			var x:int = m.getInt(1);
 			var y:int = m.getInt(2);
@@ -493,6 +496,7 @@ package
 					//connection.disconnect();
 					clearInterval(intervalID);
 					FlxG.pauseSounds();
+					running = false;
 					FlxG.switchState( new GameOverState(levelData, BOX_COLLECT, connection, playerId, playerCount, randomSeed));
 					//FlxG.switchState( new GameOverState(levelData, mode, null, 1, -1));
 				}

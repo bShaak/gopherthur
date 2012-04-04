@@ -28,6 +28,7 @@ package
 		public var zones:FlxGroup;
 		public var lava:FlxGroup; //maybe you'll want more than one lava pit?
 		public var acid:FlxGroup;
+		public var acidFlows:FlxGroup;
 		public var lasers:FlxGroup;
 		public var asteroids:FlxGroup;
 		public var asteroidTime:Number = 0;
@@ -53,7 +54,7 @@ package
 		
 		public var RABBIT_TIMELIMIT:int = 60000;
 		public var TIMELIMIT:int = 60000; //if the game is a TIMED game, the time limit per round; note that currently only pure mins are handled
-		protected var MAX_SCORE:int = 3; //define a score at which the game ends
+		protected var MAX_SCORE:int = 2; //define a score at which the game ends
 		private var Music:Class;
 		
 		//embed sounds
@@ -230,9 +231,12 @@ package
 			}
 			add(lava);
 			
+			acidFlows = new FlxGroup();
+			add(acidFlows);
+			
 			acid = new FlxGroup();
 			for each (var acidInfo:Object in levelData.acid) {
-				var acidPool:Acid = new Acid(acidInfo.x, acidInfo.y, acidInfo.width, acidInfo.height);
+				var acidPool:Acid = new Acid(acidInfo.x, acidInfo.y, acidInfo.width, acidInfo.height, acidFlows);
 				acid.add(acidPool);
 			}
 			add(acid);
@@ -651,8 +655,8 @@ package
 				dropBoxesOnCollision(player);
 				dropBoxesOnCollision(player2);
 					
-				//player.getBumped(player2);
-				//player2.getBumped(player);
+				player.getBumped(player2);
+				player2.getBumped(player);
 				
 				//determine orientation
 				var dir:int = 1;
@@ -667,7 +671,7 @@ package
 				player.velocity.y = dir_y * 100;
 				player2.velocity.y = -dir_y * 100;
 			//}
-			//trace("After: " + player.velocity.x + " " + player2.velocity.x);
+			//trace("After: " + player.velocity.x + " " + player2.velocity.x);s
 		}
 		
 		private function handleLavaCollisions():void {

@@ -321,13 +321,13 @@ package
 					 
 			platforms: [],
 			
-			acid: [ { x: 0*TW, 			//left acid
+			acid: [ { x: 2*TW, 			//left acid
 					  y: 6.5*TW,
-					  width: 6 * TW,
+					  width: 4 * TW,
 					  height: 23 * TW},
 					{ x: 34*TW, 		//right acid
-					 y: 6.5 * TW, 
-					 width: 6 * TW,
+					  y: 6.5 * TW, 
+					  width: 4 * TW,
 					  height: 23 * TW }],
 					  
 			superPlatforms: [ { startMiddleX: 6 * TW,
