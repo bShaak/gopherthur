@@ -36,8 +36,6 @@ package
 			this.maxVelocity.y = 480;
 			this.acceleration.y = 720;
 			this.drag.x = 480;
-			//this.width = 12;
-			//this.height = 18;
 			this.isHeld = false;
 			this.inFlight = false;
 			
