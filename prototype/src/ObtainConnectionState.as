@@ -33,6 +33,9 @@ package
 		{
 			this.gameJoined = false;
 			this.attemptCount = 0;
+			var backgroundColor:FlxSprite = new FlxSprite(0, 0);
+			backgroundColor.makeGraphic(FlxG.width, FlxG.height, 0x000000);
+			add(backgroundColor);
 			
 			getRoom();
 		}
