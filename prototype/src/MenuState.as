@@ -60,6 +60,7 @@ package
 			playButton = new FlxButtonBig(FlxG.width / 2 - 75, FlxG.height - 50, "TUTORIAL", goToTutorial);
 			playButton.label.setFormat(null, 16, 0x111111, "center");
 			add(playButton);
+			
 		} 
  
 		override public function update():void

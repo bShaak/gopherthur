@@ -18,6 +18,7 @@ package
 			
 			var backButton:FlxButton = new FlxButton(20, 40, "Back", goToMenuState);
 			add(backButton);
+			FlxG.pauseSounds();
 		}
 		
 		public function goToMenuState():void {

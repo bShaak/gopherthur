@@ -273,12 +273,12 @@ package
 			pauseBgColor.visible = false;
 			add(pauseBgColor);
 			
-			pauseGameButton = new FlxButtonBig(FlxG.width / 2 - 60, FlxG.height / 2 - 80, "BACK TO GAME", dePause);
+			pauseGameButton = new FlxButtonBig(FlxG.width / 2 - 60, FlxG.height / 2 - 80, "PLAY", dePause);
 			pauseGameButton.label.setFormat(null, 16, 0x333333, "center");
 			pauseGameButton.visible = false;
 			add(pauseGameButton);
 			
-			pauseMenuButton = new FlxButtonBig(FlxG.width / 2 - 60, FlxG.height / 2 - 40, "BACK TO MENU", pauseAndMenu);
+			pauseMenuButton = new FlxButtonBig(FlxG.width / 2 - 60, FlxG.height / 2 - 40, "MAIN MENU", pauseAndMenu);
 			pauseMenuButton.label.setFormat(null, 16, 0x333333, "center");
 			pauseMenuButton.visible = false;
 			add(pauseMenuButton);

@@ -42,7 +42,6 @@ package
 			//if user pressed enter, go to next stage of tutorial, otherwise do nothing
 			if (FlxG.keys.justReleased("ENTER")) {
 				index++;
-				trace(index);
 			
 				switch(index) {
 						case 2:
@@ -95,7 +94,7 @@ package
 							
 						case 14:
 							remove(text);
-							text = new FlxText(0, FlxG.height - 375, FlxG.width, "In the classic game mode, collecting 3 juice boxes and bringing them back to your base wins the game");
+							text = new FlxText(0, FlxG.height - 375, FlxG.width, "You can pause the game and bring up the menu by pressing P");
 							text.setFormat(null, 16, 0xFFFFFFFF, "center");
 							add(text);
 							index++;
@@ -103,13 +102,21 @@ package
 							
 						case 16:
 							remove(text);
-							text = new FlxText(0, FlxG.height - 375, FlxG.width, "Bring 3 juice boxes back to your base");
+							text = new FlxText(0, FlxG.height - 375, FlxG.width, "In the classic game mode, collecting 3 juice boxes and bringing them back to your base wins the game");
 							text.setFormat(null, 16, 0xFFFFFFFF, "center");
 							add(text);
 							index++;
 							break;
 							
 						case 18:
+							remove(text);
+							text = new FlxText(0, FlxG.height - 375, FlxG.width, "Bring 3 juice boxes back to your base");
+							text.setFormat(null, 16, 0xFFFFFFFF, "center");
+							add(text);
+							index++;
+							break;
+							
+						case 20:
 							remove(text);
 							remove(bgColor);
 							index++;

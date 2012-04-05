@@ -26,6 +26,7 @@ package
 		private var max_images:int = 3;
 		private var roomName:String; //ras
 		private var client:Client;  //ras
+		private var text:FlxText;
 		
 		[Embed (source = "sprites/basic.png")] protected var basic:Class;
 		[Embed (source = "sprites/skyscraper.png")] protected var skyscraper:Class;
@@ -112,6 +113,7 @@ package
 			playButton = new FlxButton(FlxG.width / 2 -40, FlxG.height - 40, "EXIT", exitGame);
 			add(playButton);
 			chooseBasic();
+			
 			if (GameLobbyState.testVersion)
 				play(); //ras
 		}
