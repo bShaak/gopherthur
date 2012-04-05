@@ -67,6 +67,7 @@ namespace BoxSpring {
         private const String CHARGE = "t";
         private const String SHOVE = "u";
         private const String PING = "v";
+        private const String DEATH = "w";
 
         private int playerCount = 2; // Number of players in the game. Hardcoded for now.
         private int boxCount = 5; // Hardcoded for now. This will be fixed.
@@ -292,6 +293,18 @@ namespace BoxSpring {
                 case PING:
                     {
                         player.Send(PING);
+                        break;
+                    }
+                case DEATH:
+                    {
+
+                        int x = message.GetInt(0);
+                        int y = message.GetInt(1);
+                        foreach (Player p in Players)
+                        {
+                            if (p != player)
+                                p.Send(DEATH, x, y);
+                        }
                         break;
                     }
                 case POS:

@@ -545,12 +545,7 @@ package
 		
 		protected function killAndRespawnPlayer(player:Player):void {
 			player.visible = false;
-			var deathAnim:FlxSprite = new FlxSprite(player.x-64, player.y-48);
-			deathAnim.loadGraphic(PlayerDeathAnimation, true, false, 128, 96);
-			FlxG.play(splatter);
-			deathAnim.addAnimation("exploding_death", [0, 1, 2, 3, 4, 5, 6, 7], 24, false);
-			deathAnim.play("exploding_death");
-			singleAnimations.add(deathAnim);
+			playDeathAnimation(player.x, player.y);
 			
 			respawnPlayer(player);
 		}
@@ -715,6 +710,16 @@ package
 					}
 				}
 			}
+		}
+		
+		protected function playDeathAnimation(x:int, y:int):void 
+		{
+			var deathAnim:FlxSprite = new FlxSprite(x-64, y-48);
+			deathAnim.loadGraphic(PlayerDeathAnimation, true, false, 128, 96);
+			FlxG.play(splatter);
+			deathAnim.addAnimation("exploding_death", [0, 1, 2, 3, 4, 5, 6, 7], 24, false);
+			deathAnim.play("exploding_death");
+			singleAnimations.add(deathAnim);
 		}
 		
 		protected function startAsteroids():void 

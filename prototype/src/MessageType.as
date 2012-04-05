@@ -28,6 +28,7 @@ package
 		public static const CHARGE:String = "t";
 		public static const SHOVE:String = "u";
 		public static const PING:String = "v";
+		public static const DEATH:String = "w";
 	}
 
 }

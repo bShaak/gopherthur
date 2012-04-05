@@ -69,6 +69,7 @@ package
 			connection.addMessageHandler(MessageType.RESPAWN_PLAYER, handleRepawnPlayerMessage);
 			connection.addMessageHandler(MessageType.RESET, handleResetMessage);
 			//connection.addMessageHandler(MessageType.SHOVE, handleShoveMessage);
+			connection.addMessageHandler(MessageType.DEATH, handleDeathMessage);
 			connection.addMessageHandler(MessageType.PING, registerPing);
 			this.computePing();
 			connection.send(MessageType.CONFIRM, MessageType.READY_TO_ADD_PLAYERS);
@@ -494,6 +495,17 @@ package
 				player.dropBox();
 				connection.send(MessageType.BOX_DROP, player.id, boxId, false);
 			}
+		}
+		
+		override protected function killAndRespawnPlayer(player:Player):void {
+			if (player is ActivePlayer) {
+				connection.send(MessageType.DEATH, player.x, player.y);
+				super.killAndRespawnPlayer(player);
+			}
+		}
+		
+		protected function handleDeathMessage(m:Message):void {
+			playDeathAnimation(m.getInt(0), m.getInt(1));
 		}
 	}
 
