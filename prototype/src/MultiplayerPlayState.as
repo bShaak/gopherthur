@@ -32,7 +32,7 @@ package
 		
 		public function MultiplayerPlayState(data:Object, goal:int, connection:Connection, playerId:int, seed:int, playerCount:int) {
 			super(data, goal);
-
+			SBSprite.TOLERANCE = 8;
 			this.connection = connection;
 			this.playerId = playerId;
 			this.playerCount = playerCount;
@@ -69,6 +69,7 @@ package
 			connection.addMessageHandler(MessageType.RESPAWN_PLAYER, handleRepawnPlayerMessage);
 			connection.addMessageHandler(MessageType.RESET, handleResetMessage);
 			//connection.addMessageHandler(MessageType.SHOVE, handleShoveMessage);
+			connection.addMessageHandler(MessageType.DEATH, handleDeathMessage);
 			connection.addMessageHandler(MessageType.PING, registerPing);
 			this.computePing();
 			connection.send(MessageType.CONFIRM, MessageType.READY_TO_ADD_PLAYERS);
@@ -215,50 +216,25 @@ package
 			var y:int = m.getInt(2);
 			var vx:int = m.getInt(3);
 			var vy:int = m.getInt(4);
-			
+			var platIndex:int = m.getInt(5);
 			var p:Player = getPlayer(id);
+			var plat:Platform;
 			
 			var ignoreY:Boolean = false;
-			// if player is on the elevator, let his y be determined locally
-			for each(var platform:Platform in platforms.members) {
-				if (FlxG.overlap(p, platform) && vy == int(platform.maxVelocity.y)) {
-					ignoreY = true;
-					break;
-				}
-			}
-			
-			/*p.x = initState.x;
-			p.y = initState.y;
-			p.velocity.x = initState.velocity.x;
-			p.velocity.y = initState.velocity.y;
-			
-			initState.x = x;
-			initState.y = y;
-			initState.velocity.x = vx;
-			initState.velocity.y = vy;*/
-			
-				/*smoothTimer = new Timer(MSG_SEND_RATE/SMOOTHNESS, SMOOTHNESS); 
-				smoothTimer.addEventListener(TimerEvent.TIMER, smoothOutMovement);
-				
-				trace("CurrentState: " + initState.x + " " + initState.y);
-				trace("NxtState: " + x + " " + y);
-				
-				smoothMovement.x = (x - playerInitState[0].x) / SMOOTHNESS;
-				smoothMovement.y = (y - playerInitState[0].y) / SMOOTHNESS;
-				trace(smoothMovement.x + " " + smoothMovement.y);
-				//smoothMovement.velocity.x = vx;
-				//smoothMovement.velocity.y = vy;
-				smoothTimer.start();*/
 						
 			p.x = x;
 			p.velocity.x = vx;
-			if (!ignoreY) {
+			
+			if (platIndex != -1) {
+				plat = platforms.members[platIndex];
+				p.y = plat.y - p.height;
+			} else {
 				p.y = y;
 				p.velocity.y = vy;
 			}
 			
-			var boxMask:int = m.getInt(5);
-			var j:int = 6;
+			var boxMask:int = m.getInt(6);
+			var j:int = 7;
 			for (var i:int = 0; i < boxes.members.length; i++) {
 				var box:Box = boxes.members[i];
 				if (box != null && (boxMask & 1 << i)) {
@@ -266,10 +242,17 @@ package
 					y = m.getInt(j++);
 					vx = m.getInt(j++);
 					vy = m.getInt(j++);
+					platIndex = m.getInt(j++);
 					box.x = x;
-					box.y = y;
 					box.velocity.x = vx;
-					box.velocity.y = vy;
+					
+					if (platIndex != -1) {
+						plat = platforms.members[platIndex];
+						box.y = plat.y - box.height;
+					} else {
+						box.y = y;
+						box.velocity.y = vy;
+					}
 				}
 			}
 		}
@@ -415,7 +398,9 @@ package
 				return;
 			if (connection.connected) {
 				//if (currentPlayer
-				var info:Array = [MessageType.POS, int(currentPlayer.x), int(currentPlayer.y), int(currentPlayer.velocity.x), int(currentPlayer.velocity.y)];
+				var info:Array = [MessageType.POS, int(currentPlayer.x), int(currentPlayer.y),
+									int(currentPlayer.realVelocity.x), int(currentPlayer.realVelocity.y),
+									currentPlayer.onPlat];
 				for (var i:int = 0; i < boxes.members.length; i++) {
 					var box:Box = boxes.members[i];
 						if (box != null) {
@@ -423,6 +408,7 @@ package
 						info.push(int(box.y));
 						info.push(int(box.velocity.x));
 						info.push(int(box.velocity.y));
+						info.push(box.onPlat);
 					}
 				}
 				connection.send.apply(connection, info);
@@ -509,6 +495,17 @@ package
 				player.dropBox();
 				connection.send(MessageType.BOX_DROP, player.id, boxId, false);
 			}
+		}
+		
+		override protected function killAndRespawnPlayer(player:Player):void {
+			if (player is ActivePlayer) {
+				connection.send(MessageType.DEATH, player.x, player.y);
+				super.killAndRespawnPlayer(player);
+			}
+		}
+		
+		protected function handleDeathMessage(m:Message):void {
+			playDeathAnimation(m.getInt(0), m.getInt(1));
 		}
 	}
 

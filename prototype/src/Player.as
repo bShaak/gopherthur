@@ -28,8 +28,13 @@ package
 		protected const SLAM_RANGE:int = 165;
 		protected var numBoxesInZone:int = 0; //ras
 		
+		protected var lastPos:FlxPoint;
+		public var realVelocity:FlxPoint;
+		
 		public static const IDLE_THRESH:Number = 20; //player will appear idle if below this speed
 
+		public var onPlat:int;
+		
 		//Embed sounds we will use
 		[Embed(source = "../mp3/jump_new.mp3")] protected var Jump:Class;
 		[Embed(source = "../mp3/throw.mp3")] protected var Throw:Class;
@@ -54,7 +59,8 @@ package
 			this.bumped = false;
 			this.throwStrength = new FlxPoint(480, -50); //the velocity the box will have when thrown
 			this.id = id;
-
+			this.lastPos = new FlxPoint(x, y);
+			this.realVelocity = new FlxPoint(0, 0);
 			// TODO: Handle this better
 			//this.makeGraphic(width, height, color);
 			this.colour = color;
@@ -308,6 +314,13 @@ package
 				
 			boxHeld.y = this.getMidpoint().y - this.height;
 				
+		}
+		
+		public function updateRealVelocity(elapsed:Number):void {
+			realVelocity.x = (x - lastPos.x) / elapsed;
+			realVelocity.y = (y - lastPos.y) / elapsed;
+			lastPos.x = x;
+			lastPos.y = y;
 		}
 	}
 }

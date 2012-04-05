@@ -41,6 +41,7 @@ package
 		protected var running:Boolean = false;
 		protected var clock:Clock;
 		protected var timer:Clock;	//timer for a timed game
+		protected var lastTime:int = 0;
 		
 		protected var mode:int;
 		public static const BOX_COLLECT:int = 0;
@@ -80,6 +81,7 @@ package
 		{
 			levelData = data;
 			mode = goal;
+			SBSprite.TOLERANCE = 4;
 			randomSeed = (new Date()).getTime();
 		}
 		
@@ -364,6 +366,11 @@ package
 			//update scoreboard
 			scoreboard.text = "SCORE: " + players.members[0].getScore() + " - " + players.members[1].getScore();
 			checkGameOver();
+			
+			for each (var player:Player in players.members) {
+				player.updateRealVelocity((clock.elapsed - lastTime) / 1000.0);
+			}
+			lastTime = clock.elapsed;
 		}
 		
 		
@@ -538,12 +545,7 @@ package
 		
 		protected function killAndRespawnPlayer(player:Player):void {
 			player.visible = false;
-			var deathAnim:FlxSprite = new FlxSprite(player.x-64, player.y-48);
-			deathAnim.loadGraphic(PlayerDeathAnimation, true, false, 128, 96);
-			FlxG.play(splatter);
-			deathAnim.addAnimation("exploding_death", [0, 1, 2, 3, 4, 5, 6, 7], 24, false);
-			deathAnim.play("exploding_death");
-			singleAnimations.add(deathAnim);
+			playDeathAnimation(player.x, player.y);
 			
 			respawnPlayer(player);
 		}
@@ -570,13 +572,20 @@ package
 		
 		private function handlePlatformCollisions():void 
 		{
+			for each (var player:Player in players.members) {
+				player.onPlat = -1;
+			}
+			for each (var box:Box in boxes.members) {
+				box.onPlat = -1;
+			}
 			for each (var platform:Platform in platforms.members) {
-				for each (var player:Player in players.members) {
+				for each (player in players.members) {				
 					//handle one-way platforms first
 					if (platform.isOneWay()) {
 						//Players should only collide with the top edge of the platform, and only from above.
 						if (player.isAbove(platform)) { 
 							if (FlxG.collide(platform, player)) {
+								player.onPlat = platforms.members.indexOf(platform);
 								player.velocity.y = platform.maxVelocity.y;
 							}
 						}
@@ -585,6 +594,9 @@ package
 						//If a player collides with an elevator (platform with y velocity), give the player
 						//the platform's max y velocity for two reasons: (1) keeps the player glued to the top
 						//surface, and (2) keeps the player from sticking to the bottom of an elevator on it's down cycle.
+						if (player.isAbove(platform)) {
+							player.onPlat = platforms.members.indexOf(platform);
+						}
 						if (player.isAbove(platform) || player.isBelow(platform)) {
 							player.velocity.y = platform.maxVelocity.y;
 						}
@@ -600,10 +612,12 @@ package
 						}
 					}
 				}
-				for each (var box:Box in boxes.members) {
+				for each (box in boxes.members) {
 					if (FlxG.collide(box, platform)) {
-						if (box.isAbove(platform))
+						if (box.isAbove(platform)) {
+							box.onPlat = platforms.members.indexOf(platform);
 							box.velocity.y = platform.maxVelocity.y;
+						}
 					}
 				}
 			}
@@ -696,6 +710,16 @@ package
 					}
 				}
 			}
+		}
+		
+		protected function playDeathAnimation(x:int, y:int):void 
+		{
+			var deathAnim:FlxSprite = new FlxSprite(x-64, y-48);
+			deathAnim.loadGraphic(PlayerDeathAnimation, true, false, 128, 96);
+			FlxG.play(splatter);
+			deathAnim.addAnimation("exploding_death", [0, 1, 2, 3, 4, 5, 6, 7], 24, false);
+			deathAnim.play("exploding_death");
+			singleAnimations.add(deathAnim);
 		}
 		
 		protected function startAsteroids():void 

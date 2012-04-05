@@ -53,7 +53,7 @@ package
 			playButton.label.setFormat(null, 16, 0x111111, "center");
 			add(playButton);
 			
-			playButton = new FlxButtonBig(FlxG.width / 2 + 10, FlxG.height - 100, "MULTIPLAYER", goToConnectionState);
+			playButton = new FlxButtonBig(FlxG.width / 2 + 10, FlxG.height - 100, "ONLINE", goToConnectionState);
 			playButton.label.setFormat(null, 16, 0x111111, "center");
 			add(playButton);
 			
