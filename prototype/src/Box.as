@@ -25,6 +25,7 @@ package
 		private var spawn:FlxPoint;
 		public var id:int;       // for identifying which box is picked up when sending over network
 		private var timer:Timer;  // for handling of boxes getting stuck in walls 
+		public var onPlat:int;
 		
 		public function Box(x:Number, y:Number, id:int) 
 		{

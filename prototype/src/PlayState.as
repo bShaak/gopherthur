@@ -577,13 +577,20 @@ package
 		
 		private function handlePlatformCollisions():void 
 		{
+			for each (var player:Player in players.members) {
+				player.onPlat = -1;
+			}
+			for each (var box:Box in boxes.members) {
+				box.onPlat = -1;
+			}
 			for each (var platform:Platform in platforms.members) {
-				for each (var player:Player in players.members) {
+				for each (player in players.members) {				
 					//handle one-way platforms first
 					if (platform.isOneWay()) {
 						//Players should only collide with the top edge of the platform, and only from above.
 						if (player.isAbove(platform)) { 
 							if (FlxG.collide(platform, player)) {
+								player.onPlat = platforms.members.indexOf(platform);
 								player.velocity.y = platform.maxVelocity.y;
 							}
 						}
@@ -592,6 +599,9 @@ package
 						//If a player collides with an elevator (platform with y velocity), give the player
 						//the platform's max y velocity for two reasons: (1) keeps the player glued to the top
 						//surface, and (2) keeps the player from sticking to the bottom of an elevator on it's down cycle.
+						if (player.isAbove(platform)) {
+							player.onPlat = platforms.members.indexOf(platform);
+						}
 						if (player.isAbove(platform) || player.isBelow(platform)) {
 							player.velocity.y = platform.maxVelocity.y;
 						}
@@ -607,10 +617,12 @@ package
 						}
 					}
 				}
-				for each (var box:Box in boxes.members) {
+				for each (box in boxes.members) {
 					if (FlxG.collide(box, platform)) {
-						if (box.isAbove(platform))
+						if (box.isAbove(platform)) {
+							box.onPlat = platforms.members.indexOf(platform);
 							box.velocity.y = platform.maxVelocity.y;
+						}
 					}
 				}
 			}

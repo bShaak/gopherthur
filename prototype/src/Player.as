@@ -33,6 +33,8 @@ package
 		
 		public static const IDLE_THRESH:Number = 20; //player will appear idle if below this speed
 
+		public var onPlat:int;
+		
 		//Embed sounds we will use
 		[Embed(source = "../mp3/jump_new.mp3")] protected var Jump:Class;
 		[Embed(source = "../mp3/throw.mp3")] protected var Throw:Class;

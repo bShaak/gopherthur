@@ -301,6 +301,7 @@ namespace BoxSpring {
                         int y = message.GetInt(1);
                         int vx = message.GetInt(2);
                         int vy = message.GetInt(3);
+                        int plat = message.GetInt(4);
 
                         if (player.charging && Math.Abs(vx) <= Player.MAX_SPEED)
                             player.charging = false;
@@ -322,15 +323,16 @@ namespace BoxSpring {
                                 boxMask = boxMask | 1 << i;
                             }
                         }
-                        object[] info = new object[6 + 4 * avCount];
+                        object[] info = new object[7 + 5 * avCount];
                         info[0] = player.Id;
                         info[1] = x;
                         info[2] = y;
                         info[3] = vx;
                         info[4] = vy;
-                        info[5] = boxMask;
+                        info[5] = plat;
+                        info[6] = boxMask;
 
-                        int j = 6;
+                        int j = 7;
                         for (int i = 0; i < boxCount; i++)
                         {
                             Box b = GetBox(i);
@@ -338,17 +340,18 @@ namespace BoxSpring {
                             if ((b.positionHeld && player == b.controller) ||
                                 (!b.positionHeld && player == masterController))
                             {
-                                uint os = 4 + 4 * checked((uint)i);
+                                uint os = 5 + 5 * checked((uint)i);
                                 x = message.GetInt(0 + os);
                                 y = message.GetInt(1 + os);
                                 vx = message.GetInt(2 + os);
                                 vy = message.GetInt(3 + os);
+                                plat = message.GetInt(4 + os);
 
                                 info[j++] = x;
                                 info[j++] = y;
                                 info[j++] = vx;
                                 info[j++] = vy;
-
+                                info[j++] = plat;
                             }
                         }
 
